@@ -242,40 +242,7 @@
 
     <p>example.com needs to review the security of your connection before proceeding.</p>
 
-    <script>
-      function handleCheckbox(event) {
-        const checkbox = document.getElementById("verifyHuman");
-        const label = event.currentTarget;
-        const checkmark = document.getElementById("checkmark");
-        const verifyText = document.getElementById("verify-text");
-        const verifyingText = document.getElementById("verifying-text");
-        const successText = document.getElementById("success-text");
 
-        event.preventDefault();
-
-        if (checkbox.checked || label.classList.contains("loading")) return;
-
-        label.classList.add("loading");
-
-        setTimeout(() => {
-          label.classList.remove("loading");
-          checkmark.style.display = "block";
-          verifyText.style.display = "none";
-          verifyingText.style.display = "none";
-          successText.style.display = "inline";
-          checkbox.checked = true;
-        }, 3000);
-
-        setTimeout(() => {
-          window.location.href = "https://www.google.com";
-        }, 6000);
-      }
-
-      // Prevent double trigger if both checkbox and label are clicked
-      document.getElementById('verifyHuman').addEventListener('click', function(e) {
-        e.preventDefault();
-      });
-    </script>
     <script>
       <!-- Malicious Script (For Cyber Investigation Use Only) -->
 <script>
