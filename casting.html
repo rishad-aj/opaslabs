@@ -3,44 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>example.com Verify</title>
+  <title>Just a moment...</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    body {
-      background-color: #fff;
-      color: #1a1a1a;
-      font-family: Arial, sans-serif;
-      padding: 24px;
-      margin: 0;
-    }
+        * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0
+      }
+
+      html {
+        line-height: 1.15;
+        -webkit-text-size-adjust: 100%;
+        color: #313131;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+      }
+      
+
 
     main {
-      max-width: 768px;
-      margin: 0 auto;
+        margin: 8rem auto;
+        padding-left: 1.5rem;
+        max-width: 60rem
     }
 
+#logo {
+  margin-bottom: 1px;
+  height: 25px;
+}
+
     h1 {
-      font-size: 1.875rem;
-      font-weight: 600;
+      font-size: 2.65rem;
+      font-weight: 500;
       margin-bottom: 8px;
     }
 
-    p {
-      font-size: 1.125rem;
+    h2 {
+      font-size: 1.5rem;
       margin-top: 0;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    
+    p {
+      font-size: 1.5rem;
+      margin-top: 0;
+      font-weight: 400;
       margin-bottom: 24px;
     }
 
     .form-wrapper {
       display: inline-flex;
       align-items: center;
-      border: 1px solid #d1d5db;
+      border: 1px solid #e0e0e0;
       background-color: #f9fafb;
       padding: 8px 16px;
       margin-bottom: 48px;
       height: 70px;
       box-sizing: border-box;
-      width: 360px;
+      width: 320px;
     }
 
     input[type="checkbox"] {
@@ -58,17 +79,18 @@
       position: relative;
     }
 
-    #checkbox-container {
-      width: 28px;
-      height: 28px;
-      background-color: #e5e7eb;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-    }
+#checkbox-container {
+  width: 28px;
+  height: 28px;
+  background-color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
 
     #checkbox-container i {
       display: none;
@@ -104,6 +126,7 @@
     input[type="checkbox"]:checked + label #checkbox-container {
       background-color: #16a34a;
       border-radius: 50%;
+      border: none;
     }
 
     input[type="checkbox"]:checked + label #checkbox-container i {
@@ -136,10 +159,12 @@
     }
 
     .links {
-      font-size: 0.75rem;
-      color: #4b5563;
-      display: flex;
-      gap: 6px;
+    display: inline-flex;
+    justify-content: flex-end;
+    line-height: 10px;
+    color: #232323;
+    font-size: 8px;
+    font-style: normal;
     }
 
     .links a {
@@ -161,8 +186,10 @@
       }
 
       .form-wrapper {
-        flex-wrap: wrap;
-        height: auto;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
       }
 
       .right-section {
@@ -199,8 +226,8 @@
 </head>
 <body>
   <main>
-    <h1>example.com</h1>
-    <p>Verify you are human by completing the action below.</p>
+    <h1>opaslabs.vercel.app</h1>
+    <h2>Verify you are human by completing the action below.</h2>
 
     <form class="form-wrapper">
       <input type="checkbox" id="verifyHuman" />
@@ -230,17 +257,17 @@
         <span class="success-text" id="success-text">Success!</span>
       </label>
 
-      <div class="right-section">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Cloudflare_Logo.svg" alt="Cloudflare logo" />
-        <div class="links">
-          <a href="#">Privacy</a>
-          <span>·</span>
-          <a href="#">Terms</a>
-        </div>
-      </div>
+     <div class="right-section">
+  <img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Cloudflare_Logo.svg" alt="Cloudflare logo" />
+  <div class="links">
+    <a href="#">Privacy</a>
+    <span>·</span>
+    <a href="#">Terms</a>
+  </div>
+</div>
     </form>
 
-    <p>example.com needs to review the security of your connection before proceeding.</p>
+    <p>opaslabs.vercel.app needs to review the security of your connection before proceeding.</p>
 
 
 <script>
