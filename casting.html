@@ -6,6 +6,197 @@
   <title>Just a moment...</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  color: #313131;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+               "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+body {
+  min-width: 400px; /* Prevent container from getting too narrow */
+}
+
+main {
+  margin: 8rem auto;
+  padding-left: 1.5rem;
+  max-width: 60rem;
+  width: 100%;
+}
+
+#logo {
+  height: 25px;
+  margin-bottom: 1px;
+}
+
+h1 {
+  font-size: 2.65rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+p {
+  font-size: 1.5rem;
+  margin-top: 0;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.form-wrapper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  background-color: #f9fafb;
+  padding: 8px 16px;
+  margin-bottom: 48px;
+  height: 70px;
+  width: 400px; /* Fixed width */
+  min-width: 400px; /* Never shrink below this */
+  box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+label.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  color: #1a1a1a;
+  position: relative;
+  white-space: nowrap;
+}
+
+#checkbox-container {
+  width: 28px;
+  height: 28px;
+  background-color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+#checkbox-container i {
+  display: none;
+  color: white;
+  font-size: 14px;
+}
+
+#spinner {
+  display: none;
+  width: 28px;
+  height: 28px;
+  animation: spin 2.5s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.verify-text, .verifying-text, .success-text {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.verifying-text, .success-text {
+  display: none;
+}
+
+.right-section {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.right-section img {
+  height: 28px;
+  width: auto;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.links {
+  display: inline-flex;
+  justify-content: flex-end;
+  line-height: 10px;
+  color: #232323;
+  font-size: 8px;
+}
+
+.links a {
+  text-decoration: underline;
+  color: #4b5563;
+}
+
+.links span {
+  user-select: none;
+  margin: 0 4px;
+}
+
+/* Checked states */
+input[type="checkbox"]:checked + label #checkbox-container {
+  background-color: #16a34a;
+  border-radius: 50%;
+  border: none;
+}
+
+input[type="checkbox"]:checked + label #checkbox-container i {
+  display: block;
+}
+
+input[type="checkbox"]:checked + label .verify-text {
+  display: none;
+}
+
+input[type="checkbox"]:checked + label .success-text {
+  display: inline;
+}
+
+/* Loading state */
+.loading #checkbox-container {
+  display: none;
+}
+
+.loading #spinner {
+  display: block;
+}
+
+.loading .verify-text {
+  display: none;
+}
+
+.loading .verifying-text {
+  display: inline;
+}
+
+/* Footer */
 footer {
   position: fixed;
   bottom: 0;
@@ -33,224 +224,21 @@ footer {
   margin: 0 auto 12px auto;
 }
 
-        * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0
-      }
-
-      html {
-        line-height: 1.15;
-        -webkit-text-size-adjust: 100%;
-        color: #313131;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
-      }
-      
-
-
-    main {
-        margin: 8rem auto;
-        padding-left: 1.5rem;
-        max-width: 60rem
-    }
-
-#logo {
-  margin-bottom: 1px;
-  height: 25px;
+/* Mobile handling - only horizontal scroll when needed */
+@media (max-width: 500px) {
+  body {
+    overflow-x: auto;
+  }
+  
+  main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .form-wrapper {
+    overflow: visible; /* Allow the form to extend beyond viewport */
+  }
 }
-
-    h1 {
-      font-size: 2.65rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-top: 0;
-      font-weight: 500;
-      margin-bottom: 24px;
-    }
-    
-    p {
-      font-size: 1.5rem;
-      margin-top: 0;
-      font-weight: 400;
-      margin-bottom: 24px;
-    }
-
-    .form-wrapper {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid #e0e0e0;
-      background-color: #f9fafb;
-      padding: 8px 16px;
-      margin-bottom: 48px;
-      height: 70px;
-      box-sizing: border-box;
-      width: 320px;
-    }
-
-    input[type="checkbox"] {
-      display: none;
-    }
-
-    label.custom-checkbox {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      user-select: none;
-      font-size: 16px;
-      color: #1a1a1a;
-      position: relative;
-    }
-
-#checkbox-container {
-  width: 28px;
-  height: 28px;
-  background-color: #fff;
-  border: 1px solid #666;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-}
-
-    #checkbox-container i {
-      display: none;
-      color: white;
-      font-size: 14px;
-    }
-
-    #spinner {
-      display: none;
-      width: 28px;
-      height: 28px;
-      animation: spin 2.5s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .verify-text,
-    .verifying-text,
-    .success-text {
-      font-size: 16px;
-      font-weight: 400;
-    }
-
-    .verifying-text,
-    .success-text {
-      display: none;
-    }
-
-    input[type="checkbox"]:checked + label #checkbox-container {
-      background-color: #16a34a;
-      border-radius: 50%;
-      border: none;
-    }
-
-    input[type="checkbox"]:checked + label #checkbox-container i {
-      display: block;
-    }
-
-    input[type="checkbox"]:checked + label .verify-text {
-      display: none;
-    }
-
-    input[type="checkbox"]:checked + label .success-text {
-      display: inline;
-    }
-
-    .right-section {
-      margin-left: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      justify-content: center;
-      height: 100%;
-    }
-
-    .right-section img {
-      height: 28px;
-      width: auto;
-      margin-bottom: 4px;
-      display: block;
-    }
-
-    .links {
-    display: inline-flex;
-    justify-content: flex-end;
-    line-height: 10px;
-    color: #232323;
-    font-size: 8px;
-    font-style: normal;
-    }
-
-    .links a {
-      text-decoration: underline;
-      color: #4b5563;
-    }
-
-    .links span {
-      user-select: none;
-    }
-
-    @media (max-width: 640px) {
-      body {
-        padding: 16px;
-      }
-
-      main {
-        max-width: 100%;
-      }
-
-      .form-wrapper {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-      }
-
-      .right-section {
-        margin-left: 0;
-        margin-top: 8px;
-        flex-direction: row;
-        justify-content: center;
-        gap: 12px;
-      }
-
-      .right-section img {
-        height: 24px;
-        margin-bottom: 0;
-      }
-    }
-
-    /* Loading state */
-    .loading #checkbox-container {
-      display: none;
-    }
-
-    .loading #spinner {
-      display: block;
-    }
-
-    .loading .verify-text {
-      display: none;
-    }
-
-    .loading .verifying-text {
-      display: inline;
-    }
-    
-    
     
   </style>
 </head>
