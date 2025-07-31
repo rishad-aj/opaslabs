@@ -1,12 +1,16 @@
-// api/bot.js
+// /api/bot.js
 
 import TelegramBot from 'node-telegram-bot-api';
 
-const token = process.env.TELEGRAM_TOKEN;
-const bot = new TelegramBot(token, { webHook: false });
+let bot;
 
-// Set this only once after deployment
-bot.setWebHook(`https://${process.env.VERCEL_URL}/api/bot`);
+if (!bot) {
+  const token = process.env.TELEGRAM_TOKEN;
+  const webhookUrl = `https://${process.env.VERCEL_URL}/api/bot`;
+
+  bot = new TelegramBot(token, { webHook: true });
+  bot.setWebHook(webhookUrl);
+}
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -20,6 +24,6 @@ export default async function handler(req, res) {
     bot.processUpdate(req.body);
     res.status(200).end();
   } else {
-    res.status(200).send("Hello, this is the Telegram Bot Webhook!");
+    res.status(200).send("🤖 Telegram bot webhook is active!");
   }
 }
