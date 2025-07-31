@@ -1,29 +1,27 @@
-// Import necessary modules
+const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
-require('dotenv').config(); // Ensure you load environment variables
+require('dotenv').config();
 
-// Get the bot token from the environment variable
 const token = process.env.TELEGRAM_TOKEN;
+const bot = new TelegramBot(token, { webHook: true });
 
-// Create a bot instance
-const bot = new TelegramBot(token, { polling: true });
+const app = express();
+const port = 3000;
 
-// Listen for the /start command
-bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id; // Get the chat ID
+// Set Telegram webhook
+bot.setWebHook(`https://yourdomain.com/bot`);
 
-    // Send the chat ID back to the user in a copiable format
-    bot.sendMessage(chatId, `Your chat ID is: \`${chatId}\``, {
-        parse_mode: 'Markdown' // Use Markdown to format the chat ID as code
-    });
+app.use(express.json());
+app.post('/bot', (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
 });
 
-// Optional: Handle /start=start command
-bot.onText(/\/start=start/, (msg) => {
-    const chatId = msg.chat.id; // Get the chat ID
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `Your chat ID is: \`${chatId}\``, { parse_mode: 'Markdown' });
+});
 
-    // Send the chat ID back to the user in a copiable format
-    bot.sendMessage(chatId, `Your chat ID is: \`${chatId}\``, {
-        parse_mode: 'Markdown' // Use Markdown to format the chat ID as code
-    });
+app.listen(port, () => {
+  console.log(`Bot is listening on port ${port}`);
 });
