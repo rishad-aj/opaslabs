@@ -316,7 +316,6 @@ async function getDeviceInfo() {
     webgl: await getWebGLInfo(),
     networkType: await getNetworkType(),
     networkSpeed: await getNetworkSpeed(),
-    downlink: await getDownlink(),
     latency: await getLatency(),
     dataSaver: await getDataSaver(),
     batteryLevel: await getBatteryLevel(),
@@ -401,15 +400,6 @@ async function getNetworkSpeed() {
   try {
     const conn = navigator.connection || navigator.webkitConnection;
     return conn ? `${conn.downlink} Mbps` : 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getDownlink() {
-  try {
-    const conn = navigator.connection || navigator.webkitConnection;
-    return conn ? `${conn.downlinkMax} Mbps` : 'Unknown';
   } catch {
     return 'Unknown';
   }
