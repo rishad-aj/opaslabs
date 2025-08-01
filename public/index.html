@@ -180,31 +180,33 @@
       text-decoration: underline;
       color: #00c8ff;
     }
+
     
     /* Age Verification Modal */
-    .age-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(7, 10, 21, 0.95);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-    }
-    .age-modal-content {
-      background: rgba(12, 16, 33, 0.95);
-      padding: 2rem;
-      border-radius: 15px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
+  .age-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 10, 21, 0.3); /* More transparent background */
+    backdrop-filter: blur(10px); /* Blur effect */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .age-modal-content {
+    background: rgba(12, 16, 33, 0.9); /* Slightly more transparent */
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+    
     .age-modal h2 {
       color: var(--accent);
       margin-bottom: 1rem;
@@ -214,12 +216,11 @@
       margin-bottom: 2rem;
       color: rgba(255, 255, 255, 0.8);
     }
-    .age-btn-group {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+  .age-btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
     .age-btn {
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
@@ -282,21 +283,21 @@
   </style>
 </head>
 <body>
-  <!-- Age Verification Modal -->
-  <div id="ageModal" class="age-modal">
-    <div class="age-modal-content">
-      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
-      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
-      <div class="age-btn-group">
-        <button class="age-btn underage" id="underageBtn">
-          <i class="fas fa-child"></i> I'm Under 18
-        </button>
-        <button class="age-btn adult" id="adultBtn">
-          <i class="fas fa-user-check"></i> I'm 18 or Older
-        </button>
-      </div>
+ <!-- Age Verification Modal -->
+<div id="ageModal" class="age-modal">
+  <div class="age-modal-content">
+    <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
+    <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
+    <div class="age-btn-group">
+      <button class="age-btn underage" id="underageBtn">
+        <i class="fas fa-child"></i> I'm Under 18
+      </button>
+      <button class="age-btn adult" id="adultBtn">
+        <i class="fas fa-user-check"></i> I'm 18 or Older
+      </button>
     </div>
   </div>
+</div>
 
   <canvas id="particles" class="particles"></canvas>
   <div class="container">
