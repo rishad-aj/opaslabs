@@ -1,4 +1,4 @@
-const urlMap = {}; // In-memory store (use a DB in prod)
+import { saveUrl } from '../../lib/urlStore';
 
 export default async (req, res) => {
   if (req.method !== 'POST') {
@@ -12,10 +12,8 @@ export default async (req, res) => {
   }
 
   const shortId = Math.random().toString(36).substr(2, 6);
-
-  urlMap[shortId] = longUrl;
+  saveUrl(shortId, longUrl);
 
   const shortUrl = `https://${req.headers.host}/s/${shortId}`;
-
   res.status(200).json({ shortUrl });
 };
