@@ -1,5 +1,3 @@
-
-
 // Import the required modules
 import TelegramBot from 'node-telegram-bot-api';
 import dotenv from 'dotenv';
