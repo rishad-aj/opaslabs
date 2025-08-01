@@ -1,12 +1,11 @@
-// You’d use a DB or KV here in real use case
-const urlMap = {}; // TEMP store (won't persist across reloads)
+import { getUrl } from '../../lib/urlStore';
 
 export async function getServerSideProps({ params, res }) {
   const slug = params.slug;
-  const destination = urlMap[slug];
+  const longUrl = getUrl(slug);
 
-  if (destination) {
-    res.writeHead(302, { Location: destination });
+  if (longUrl) {
+    res.writeHead(302, { Location: longUrl });
     res.end();
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -17,5 +16,5 @@ export async function getServerSideProps({ params, res }) {
 }
 
 export default function RedirectPage() {
-  return null; // No need to render anything
+  return null;
 }
