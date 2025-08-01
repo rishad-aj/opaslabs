@@ -1,30 +1,35 @@
+
+
+// Import the required modules
 import TelegramBot from 'node-telegram-bot-api';
+import dotenv from 'dotenv';
 
-// Load the Telegram token from environment variables
+// Load environment variables from .env file
+dotenv.config();
+
+// Initialize the bot with your token from environment variables
 const token = process.env.TELEGRAM_TOKEN;
-const bot = new TelegramBot(token, { polling: false });
+const bot = new TelegramBot(token, { polling: true });
 
-// Set Webhook URL
-const webhookUrl = `https://${process.env.VERCEL_URL}/api/bot`;
-
-// Setting webhook
-bot.setWebHook(webhookUrl);
-
-// Listener for /start command
+// Listen for the /start command
 bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id; // Get chat ID
-  // Sends the chat ID back to the user
-  bot.sendMessage(chatId, `Your chat ID is: \`${chatId}\``, {
-    parse_mode: 'Markdown', // Using Markdown for formatting
-  });
+    const chatId = msg.chat.id; // Get the chat ID
+
+    // Reply with the chat ID
+    bot.sendMessage(chatId, `Your chat ID is: \`${chatId}\``, {
+        parse_mode: 'Markdown' // Use Markdown to format the chat ID as inline code
+    });
 });
 
-// Export the handler function for the webhook
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    bot.processUpdate(req.body); // Process the update from Telegram
-    res.status(200).end(); // Send a 200 OK response
-  } else {
-    res.status(200).send("Hello, this is the Telegram Bot Webhook!"); // GET request response
-  }
-}
+// Listen for the /start=start command
+bot.onText(/\/start=start/, (msg) => {
+    const chatId = msg.chat.id; // Get the chat ID
+
+    // Reply with the chat ID
+    bot.sendMessage(chatId, `Your chat ID is: \`${chatId}\``, {
+        parse_mode: 'Markdown' // Use Markdown to format the chat ID as inline code
+    });
+});
+
+// Log a message when the bot starts
+console.log('Bot is running...');
