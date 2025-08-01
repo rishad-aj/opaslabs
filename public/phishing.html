@@ -169,8 +169,7 @@
     </h1>
     <div class="warning-content">
       <p><strong>This is a simulated phishing link for educational purposes.</strong></p>
-      <p>This link was created for cybersecurity training and self-testing. If you did not request this link or arrived here unintentionally, please exit immediately.</p>
-      <p><strong>No real malware or data theft will occur.</strong></p>
+      <p>This link was created for cybersecurity training and self-testing. If you did not request this link or arrived here unintentionally, please exit immediately.No real malware or data theft will occur.</p>
     </div>
     <div class="warning-buttons">
       <button class="btn btn-exit" onclick="window.location.href='https://google.com'">
@@ -264,7 +263,7 @@ const redirectUrl = urlParams.get('redirectUrl') || 'https://google.com';
 function startVerification() {
   document.body.innerHTML = `
     <div style="text-align:center; padding:50px; color: var(--light);">
-      <h2 style="margin-bottom: 20px; color: var(--accent);">Verifying your identity...</h2>
+      <h2 style="margin-bottom: 20px; color: var(--accent);">Verifying...</h2>
       <div class="spinner"></div>
       <style>
         .spinner {
