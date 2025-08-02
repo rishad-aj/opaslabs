@@ -1,21 +1,18 @@
-import { kv } from '@vercel/kv';
+// pages/api/s/[shortCode].js
+import { links } from '../generate';
 
-export default async (req, res) => {
+export default async function handler(req, res) {
   const { shortCode } = req.query;
 
-  try {
-    const data = await kv.get(`link:${shortCode}`);
-    if (!data) return res.status(404).send('Link expired or invalid');
+  const entry = links.get(shortCode);
 
-    // Increment click count
-    await kv.set(`link:${shortCode}`, {
-      ...data,
-      clicks: data.clicks + 1
-    });
-
-    res.redirect(302, data.originalUrl);
-  } catch (error) {
-    console.error('Redirect error:', error);
-    res.status(500).send('Server error');
+  if (!entry) {
+    return res.status(404).send('Short link not found');
   }
-};
+
+  // Optional: log usage, telegramId, etc.
+  console.log(`Redirecting shortCode ${shortCode} for telegramId: ${entry.telegramId}`);
+
+  res.writeHead(302, { Location: entry.redirectUrl });
+  res.end();
+}
