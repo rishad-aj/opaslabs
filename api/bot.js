@@ -6,8 +6,19 @@ dotenv.config();
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, { webHook: true });
 
-const url = process.env.VERCEL_URL || 'https://your-vercel-project.vercel.app'; // without trailing slash
+const url = 'https://opaslabs.vercel.app'; // your Vercel project URL
 bot.setWebHook(`${url}/api/bot`);
+
+bot.onText(/^\/start(?:=start)?$/, async (msg) => {
+  const chatId = msg.chat.id;
+  const ipPlaceholder = '......'; // Replace with real IP if you have logic elsewhere
+
+  const message = `🛰️ Our chat IP: \`${ipPlaceholder}\`\n🆔 Chat ID: \`${chatId}\`\n\n_tap to copy_`;
+
+  bot.sendMessage(chatId, message, {
+    parse_mode: 'Markdown'
+  });
+});
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
