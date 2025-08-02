@@ -515,7 +515,14 @@
     acceptTermsBtn.addEventListener('click', function() {
       localStorage.setItem('termsAccepted', 'true');
       termsModal.style.display = 'none';
-      ageModal.style.display = 'flex';
+      
+      // After accepting terms, check age verification
+      if(localStorage.getItem('ageVerified') !== 'true') {
+        ageModal.style.display = 'flex';
+      } else {
+        // If already verified, proceed to generate
+        generateLink();
+      }
     });
 
     // Age Verification Buttons
@@ -543,17 +550,10 @@
       });
     });
 
-    // Check if terms were previously accepted (for page reloads)
+    // Remove the automatic modal display on page load
     document.addEventListener('DOMContentLoaded', function() {
-      if(localStorage.getItem('termsAccepted') === 'true' && localStorage.getItem('ageVerified') === 'true') {
-        // User has already accepted both, no need to show modals
-      } else if(localStorage.getItem('termsAccepted') === 'true') {
-        // Only terms accepted, show age verification
-        ageModal.style.display = 'flex';
-      } else {
-        // Show terms first
-        termsModal.style.display = 'flex';
-      }
+      // No modals will show automatically now
+      // They will only appear when Generate button is clicked
     });
   </script>
 </body>
