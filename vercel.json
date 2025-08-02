@@ -1,17 +1,20 @@
 {
   "version": 2,
   "public": true,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+  "builds": [{
+    "src": "api/**/*.js",
+    "use": "@vercel/node"
+  }],
+  "routes": [
+    { "src": "/s/([a-f0-9]{6})", "dest": "/api/s/[shortCode].js" },
+    { "src": "/generate", "methods": ["POST"], "dest": "/api/generate.js" }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "no-referrer" }
-      ]
-    }
-  ]
+  "headers": [{
+    "source": "/(.*)",
+    "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Strict-Transport-Security", "value": "max-age=63072000" },
+      { "key": "Content-Security-Policy", "value": "default-src 'self'" }
+    ]
+  }]
 }
