@@ -363,205 +363,203 @@
   </div>
 
   <script>
-    // Particle Animation
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  // Particle Animation
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  let particlesArray = [];
+  const numberOfParticles = 150;
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.speedY = Math.random() * 1 - 0.5;
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    let particlesArray = [];
-    const numberOfParticles = 150;
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.speedY = Math.random() * 1 - 0.5;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-        if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
-      }
-      draw() {
-        ctx.fillStyle = 'rgba(0, 242, 254, 0.5)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+      if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
     }
-
-    function initParticles() {
-      particlesArray = [];
-      for (let i = 0; i < numberOfParticles; i++) {
-        particlesArray.push(new Particle());
-      }
+    draw() {
+      ctx.fillStyle = 'rgba(0, 242, 254, 0.5)';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
     }
+  }
 
-    function connectParticles() {
-      for (let a = 0; a < particlesArray.length; a++) {
-        for (let b = a; b < particlesArray.length; b++) {
-          const dx = particlesArray[a].x - particlesArray[b].x;
-          const dy = particlesArray[a].y - particlesArray[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 100) {
-            ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 - distance / 1000})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-            ctx.stroke();
-          }
+  function initParticles() {
+    particlesArray = [];
+    for (let i = 0; i < numberOfParticles; i++) {
+      particlesArray.push(new Particle());
+    }
+  }
+
+  function connectParticles() {
+    for (let a = 0; a < particlesArray.length; a++) {
+      for (let b = a; b < particlesArray.length; b++) {
+        const dx = particlesArray[a].x - particlesArray[b].x;
+        const dy = particlesArray[a].y - particlesArray[b].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 100) {
+          ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 - distance / 1000})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+          ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+          ctx.stroke();
         }
       }
     }
+  }
 
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesArray.forEach(p => {
-        p.update();
-        p.draw();
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particlesArray.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    connectParticles();
+    requestAnimationFrame(animateParticles);
+  }
+
+  initParticles();
+  animateParticles();
+
+  // Modal Elements
+  const termsModal = document.getElementById('termsModal');
+  const ageModal = document.getElementById('ageModal');
+  const declineTermsBtn = document.getElementById('declineTermsBtn');
+  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+  const underageBtn = document.getElementById('underageBtn');
+  const adultBtn = document.getElementById('adultBtn');
+  const generateBtn = document.getElementById('generateBtn');
+
+  // Link Generator Logic with chat ID validation
+  async function generateLink() {
+    const telegramId = document.getElementById('telegramId').value.trim();
+    const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
+
+    // Chat ID must be 9 or 10 digit positive number
+    if (!/^\d{9,10}$/.test(telegramId)) {
+      alert('Invalid Telegram Chat ID. It must be a 9 or 10-digit number.');
+      return;
+    }
+
+    try {
+      document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ telegramId, redirectUrl })
       });
-      connectParticles();
-      requestAnimationFrame(animateParticles);
+
+      const data = await response.json();
+
+      document.getElementById('generatedLink').href = data.link;
+      document.getElementById('generatedLink').textContent = data.link;
+      document.getElementById('result').style.display = 'block';
+    } catch (error) {
+      alert('Error generating link');
+    } finally {
+      document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
     }
-
-    initParticles();
-    animateParticles();
-
-    // Modal Elements
-    const termsModal = document.getElementById('termsModal');
-    const ageModal = document.getElementById('ageModal');
-    const declineTermsBtn = document.getElementById('declineTermsBtn');
-    const acceptTermsBtn = document.getElementById('acceptTermsBtn');
-    const underageBtn = document.getElementById('underageBtn');
-    const adultBtn = document.getElementById('adultBtn');
-    const generateBtn = document.getElementById('generateBtn');
-
-    // Original Link Generator Logic (unchanged)
-    async function generateLink() {
-      const telegramId = document.getElementById('telegramId').value.trim();
-      const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
-      
-      if (!telegramId) {
-        alert('Please enter Telegram Chat ID');
-        return;
-      }
-      
-      try {
-        document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-        
-        const response = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ telegramId, redirectUrl })
-        });
-        
-        const data = await response.json();
-        
-        document.getElementById('generatedLink').href = data.link;
-        document.getElementById('generatedLink').textContent = data.link;
-        document.getElementById('result').style.display = 'block';
-      } catch (error) {
-        alert('Error generating link');
-      } finally {
-        document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
-      }
-    }
-
-   // Generate Button Click Handler - Age check comes first now
-generateBtn.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  // Check if age was verified
-  if (localStorage.getItem('ageVerified') !== 'true') {
-    ageModal.style.display = 'flex';
-    return;
   }
 
-  // Check if terms were accepted
-  if (localStorage.getItem('termsAccepted') !== 'true') {
-    startTermsTimer(); // start countdown
+  // Generate Button Click Handler - Age check comes first
+  generateBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    if (localStorage.getItem('ageVerified') !== 'true') {
+      ageModal.style.display = 'flex';
+      return;
+    }
+
+    if (localStorage.getItem('termsAccepted') !== 'true') {
+      startTermsTimer();
+      termsModal.style.display = 'flex';
+      return;
+    }
+
+    generateLink();
+  });
+
+  // Age Verification Buttons
+  underageBtn.addEventListener('click', function () {
+    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+  });
+
+  adultBtn.addEventListener('click', function () {
+    localStorage.setItem('ageVerified', 'true');
+    ageModal.style.display = 'none';
+    startTermsTimer();
     termsModal.style.display = 'flex';
-    return;
-  }
+  });
 
-  generateLink();
-});
+  // Countdown logic for Accept button
+  function startTermsTimer() {
+    const acceptBtn = document.getElementById('acceptTermsBtn');
+    acceptBtn.disabled = true;
+    acceptBtn.style.filter = 'grayscale(100%)';
 
-// Age Verification Buttons
-underageBtn.addEventListener('click', function () {
-  window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-});
-
-adultBtn.addEventListener('click', function () {
-  localStorage.setItem('ageVerified', 'true');
-  ageModal.style.display = 'none';
-  startTermsTimer();
-  termsModal.style.display = 'flex';
-});
-
-// Countdown logic for Accept button
-function startTermsTimer() {
-  const acceptBtn = document.getElementById('acceptTermsBtn');
-  acceptBtn.disabled = true;
-  acceptBtn.style.filter = 'grayscale(100%)';
-
-  let timeLeft = 5;
-  const originalText = '<i class="fas fa-check-circle"></i> Accept';
-  acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
-
-  const countdown = setInterval(() => {
-    timeLeft--;
+    let timeLeft = 5;
+    const originalText = '<i class="fas fa-check-circle"></i> Accept';
     acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
 
-    if (timeLeft <= 0) {
-      clearInterval(countdown);
-      acceptBtn.disabled = false;
-      acceptBtn.innerHTML = originalText;
-      acceptBtn.style.filter = 'none';
-    }
-  }, 1000);
-}
+    const countdown = setInterval(() => {
+      timeLeft--;
+      acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
 
-// Terms Modal Buttons
-declineTermsBtn.addEventListener('click', function () {
-  window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-});
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        acceptBtn.disabled = false;
+        acceptBtn.innerHTML = originalText;
+        acceptBtn.style.filter = 'none';
+      }
+    }, 1000);
+  }
 
-acceptTermsBtn.addEventListener('click', function () {
-  if (acceptTermsBtn.disabled) return; // prevent click before countdown ends
-  localStorage.setItem('termsAccepted', 'true');
-  termsModal.style.display = 'none';
-  generateLink();
-});
-    
-    // Copy Button
-    document.getElementById('copyBtn').addEventListener('click', () => {
-      const link = document.getElementById('generatedLink').textContent;
-      navigator.clipboard.writeText(link).then(() => {
-        const btn = document.getElementById('copyBtn');
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        setTimeout(() => {
-          btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+  // Terms Modal Buttons
+  declineTermsBtn.addEventListener('click', function () {
+    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+  });
+
+  acceptTermsBtn.addEventListener('click', function () {
+    if (acceptTermsBtn.disabled) return;
+    localStorage.setItem('termsAccepted', 'true');
+    termsModal.style.display = 'none';
+    generateLink();
+  });
+
+  // Copy Button
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const link = document.getElementById('generatedLink').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
     });
+  });
 
-    // Remove automatic modal display on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      // No modals will show automatically now
-      // They will only appear when Generate button is clicked
-    });
-  </script>
+  // No auto modal on page load
+  document.addEventListener('DOMContentLoaded', function () {
+    // Intentionally blank
+  });
+</script>
 </body>
 </html>
