@@ -2,26 +2,21 @@
 
 import { Telegraf } from 'telegraf';
 
-// Initialize bot with token from environment
+// Initialize bot with token from environment variable
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
-// Handle /start and /start <payload>
+// /start and /start <payload> handler
 bot.command('start', async (ctx) => {
   const chatId = ctx.chat.id;
-  const args = ctx.message.text.split(' ').slice(1); // get payload if present
+  const args = ctx.message.text.split(' ').slice(1); // check for deep link payload
 
-  if (args.length > 0 && args[0] === 'start') {
-    // Handle /start start
-    const message = `your chat id : \`${chatId}\`\ntap to copy`;
-    await ctx.reply(message, { parse_mode: 'Markdown' });
-  } else {
-    // Regular /start
-    const message = `your chat id : \`${chatId}\`\ntap to copy`;
-    await ctx.reply(message, { parse_mode: 'Markdown' });
-  }
+  // Optional: handle payload-specific behavior here
+  const message = `your chat id : \`${chatId}\`\ntap to copy`;
+
+  await ctx.reply(message, { parse_mode: 'Markdown' });
 });
 
-// Vercel-compatible API handler
+// Vercel API handler — receives Telegram webhook requests
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
