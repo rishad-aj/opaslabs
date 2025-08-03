@@ -7,8 +7,8 @@ export default async function handler(req, res) {
   }
 
   const body = req.body;
-
   const message = body.message || body.edited_message;
+
   if (!message || !message.text) {
     return res.status(200).send("No valid message");
   }
@@ -18,13 +18,15 @@ export default async function handler(req, res) {
 
   // Handle /start or /start=payload
   if (text.startsWith("/start")) {
-    const responseText = `👋 Welcome! Your chat ID is: ${chatId}`;
+    const responseText = `Your Chat ID: \`${chatId}\`\nTap to copy.`;
+
     await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        text: responseText
+        text: responseText,
+        parse_mode: "Markdown"
       })
     });
 
