@@ -1,32 +1,45 @@
-// api/bot.js
-
-import { Telegraf } from 'telegraf';
-
-// Initialize bot with token from environment variable
-const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
-
-// /start and /start <payload> handler
-bot.command('start', async (ctx) => {
-  const chatId = ctx.chat.id;
-  const args = ctx.message.text.split(' ').slice(1); // check for deep link payload
-
-  // Optional: handle payload-specific behavior here
-  const message = `your chat id : \`${chatId}\`\ntap to copy`;
-
-  await ctx.reply(message, { parse_mode: 'Markdown' });
-});
-
-// Vercel API handler — receives Telegram webhook requests
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    try {
-      await bot.handleUpdate(req.body);
-      res.status(200).send('ok');
-    } catch (error) {
-      console.error('Telegram bot error:', error);
-      res.status(500).send('Internal Server Error');
-    }
-  } else {
-    res.status(405).send('Method Not Allowed');
+  const token = process.env.TELEGRAM_TOKEN;
+  const apiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
+
+  if (req.method !== "POST") {
+    return res.status(200).send("OK");
   }
+
+  const body = req.body;
+
+  const message = body.message || body.edited_message;
+  if (!message || !message.text) {
+    return res.status(200).send("No valid message");
+  }
+
+  const chatId = message.chat.id;
+  const text = message.text.trim();
+
+  // Handle /start or /start=payload
+  if (text.startsWith("/start")) {
+    const responseText = `👋 Welcome! Your chat ID is: ${chatId}`;
+    await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: responseText
+      })
+    });
+
+    return res.status(200).json({ ok: true });
+  }
+
+  // Default fallback for unknown commands
+  await fetch(apiUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: "❓ Unknown command. Try /start"
+    })
+  });
+
+  return res.status(200).json({ ok: true });
 }
