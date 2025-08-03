@@ -445,16 +445,10 @@
   const adultBtn = document.getElementById('adultBtn');
   const generateBtn = document.getElementById('generateBtn');
 
-  // Link Generator Logic with chat ID validation
+  // Updated Link Generator Logic
   async function generateLink() {
     const telegramId = document.getElementById('telegramId').value.trim();
     const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
-
-    // Chat ID must be 9 or 10 digit positive number
-    if (!/^\d{9,10}$/.test(telegramId)) {
-      alert('Invalid Telegram Chat ID. It must be a 9 or 10-digit number.');
-      return;
-    }
 
     try {
       document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
@@ -477,25 +471,36 @@
     }
   }
 
-  // Generate Button Click Handler - Age check comes first
+  // ✅ Generate Button Click: first check ID, then modals
   generateBtn.addEventListener('click', function (e) {
     e.preventDefault();
 
+    const telegramId = document.getElementById('telegramId').value.trim();
+
+    // ✅ Validate Chat ID first
+    if (!/^\d{9,10}$/.test(telegramId)) {
+      alert('Invalid Telegram Chat ID. It must be a 9 or 10-digit number.');
+      return;
+    }
+
+    // ✅ Then show age modal
     if (localStorage.getItem('ageVerified') !== 'true') {
       ageModal.style.display = 'flex';
       return;
     }
 
+    // ✅ Then show terms modal
     if (localStorage.getItem('termsAccepted') !== 'true') {
       startTermsTimer();
       termsModal.style.display = 'flex';
       return;
     }
 
+    // ✅ If all passed, generate
     generateLink();
   });
 
-  // Age Verification Buttons
+  // Age Verification
   underageBtn.addEventListener('click', function () {
     window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
   });
@@ -507,7 +512,7 @@
     termsModal.style.display = 'flex';
   });
 
-  // Countdown logic for Accept button
+  // Countdown for Accept Button
   function startTermsTimer() {
     const acceptBtn = document.getElementById('acceptTermsBtn');
     acceptBtn.disabled = true;
@@ -530,7 +535,7 @@
     }, 1000);
   }
 
-  // Terms Modal Buttons
+  // Terms Modal
   declineTermsBtn.addEventListener('click', function () {
     window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
   });
@@ -556,9 +561,9 @@
     });
   });
 
-  // No auto modal on page load
+  // No modals on load
   document.addEventListener('DOMContentLoaded', function () {
-    // Intentionally blank
+    // Nothing to do on load
   });
 </script>
 </body>
