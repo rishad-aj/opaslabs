@@ -445,7 +445,7 @@
   const adultBtn = document.getElementById('adultBtn');
   const generateBtn = document.getElementById('generateBtn');
 
-  // Updated Link Generator Logic
+  // Link Generator Logic
   async function generateLink() {
     const telegramId = document.getElementById('telegramId').value.trim();
     const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
@@ -471,32 +471,40 @@
     }
   }
 
-  // ✅ Generate Button Click: first check ID, then modals
+  // ✅ Generate Button Click: Validate Chat ID + URL before proceeding
   generateBtn.addEventListener('click', function (e) {
     e.preventDefault();
 
     const telegramId = document.getElementById('telegramId').value.trim();
+    const redirectUrl = document.getElementById('redirectUrl').value.trim();
 
-    // ✅ Validate Chat ID first
+    // Check Telegram Chat ID (must be 9-10 digit number)
     if (!/^\d{9,10}$/.test(telegramId)) {
       alert('Invalid Telegram Chat ID. It must be a 9 or 10-digit number.');
       return;
     }
 
-    // ✅ Then show age modal
+    // If URL provided, validate it
+    if (redirectUrl !== '') {
+      const urlRegex = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+      if (!urlRegex.test(redirectUrl)) {
+        alert('Invalid redirect URL. Must start with http:// or https://');
+        return;
+      }
+    }
+
+    // Proceed with modal checks
     if (localStorage.getItem('ageVerified') !== 'true') {
       ageModal.style.display = 'flex';
       return;
     }
 
-    // ✅ Then show terms modal
     if (localStorage.getItem('termsAccepted') !== 'true') {
       startTermsTimer();
       termsModal.style.display = 'flex';
       return;
     }
 
-    // ✅ If all passed, generate
     generateLink();
   });
 
@@ -512,7 +520,7 @@
     termsModal.style.display = 'flex';
   });
 
-  // Countdown for Accept Button
+  // Terms Timer Countdown
   function startTermsTimer() {
     const acceptBtn = document.getElementById('acceptTermsBtn');
     acceptBtn.disabled = true;
@@ -535,7 +543,7 @@
     }, 1000);
   }
 
-  // Terms Modal
+  // Terms Modal Buttons
   declineTermsBtn.addEventListener('click', function () {
     window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
   });
@@ -561,9 +569,8 @@
     });
   });
 
-  // No modals on load
   document.addEventListener('DOMContentLoaded', function () {
-    // Nothing to do on load
+    // Nothing shown on page load
   });
 </script>
 </body>
