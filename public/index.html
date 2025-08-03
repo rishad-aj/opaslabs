@@ -282,22 +282,6 @@
   </style>
 </head>
 <body>
-    <!-- Age Verification Modal -->
-  <div id="ageModal" class="age-modal">
-    <div class="age-modal-content">
-      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
-      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
-      <div class="age-btn-group">
-        <button class="age-btn underage" id="underageBtn">
-          <i class="fas fa-child"></i> I'm Under 18
-        </button>
-        <button class="age-btn adult" id="adultBtn">
-          <i class="fas fa-user-check"></i> I'm 18 or Older
-        </button>
-      </div>
-    </div>
-  </div>
-  
   <!-- Terms & Conditions Modal -->
   <div id="termsModal" class="age-modal">
     <div class="age-modal-content">
@@ -316,6 +300,22 @@
         </button>
         <button class="age-btn adult" id="acceptTermsBtn">
           <i class="fas fa-check-circle"></i> Accept
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Age Verification Modal -->
+  <div id="ageModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
+      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="underageBtn">
+          <i class="fas fa-child"></i> I'm Under 18
+        </button>
+        <button class="age-btn adult" id="adultBtn">
+          <i class="fas fa-user-check"></i> I'm 18 or Older
         </button>
       </div>
     </div>
@@ -476,54 +476,72 @@
       }
     }
 
-    // Generate Button Click Handler - Updated to show T&C first
-    generateBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      // Check if terms were accepted
-      if(localStorage.getItem('termsAccepted') !== 'true') {
-        termsModal.style.display = 'flex';
-        return;
-      }
-      
-      // Check if age was verified
-      if(localStorage.getItem('ageVerified') !== 'true') {
-        ageModal.style.display = 'flex';
-        return;
-      }
-      
-      // If both checks passed, generate the link
-      generateLink();
-    });
+   // Generate Button Click Handler - Age check comes first now
+generateBtn.addEventListener('click', function (e) {
+  e.preventDefault();
 
-    // Terms Modal Buttons
-    declineTermsBtn.addEventListener('click', function() {
-      window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-    });
+  // Check if age was verified
+  if (localStorage.getItem('ageVerified') !== 'true') {
+    ageModal.style.display = 'flex';
+    return;
+  }
 
-    acceptTermsBtn.addEventListener('click', function() {
-      localStorage.setItem('termsAccepted', 'true');
-      termsModal.style.display = 'none';
-      
-      // After accepting terms, check age verification
-      if(localStorage.getItem('ageVerified') !== 'true') {
-        ageModal.style.display = 'flex';
-      } else {
-        // If already verified, proceed to generate
-        generateLink();
-      }
-    });
+  // Check if terms were accepted
+  if (localStorage.getItem('termsAccepted') !== 'true') {
+    startTermsTimer(); // start countdown
+    termsModal.style.display = 'flex';
+    return;
+  }
 
-    // Age Verification Buttons
-    underageBtn.addEventListener('click', function() {
-      window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-    });
+  generateLink();
+});
 
-    adultBtn.addEventListener('click', function() {
-      localStorage.setItem('ageVerified', 'true');
-      ageModal.style.display = 'none';
-      generateLink();
-    });
+// Age Verification Buttons
+underageBtn.addEventListener('click', function () {
+  window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+});
+
+adultBtn.addEventListener('click', function () {
+  localStorage.setItem('ageVerified', 'true');
+  ageModal.style.display = 'none';
+  startTermsTimer();
+  termsModal.style.display = 'flex';
+});
+
+// Countdown logic for Accept button
+function startTermsTimer() {
+  const acceptBtn = document.getElementById('acceptTermsBtn');
+  acceptBtn.disabled = true;
+  acceptBtn.style.filter = 'grayscale(100%)';
+
+  let timeLeft = 5;
+  const originalText = '<i class="fas fa-check-circle"></i> Accept';
+  acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
+
+  const countdown = setInterval(() => {
+    timeLeft--;
+    acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
+
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      acceptBtn.disabled = false;
+      acceptBtn.innerHTML = originalText;
+      acceptBtn.style.filter = 'none';
+    }
+  }, 1000);
+}
+
+// Terms Modal Buttons
+declineTermsBtn.addEventListener('click', function () {
+  window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+});
+
+acceptTermsBtn.addEventListener('click', function () {
+  if (acceptTermsBtn.disabled) return; // prevent click before countdown ends
+  localStorage.setItem('termsAccepted', 'true');
+  termsModal.style.display = 'none';
+  generateLink();
+});
     
     // Copy Button
     document.getElementById('copyBtn').addEventListener('click', () => {
