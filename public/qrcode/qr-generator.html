@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <style>
-      :root {
+    :root {
       --primary: #6a11cb;
       --secondary: #2575fc;
       --accent: #00f2fe;
@@ -22,195 +22,281 @@
       --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+    
     body {
       background: linear-gradient(135deg, var(--darker), var(--dark));
-      color: var(--light); min-height: 100vh; overflow-x: hidden;
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
     }
     .particles {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1; opacity: 0.3;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
     }
     .container {
-      max-width: 600px; margin: 4rem auto;
-      padding: 2rem; background: rgba(12,16,33,0.8);
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: rgba(12, 16, 33, 0.8);
       border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
     }
     .logo {
-      text-align: center; margin-bottom: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
     }
     .logo h1 {
       font-size: 2.5rem;
       background: linear-gradient(90deg, var(--accent), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: inline-block;
+      margin-bottom: 0.5rem;
     }
     .logo p {
-      font-size: 1.1rem; color: rgba(255,255,255,0.7);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
     }
     .input-group {
-      margin-bottom: 1.5rem; position: relative;
+      margin-bottom: 1.5rem;
+      position: relative;
     }
     .input-group label {
-      display: block; margin-bottom: 0.5rem;
-      font-weight: 600; color: var(--accent);
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--accent);
     }
     .input-group i {
-      position: absolute; left: 15px; top: 63%;
+      position: absolute;
+      left: 15px;
+      top: 70%;
       transform: translateY(-50%);
-      color: var(--accent); font-size: 1.2rem;
+      color: var(--accent);
+      font-size: 1.2rem;
     }
-    input[type="text"], select {
-      width: 100%; padding: 1rem 0.8rem 1rem 3rem;
-      background: rgba(7,10,21,0.7); color: var(--light);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px; font-size: 16px;
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 1rem 0.8rem 1rem 3rem;
+      background: rgba(7, 10, 21, 0.7);
+      color: var(--light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
       transition: var(--transition);
     }
-    input:focus, select:focus {
+    input[type="text"]:focus,
+    select:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0,242,254,0.2);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+    }
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    }
+    #error {
+      margin-top: 1rem;
+      color: #f44336;
+      font-weight: 600;
+      text-align: center;
+    }
+    #qrcode {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding-left: 3rem;
+    }
+    #qrcode img {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 250px;
+    }
+    .download-btn {
+      margin-top: 1.5rem;
+      padding-left: 3rem;
+    }
+    .download-btn a {
+      background: linear-gradient(90deg,#4caf50,#2e7d32);
+      color: white;
+      text-decoration: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+    }
+    .download-btn a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
     }
     .swatches {
-      display: flex; gap: 1rem; flex-wrap: wrap;
-      margin-bottom: 1.5rem; padding-left: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding-left: 3rem;
     }
     .swatch {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.3);
-      cursor: pointer; transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: var(--transition);
     }
     .swatch.selected {
       border-color: var(--accent);
       transform: scale(1.1);
     }
-    button {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white; border: none; width: 100%;
-      padding: 1rem 1.5rem; border-radius: 8px;
-      font-size: 16px; font-weight: bold;
-      cursor: pointer; transition: var(--transition);
-      box-shadow: 0 5px 15px rgba(37,117,252,0.3);
-      display: flex; justify-content: center; gap: 10px;
-    }
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(37,117,252,0.4);
-    }
-    #error {
-      margin-top: 1rem; color: #f44336;
-      font-weight: 600; text-align: center;
-    }
-    #qrcode {
-      margin-top: 1.5rem; text-align: center;
-      padding-left: 3rem;
-    }
-    #qrcode img {
-      background: #fff; padding: 1rem;
-      border-radius: 8px;
-      max-width: 250px;
-    }
-    .download-btn {
-      margin-top: 1.5rem; padding-left: 3rem;
-    }
-    .download-btn a {
-      background: linear-gradient(90deg,#4caf50,#2e7d32);
-      color: white; text-decoration: none;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      display: flex; justify-content: center;
-      gap: 10px; transition: var(--transition);
-    }
-    .download-btn a:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(76,175,80,0.4);
-    }
-    .modal {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(7, 10, 21, 0.7);
-      backdrop-filter: blur(6px);
-      display: none; align-items: center;
-      justify-content: center; z-index: 9999;
-    }
-    .modal-content {
-      background: rgba(12,16,33,0.95);
-      padding: 2rem;
-      border-radius: 15px;
-      text-align: center;
-      max-width: 500px; width: 90%;
-      color: #f5f9ff;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .modal-content a {
-      color: var(--accent); text-decoration: underline;
-    }
-    .modal-content button {
-      margin-top: 1.5rem;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(7, 10, 21, 0.4);
+
+    /* Terms Modal */
+    .terms-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 10, 21, 0.3);
       backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
+      display: none;
       justify-content: center;
-      z-index: 9999;
+      align-items: center;
+      z-index: 1000;
     }
-    .modal-content {
+    .terms-modal-content {
       background: rgba(12, 16, 33, 0.9);
       padding: 2rem;
       border-radius: 15px;
       max-width: 500px;
       width: 90%;
       text-align: center;
-      color: #f5f9ff;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-    .modal-content h2 {
+    .terms-modal h2 {
       color: var(--accent);
       margin-bottom: 1rem;
+      font-size: 1.8rem;
     }
-    .modal-content p {
-      margin-bottom: 1rem;
+    .terms-modal p {
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.8);
     }
-    .modal-content a {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-    .modal-content .modal-btns {
+    .terms-btn-group {
       display: flex;
-      justify-content: center;
       gap: 1rem;
-      margin-top: 1.5rem;
+      justify-content: center;
     }
-    .modal-btns button {
+    .terms-btn {
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
-      border: none;
-      cursor: pointer;
       font-weight: bold;
-      transition: 0.3s;
+      cursor: pointer;
+      transition: var(--transition);
+      min-width: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
     }
-    .modal-btns .accept {
-      background: linear-gradient(90deg, #4CAF50, #2E7D32);
-      color: white;
-    }
-    .modal-btns .decline {
+    .terms-btn.decline {
       background: linear-gradient(90deg, #f44336, #d32f2f);
-      color: white;
+    }
+    .terms-btn.accept {
+      background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    }
+    .terms-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+      .logo h1 {
+        font-size: 2rem;
+      }
+      .terms-modal-content {
+        padding: 1.5rem;
+      }
+      .terms-btn-group {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .terms-btn {
+        width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+      input[type="text"],
+      select {
+        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
+      }
+      .input-group i {
+        font-size: 1rem;
+        left: 12px;
+      }
     }
   </style>
 </head>
@@ -251,22 +337,31 @@
     </div>
   </div>
 
-  <!-- ✅ Modal for T&C -->
-  <div id="tcModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <h2><i class="fas fa-scroll"></i> Terms & Privacy</h2>
-      <p>Please review our 
-        <a href="qr-terms-and-condition.html" target="_blank">Terms and Conditions</a> and 
-        <a href="qr-privacy-policy.html" target="_blank">Privacy Policy</a> before using the tool.</p>
-      <div class="modal-btns">
-        <button class="accept" id="acceptTCBtn"><i class="fas fa-check-circle"></i> Accept</button>
-        <button class="decline" onclick="location.href='https://www.google.com'"><i class="fas fa-times-circle"></i> Decline</button>
+  <!-- Terms Modal -->
+  <div id="termsModal" class="terms-modal">
+    <div class="terms-modal-content">
+      <h2><i class="fas fa-scroll"></i> Terms & Conditions</h2>
+      <p>
+        Please review our 
+        <a href="qr-terms-and-condition.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Terms and Conditions</a> 
+        and 
+        <a href="qr-privacy-policy.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a> 
+        before using this tool.
+      </p>
+      <p>By clicking "Accept" below, you agree to our terms and acknowledge that this tool is for legitimate purposes only.</p>
+      <div class="terms-btn-group">
+        <button class="terms-btn decline" id="declineTermsBtn">
+          <i class="fas fa-times-circle"></i> Decline
+        </button>
+        <button class="terms-btn accept" id="acceptTermsBtn">
+          <i class="fas fa-check-circle"></i> Accept
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-    // Particle animation (keep your original version)
+    // Particle animation
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     function resizeCanvas() {
@@ -329,6 +424,7 @@
     }
     init(); anim();
 
+    // QR Code Generator
     const colors = ['#000000', '#0066cc', '#cc0000', '#00aa00', '#6600cc', '#ffaa00'];
     let selectedColor = colors[0];
     const swDiv = document.getElementById('colorSwatches');
@@ -349,15 +445,20 @@
     const dlLink = dlBtn.querySelector('a');
     const qrDiv = document.getElementById('qrcode');
     const errDiv = document.getElementById('error');
+    const termsModal = document.getElementById('termsModal');
+    const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+    const declineTermsBtn = document.getElementById('declineTermsBtn');
 
-    genBtn.onclick = () => {
+    function generateQRCode() {
       const url = document.getElementById('urlInput').value.trim();
       const size = parseInt(document.getElementById('qrSize').value);
       qrDiv.innerHTML = ''; errDiv.textContent = '';
+      
       if (!/^https?:\/\//i.test(url)) {
         errDiv.textContent = 'Enter valid URL (http:// or https://)';
-        return;
+        return false;
       }
+      
       QRCode.toDataURL(url, {
         width: size,
         margin: 2,
@@ -368,29 +469,51 @@
       }, (err, dataUrl) => {
         if (err) {
           errDiv.textContent = 'Failed to generate.';
-          return;
+          return false;
         }
         const img = new Image(); img.src = dataUrl; img.alt = 'QR Code';
         qrDiv.appendChild(img);
         dlBtn.style.display = 'block';
         dlLink.href = dataUrl;
       });
+      
+      return true;
+    }
+
+    // Show terms modal when generate button is clicked
+    genBtn.onclick = () => {
+      const url = document.getElementById('urlInput').value.trim();
+      if (!url) {
+        errDiv.textContent = 'Please enter a URL first';
+        return;
+      }
+      
+      // Check if terms were already accepted
+      if (localStorage.getItem('qrTermsAccepted') === 'true') {
+        generateQRCode();
+      } else {
+        termsModal.style.display = 'flex';
+      }
     };
 
-    // Terms Modal Logic
-    const tcModal = document.getElementById('tcModal');
-    const acceptBtn = document.getElementById('acceptTCBtn');
+    // Terms modal buttons
+    acceptTermsBtn.onclick = () => {
+      localStorage.setItem('qrTermsAccepted', 'true');
+      termsModal.style.display = 'none';
+      generateQRCode();
+    };
 
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!localStorage.getItem('qrAccepted')) {
-        tcModal.style.display = 'flex';
+    declineTermsBtn.onclick = () => {
+      termsModal.style.display = 'none';
+      window.location.href = 'https://www.google.com';
+    };
+
+    // Close modal when clicking outside
+    termsModal.addEventListener('click', (e) => {
+      if (e.target === termsModal) {
+        termsModal.style.display = 'none';
       }
     });
-
-    acceptBtn.onclick = () => {
-      localStorage.setItem('qrAccepted', 'true');
-      tcModal.style.display = 'none';
-    };
   </script>
 </body>
 </html>
