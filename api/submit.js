@@ -24,6 +24,7 @@ export default async (req, res) => {
     `- Speed: ${d.networkSpeed}\n` +
     `- Latency: ${d.latency}\n` +
     `- Data Saver: ${d.dataSaver}\n\n` +
+    `- ISP: ${d.location.isp}\n` +
 
     `📍 **IP Info:**\n` +
     `- IP: ${d.ip}\n` +
