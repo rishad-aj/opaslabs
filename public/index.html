@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Opas Labs - Phishing Link Generator</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opas Labs | Security Tools for Professionals</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
@@ -12,8 +13,12 @@
       --dark: #0c1021;
       --darker: #070a15;
       --light: #f5f9ff;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
       --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    
     * {
       margin: 0;
       padding: 0;
@@ -28,6 +33,7 @@
       overflow-x: hidden;
       line-height: 1.6;
     }
+    
     .particles {
       position: fixed;
       top: 0;
@@ -37,541 +43,819 @@
       z-index: -1;
       opacity: 0.3;
     }
-    .container {
-      max-width: 600px;
-      margin: 4rem auto;
-      padding: 2rem;
-      background: rgba(12, 16, 33, 0.8);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    
+    /* Header & Navigation */
+    header {
+      padding: 1.5rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(12, 16, 33, 0.95);
       backdrop-filter: blur(10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      position: relative;
-      overflow: hidden;
-      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .container::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
-      animation: rotate 15s linear infinite;
-      z-index: -1;
-    }
+    
     .logo {
-      text-align: center;
-      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
+    
     .logo h1 {
-      font-size: 2.5rem;
+      font-size: 1.8rem;
       background: linear-gradient(90deg, var(--accent), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      display: inline-block;
-      margin-bottom: 0.5rem;
     }
-    .logo p {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1.1rem;
+    
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
     }
-    .input-group {
-      margin-bottom: 1.5rem;
+    
+    nav a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
       position: relative;
+      padding: 0.5rem 0;
     }
-    .input-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
+    
+    nav a:hover {
       color: var(--accent);
     }
-    .input-group i {
+    
+    nav a::after {
+      content: '';
       position: absolute;
-      left: 15px;
-      top: 70%;
-      transform: translateY(-50%);
-      color: var(--accent);
-      font-size: 1.2rem;
-    }
-    input[type="text"],
-    input[type="url"] {
-      width: 100%;
-      padding: 1rem 0.8rem 1rem 3rem;
-      background: rgba(7, 10, 21, 0.7);
-      color: var(--light);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      font-size: 16px;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
       transition: var(--transition);
     }
-    input[type="text"]:focus,
-    input[type="url"]:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
-    }
-    button {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
+    
+    nav a:hover::after {
       width: 100%;
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--light);
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    
+    /* Hero Section */
+    .hero {
+      padding: 6rem 5% 4rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .hero h2 {
+      font-size: 3.2rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 8px;
       font-weight: bold;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       transition: var(--transition);
       box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
     }
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
     }
-    #result {
-      margin-top: 1.5rem;
-      padding: 1.5rem;
-      background: rgba(7, 10, 21, 0.7);
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      display: none;
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
     }
-    #result p {
-      margin-bottom: 1rem;
-      color: var(--accent);
-      font-weight: 600;
+    
+    .btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(37, 117, 252, 0.5);
     }
-    #generatedLink {
-      display: block;
-      padding: 0.8rem;
-      background: rgba(12, 16, 33, 0.9);
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      margin-bottom: 1rem;
-      color: var(--light);
-      word-break: break-all;
-      text-decoration: none;
-      transition: var(--transition);
+    
+    /* Tools Section */
+    .tools-section {
+      padding: 4rem 5%;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    #generatedLink:hover {
-      background: rgba(12, 16, 33, 1);
-      border-color: rgba(0, 242, 254, 0.3);
-    }
-    #copyBtn {
-      background: linear-gradient(90deg, #1e88e5, #0d47a1);
-      margin-top: 0;
-    }
-    .note {
+    
+    .section-header {
       text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 3rem;
     }
-    .get-id-link {
-      display: inline-block;
+    
+    .section-header h2 {
+      font-size: 2.5rem;
       margin-bottom: 1rem;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .section-header p {
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2.5rem;
+    }
+    
+    .tool-card {
+      background: rgba(12, 16, 33, 0.8);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 2rem;
       transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
-    .get-id-link:hover {
-      text-decoration: underline;
-      color: #00c8ff;
-    }
-
-    /* Age Verification Modal */
-    .age-modal {
-      position: fixed;
+    
+    .tool-card::before {
+      content: '';
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-      background: rgba(7, 10, 21, 0.3);
-      backdrop-filter: blur(10px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .age-modal-content {
-      background: rgba(12, 16, 33, 0.9);
-      padding: 2rem;
-      border-radius: 15px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-    
-    .age-modal h2 {
-      color: var(--accent);
-      margin-bottom: 1rem;
-      font-size: 1.8rem;
-    }
-    .age-modal p {
-      margin-bottom: 2rem;
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .age-btn-group {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    }
-    .age-btn {
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transform: translateY(-100%);
       transition: var(--transition);
-      min-width: 120px;
-    }
-    .age-btn.underage {
-      background: linear-gradient(90deg, #f44336, #d32f2f);
-    }
-    .age-btn.adult {
-      background: linear-gradient(90deg, #4CAF50, #2E7D32);
-    }
-    .age-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     
-    @keyframes rotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .tool-card:hover::before {
+      transform: translateY(0);
     }
-    @media (max-width: 768px) {
-      .container {
-        margin: 2rem 1rem;
-        padding: 1.5rem;
+    
+    .tool-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+    
+    .tool-icon {
+      width: 70px;
+      height: 70px;
+      background: rgba(0, 242, 254, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+    
+    .tool-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tool-card p {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+    
+    .tool-features {
+      margin: 1.5rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .tool-features li {
+      margin-bottom: 0.8rem;
+      position: relative;
+      list-style-type: none;
+    }
+    
+    .tool-features li::before {
+      content: '✓';
+      position: absolute;
+      left: -1.5rem;
+      color: var(--accent);
+    }
+    
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    
+    .tool-tag {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .tag-security {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--success);
+    }
+    
+    .tag-testing {
+      background: rgba(255, 152, 0, 0.2);
+      color: var(--warning);
+    }
+    
+    /* Testimonials */
+    .testimonials {
+      padding: 5rem 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    
+    .testimonial-card {
+      background: rgba(12, 16, 33, 0.8);
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .testimonial-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .testimonial-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .testimonial-rating {
+      color: #ffc107;
+      margin: 1rem 0;
+    }
+    
+    .testimonial-text {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.8);
+      position: relative;
+    }
+    
+    .testimonial-text::before {
+      content: '"';
+      font-size: 3rem;
+      position: absolute;
+      top: -1.5rem;
+      left: -1rem;
+      color: rgba(0, 242, 254, 0.2);
+    }
+    
+    /* Footer */
+    footer {
+      background: rgba(7, 10, 21, 0.9);
+      padding: 3rem 5% 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+    
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: var(--transition);
+      display: block;
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent);
+      transform: translateX(5px);
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      nav ul {
+        gap: 1.5rem;
       }
-      .logo h1 {
+      
+      .hero h2 {
+        font-size: 2.8rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(12, 16, 33, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding: 2rem;
+        transition: var(--transition);
+        z-index: 1000;
+      }
+      
+      nav.active {
+        right: 0;
+      }
+      
+      nav ul {
+        flex-direction: column;
+        margin-top: 4rem;
+      }
+      
+      .close-menu {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: transparent;
+        border: none;
+        color: var(--light);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+      
+      .hero {
+        padding: 4rem 5% 3rem;
+      }
+      
+      .hero h2 {
+        font-size: 2.3rem;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .btn {
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .hero h2 {
         font-size: 2rem;
       }
-      .age-modal-content {
-        padding: 1.5rem;
+      
+      .tools-grid {
+        grid-template-columns: 1fr;
       }
-      .age-btn-group {
-        flex-direction: column;
-        gap: 0.8rem;
-      }
-      .age-btn {
-        width: 100%;
+      
+      .section-header h2 {
+        font-size: 2rem;
       }
     }
-    @media (max-width: 480px) {
-      .container {
-        margin: 1rem;
-        padding: 1rem;
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
       }
-      .logo h1 {
-        font-size: 1.8rem;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
-      input[type="text"],
-      input[type="url"] {
-        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
-      }
-      .input-group i {
-        font-size: 1rem;
-        left: 12px;
-      }
+    }
+    
+    .fade-in {
+      opacity: 0;
+    }
+    
+    .fade-in.animated {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    .delay-1 {
+      animation-delay: 0.2s;
+    }
+    
+    .delay-2 {
+      animation-delay: 0.4s;
+    }
+    
+    .delay-3 {
+      animation-delay: 0.6s;
     }
   </style>
 </head>
 <body>
-  <!-- Terms & Conditions Modal -->
-  <div id="termsModal" class="age-modal">
-    <div class="age-modal-content">
-      <h2><i class="fas fa-scroll"></i> Terms & Conditions & Privacy Policy</h2>
-      <p>
-        Please read and agree to our 
-        <a href="phishing/phishing-terms-and-conditions.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Terms and Conditions</a> 
-        and 
-        <a href="phishing/phishing-privacy-policy.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a> 
-        before starting.
-      </p>
-      <p>Welcome! Before proceeding, please review our Terms of Service and Privacy Policy. By clicking "Accept" below, you agree to our terms.</p>
-      <div class="age-btn-group">
-        <button class="age-btn underage" id="declineTermsBtn">
-          <i class="fas fa-times-circle"></i> Decline
-        </button>
-        <button class="age-btn adult" id="acceptTermsBtn">
-          <i class="fas fa-check-circle"></i> Accept
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Age Verification Modal -->
-  <div id="ageModal" class="age-modal">
-    <div class="age-modal-content">
-      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
-      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
-      <div class="age-btn-group">
-        <button class="age-btn underage" id="underageBtn">
-          <i class="fas fa-child"></i> I'm Under 18
-        </button>
-        <button class="age-btn adult" id="adultBtn">
-          <i class="fas fa-user-check"></i> I'm 18 or Older
-        </button>
-      </div>
-    </div>
-  </div>
-
   <canvas id="particles" class="particles"></canvas>
-  <div class="container">
+  
+  <header>
     <div class="logo">
+      <i class="fas fa-shield-alt"></i>
       <h1>Opas Labs</h1>
-      <p> Ethical Phishing Link Generation Tool</p>
     </div>
-
-    <div class="input-group">
-      <label for="telegramId">
-        Telegram Chat ID
-        (<a href="https://t.me/opaslabs_bot?start=start" class="get-id-link" target="_blank" style="text-decoration: underline;">
-          Get your Chat ID
-        </a>)
-      </label>
-      <i class="fas fa-key"></i>
-      <input type="text" id="telegramId" placeholder="Paste the Chat ID that bot sends">
-    </div>
-
-    <div class="input-group">
-      <label for="redirectUrl">Redirect URL (Optional)</label>
-      <i class="fas fa-link"></i>
-      <input type="url" id="redirectUrl" placeholder="https://example.com">
-    </div>
-
-    <button id="generateBtn">
-      <i class="fas fa-bolt"></i> Generate Link
+    
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle menu">
+      <i class="fas fa-bars"></i>
     </button>
-
-    <div id="result">
-      <p>Generated Link (Expires in 24h):</p>
-      <a id="generatedLink" target="_blank"></a>
-      <button id="copyBtn">
-        <i class="fas fa-copy"></i> Copy Link
+    
+    <nav id="mainNav">
+      <button class="close-menu" id="closeMenu" aria-label="Close menu">
+        <i class="fas fa-times"></i>
       </button>
+      <ul>
+        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#tools"><i class="fas fa-tools"></i> Tools</a></li>
+        <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
+        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <section class="hero">
+    <h2 class="fade-in">Advanced Security Tools for Professionals</h2>
+    <p class="fade-in delay-1">Opas Labs provides cutting-edge security tools designed for penetration testers, security auditors, and IT professionals. Our tools help you identify vulnerabilities and strengthen your systems.</p>
+    
+    <div class="cta-buttons fade-in delay-2">
+      <a href="qr-generator.html" class="btn btn-primary">
+        <i class="fas fa-qrcode"></i> QR Code Generator
+      </a>
+      <a href="phishing-simulator.html" class="btn btn-secondary">
+        <i class="fas fa-fish"></i> Phishing Simulator
+      </a>
     </div>
-
-    <div class="note">
-      <i class="fas fa-shield-alt"></i> This tool is for educational purposes only
+  </section>
+  
+  <section class="tools-section" id="tools">
+    <div class="section-header fade-in">
+      <h2>Our Security Tools</h2>
+      <p>Powerful utilities designed to enhance your security posture</p>
     </div>
-  </div>
-
+    
+    <div class="tools-grid">
+      <div class="tool-card fade-in">
+        <div class="tool-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <h3>Secure QR Code Generator</h3>
+        <p>Create safe, customizable QR codes for websites, contact info, WiFi credentials, and more. Ensures all generated QR codes point to secure and legitimate destinations.</p>
+        
+        <ul class="tool-features">
+          <li>HTTPS URL validation for security</li>
+          <li>Customizable design and colors</li>
+          <li>No-logging privacy policy</li>
+          <li>High-resolution downloads</li>
+          <li>Malicious link prevention</li>
+        </ul>
+        
+        <div class="card-footer">
+          <a href="qr-generator.html" class="btn btn-primary">Use Tool</a>
+          <span class="tool-tag tag-security">Security</span>
+        </div>
+      </div>
+      
+      <div class="tool-card fade-in delay-1">
+        <div class="tool-icon">
+          <i class="fas fa-fish"></i>
+        </div>
+        <h3>Ethical Phishing Simulator</h3>
+        <p>Generate realistic phishing links for security awareness training. Test your organization's resilience to phishing attacks in a controlled, ethical environment.</p>
+        
+        <ul class="tool-features">
+          <li>Customizable phishing templates</li>
+          <li>Detailed engagement analytics</li>
+          <li>Safe testing environment</li>
+          <li>Educational resources</li>
+          <li>Compliance-focused design</li>
+        </ul>
+        
+        <div class="card-footer">
+          <a href="phishing-simulator.html" class="btn btn-primary">Use Tool</a>
+          <span class="tool-tag tag-testing">Testing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="testimonials">
+    <div class="section-header fade-in">
+      <h2>Trusted by Security Professionals</h2>
+      <p>What our users say about Opas Labs tools</p>
+    </div>
+    
+    <div class="testimonial-grid">
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <h4>Alex Morgan</h4>
+            <p>Security Analyst</p>
+          </div>
+        </div>
+        <div class="testimonial-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">The QR generator is an essential tool for our security team. We use it to create secure access codes for our facilities without worrying about malicious links.</p>
+      </div>
+      
+      <div class="testimonial-card fade-in delay-1">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <h4>Sarah Johnson</h4>
+            <p>IT Director</p>
+          </div>
+        </div>
+        <div class="testimonial-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+        </div>
+        <p class="testimonial-text">The phishing simulator helped us identify vulnerabilities in our staff training. We've reduced click rates on phishing tests by 75% in just 3 months.</p>
+      </div>
+      
+      <div class="testimonial-card fade-in delay-2">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <h4>Michael Chen</h4>
+            <p>Penetration Tester</p>
+          </div>
+        </div>
+        <div class="testimonial-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">These tools have become essential in my security audits. The ethical approach and attention to compliance make them stand out from other solutions.</p>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h3>Opas Labs</h3>
+        <p>Providing professional security tools for ethical testing and vulnerability prevention.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Our Tools</h3>
+        <ul class="footer-links">
+          <li><a href="qr-generator.html"><i class="fas fa-qrcode"></i> Secure QR Generator</a></li>
+          <li><a href="phishing-simulator.html"><i class="fas fa-fish"></i> Ethical Phishing Simulator</a></li>
+          <li><a href="#"><i class="fas fa-lock"></i> Password Auditor (Coming Soon)</a></li>
+          <li><a href="#"><i class="fas fa-network-wired"></i> Network Scanner (Coming Soon)</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul class="footer-links">
+          <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
+          <li><a href="#"><i class="fas fa-blog"></i> Security Blog</a></li>
+          <li><a href="#"><i class="fas fa-file-alt"></i> Whitepapers</a></li>
+          <li><a href="#"><i class="fas fa-video"></i> Tutorials</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Legal</h3>
+        <ul class="footer-links">
+          <li><a href="qr-privacy-policy.html"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
+          <li><a href="qr-terms-and-condition.html"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+          <li><a href="#"><i class="fas fa-balance-scale"></i> Compliance</a></li>
+          <li><a href="#"><i class="fas fa-gavel"></i> Ethical Guidelines</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="copyright">
+      <p>&copy; 2023 Opas Labs. All rights reserved. Designed for security professionals.</p>
+      <p>Use of these tools for unauthorized testing is strictly prohibited.</p>
+    </div>
+  </footer>
+  
   <script>
-  // Particle Animation
-  const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d');
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  let particlesArray = [];
-  const numberOfParticles = 150;
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 2 + 0.5;
-      this.speedX = Math.random() * 1 - 0.5;
-      this.speedY = Math.random() * 1 - 0.5;
+    // Particle animation
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-      if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-      if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    let parts = [], num = 150;
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = Math.random() - 0.5;
+        this.speedY = Math.random() - 0.5;
+      }
+      
+      update() {
+        this.x += this.speedX; 
+        this.y += this.speedY;
+        
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      
+      draw() {
+        ctx.fillStyle = 'rgba(0,242,254,0.5)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        ctx.fill();
+      }
     }
-    draw() {
-      ctx.fillStyle = 'rgba(0, 242, 254, 0.5)';
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
+    
+    function initParticles() {
+      parts = [];
+      for (let i = 0; i < num; i++) parts.push(new Particle());
     }
-  }
-
-  function initParticles() {
-    particlesArray = [];
-    for (let i = 0; i < numberOfParticles; i++) {
-      particlesArray.push(new Particle());
-    }
-  }
-
-  function connectParticles() {
-    for (let a = 0; a < particlesArray.length; a++) {
-      for (let b = a; b < particlesArray.length; b++) {
-        const dx = particlesArray[a].x - particlesArray[b].x;
-        const dy = particlesArray[a].y - particlesArray[b].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 100) {
-          ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 - distance / 1000})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-          ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-          ctx.stroke();
+    
+    function connectParticles() {
+      for (let a = 0; a < parts.length; a++) {
+        for (let b = a; b < parts.length; b++) {
+          const dx = parts[a].x - parts[b].x;
+          const dy = parts[a].y - parts[b].y;
+          const distance = Math.hypot(dx, dy);
+          
+          if (distance < 100) {
+            ctx.strokeStyle = `rgba(0,242,254,${0.1 - distance / 1000})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(parts[a].x, parts[a].y);
+            ctx.lineTo(parts[b].x, parts[b].y);
+            ctx.stroke();
+          }
         }
       }
     }
-  }
-
-  function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particlesArray.forEach(p => {
-      p.update();
-      p.draw();
-    });
-    connectParticles();
-    requestAnimationFrame(animateParticles);
-  }
-
-  initParticles();
-  animateParticles();
-
-  // Modal Elements
-  const termsModal = document.getElementById('termsModal');
-  const ageModal = document.getElementById('ageModal');
-  const declineTermsBtn = document.getElementById('declineTermsBtn');
-  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
-  const underageBtn = document.getElementById('underageBtn');
-  const adultBtn = document.getElementById('adultBtn');
-  const generateBtn = document.getElementById('generateBtn');
-
-  // Link Generator Logic
-  async function generateLink() {
-    const telegramId = document.getElementById('telegramId').value.trim();
-    const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
-
-    try {
-      document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ telegramId, redirectUrl })
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      parts.forEach(particle => { 
+        particle.update(); 
+        particle.draw(); 
       });
-
-      const data = await response.json();
-
-      document.getElementById('generatedLink').href = data.link;
-      document.getElementById('generatedLink').textContent = data.link;
-      document.getElementById('result').style.display = 'block';
-    } catch (error) {
-      alert('Error generating link');
-    } finally {
-      document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
+      connectParticles();
+      requestAnimationFrame(animateParticles);
     }
-  }
-
-  // ✅ Generate Button Click: Validate Chat ID + URL before proceeding
-  generateBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    const telegramId = document.getElementById('telegramId').value.trim();
-    const redirectUrl = document.getElementById('redirectUrl').value.trim();
-
-    // Check Telegram Chat ID (must be 9-10 digit number)
-    if (!/^\d{9,10}$/.test(telegramId)) {
-      alert('Invalid Telegram Chat ID. It must be a 9 or 10-digit number.');
-      return;
-    }
-
-    // If URL provided, validate it
-    if (redirectUrl !== '') {
-      const urlRegex = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
-      if (!urlRegex.test(redirectUrl)) {
-        alert('Invalid redirect URL. Must start with http:// or https://');
-        return;
-      }
-    }
-
-    // Proceed with modal checks
-    if (localStorage.getItem('ageVerified') !== 'true') {
-      ageModal.style.display = 'flex';
-      return;
-    }
-
-    if (localStorage.getItem('termsAccepted') !== 'true') {
-      startTermsTimer();
-      termsModal.style.display = 'flex';
-      return;
-    }
-
-    generateLink();
-  });
-
-  // Age Verification
-  underageBtn.addEventListener('click', function () {
-    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-  });
-
-  adultBtn.addEventListener('click', function () {
-    localStorage.setItem('ageVerified', 'true');
-    ageModal.style.display = 'none';
-    startTermsTimer();
-    termsModal.style.display = 'flex';
-  });
-
-  // Terms Timer Countdown
-  function startTermsTimer() {
-    const acceptBtn = document.getElementById('acceptTermsBtn');
-    acceptBtn.disabled = true;
-    acceptBtn.style.filter = 'grayscale(100%)';
-
-    let timeLeft = 5;
-    const originalText = '<i class="fas fa-check-circle"></i> Accept';
-    acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
-
-    const countdown = setInterval(() => {
-      timeLeft--;
-      acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
-
-      if (timeLeft <= 0) {
-        clearInterval(countdown);
-        acceptBtn.disabled = false;
-        acceptBtn.innerHTML = originalText;
-        acceptBtn.style.filter = 'none';
-      }
-    }, 1000);
-  }
-
-  // Terms Modal Buttons
-  declineTermsBtn.addEventListener('click', function () {
-    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-  });
-
-  acceptTermsBtn.addEventListener('click', function () {
-    if (acceptTermsBtn.disabled) return;
-    localStorage.setItem('termsAccepted', 'true');
-    termsModal.style.display = 'none';
-    generateLink();
-  });
-
-  // Copy Button
-  document.getElementById('copyBtn').addEventListener('click', () => {
-    const link = document.getElementById('generatedLink').textContent;
-    navigator.clipboard.writeText(link).then(() => {
-      const btn = document.getElementById('copyBtn');
-      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-      setTimeout(() => {
-        btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
-      }, 2000);
-    }).catch(err => {
-      console.error('Failed to copy: ', err);
+    
+    initParticles(); 
+    animateParticles();
+    
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const closeMenu = document.getElementById('closeMenu');
+    const mainNav = document.getElementById('mainNav');
+    
+    menuBtn.addEventListener('click', () => {
+      mainNav.classList.add('active');
+      document.body.style.overflow = 'hidden';
     });
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
-    // Nothing shown on page load
-  });
-</script>
+    
+    closeMenu.addEventListener('click', () => {
+      mainNav.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mainNav.contains(e.target) && e.target !== menuBtn) {
+        mainNav.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Animation observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Close menu when clicking on a link
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+  </script>
 </body>
 </html>
