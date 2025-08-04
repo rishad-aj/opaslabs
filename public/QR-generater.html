@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opas Labs - QR Code Generator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <style>
+    :root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --accent: #00f2fe;
+      --dark: #0c1021;
+      --darker: #070a15;
+      --light: #f5f9ff;
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    .container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: rgba(12, 16, 33, 0.8);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .logo h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .logo p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+    }
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 70%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    input[type="text"],
+    input[type="url"],
+    select {
+      width: 100%;
+      padding: 1rem 0.8rem 1rem 3rem;
+      background: rgba(7, 10, 21, 0.7);
+      color: var(--light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+    }
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    }
+    
+    /* QR Code Result Area */
+    #qrResult {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: rgba(7, 10, 21, 0.7);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: none;
+      text-align: center;
+    }
+    #qrResult p {
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    #qrcode {
+      margin: 0 auto;
+      max-width: 100%;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .qr-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+    .qr-actions button {
+      width: auto;
+      padding: 0.8rem 1.5rem;
+    }
+    #downloadBtn {
+      background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    }
+    #resetBtn {
+      background: linear-gradient(90deg, #f44336, #d32f2f);
+    }
+    
+    .note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Age Verification Modal */
+    .age-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 10, 21, 0.3);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .age-modal-content {
+      background: rgba(12, 16, 33, 0.9);
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .age-modal h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    .age-modal p {
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .age-btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .age-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+      min-width: 120px;
+    }
+    .age-btn.underage {
+      background: linear-gradient(90deg, #f44336, #d32f2f);
+    }
+    .age-btn.adult {
+      background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    }
+    .age-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+      .logo h1 {
+        font-size: 2rem;
+      }
+      .age-modal-content {
+        padding: 1.5rem;
+      }
+      .age-btn-group {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .age-btn {
+        width: 100%;
+      }
+      .qr-actions {
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+      input[type="text"],
+      input[type="url"],
+      select {
+        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
+      }
+      .input-group i {
+        font-size: 1rem;
+        left: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Age Verification Modal -->
+  <div id="ageModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
+      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="underageBtn">
+          <i class="fas fa-child"></i> I'm Under 18
+        </button>
+        <button class="age-btn adult" id="adultBtn">
+          <i class="fas fa-user-check"></i> I'm 18 or Older
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="particles" class="particles"></canvas>
+  
+  <div class="container">
+    <div class="logo">
+      <h1>Opas Labs</h1>
+      <p>QR Code Generator</p>
+    </div>
+
+    <div class="input-group">
+      <label for="qrUrl">Enter URL to generate QR Code</label>
+      <i class="fas fa-qrcode"></i>
+      <input type="url" id="qrUrl" placeholder="https://example.com">
+    </div>
+    
+    <div class="input-group">
+      <label for="qrSize">QR Code Size</label>
+      <i class="fas fa-expand"></i>
+      <select id="qrSize">
+        <option value="150">Small (150px)</option>
+        <option value="200" selected>Medium (200px)</option>
+        <option value="250">Large (250px)</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <label for="qrColor">QR Code Color</label>
+      <i class="fas fa-palette"></i>
+      <select id="qrColor">
+        <option value="#000000">Black</option>
+        <option value="#6a11cb">Purple</option>
+        <option value="#2575fc">Blue</option>
+        <option value="#00f2fe">Cyan</option>
+      </select>
+    </div>
+
+    <button id="generateQrBtn">
+      <i class="fas fa-qrcode"></i> Generate QR Code
+    </button>
+
+    <div id="qrResult">
+      <p>Your QR Code:</p>
+      <div id="qrcode"></div>
+      <div class="qr-actions">
+        <button id="downloadBtn">
+          <i class="fas fa-download"></i> Download
+        </button>
+        <button id="resetBtn">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+      </div>
+    </div>
+
+    <div class="note">
+      <i class="fas fa-shield-alt"></i> This tool is for educational purposes only
+    </div>
+  </div>
+
+  <script>
+  // Particle Animation
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  let particlesArray = [];
+  const numberOfParticles = 150;
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.speedY = Math.random() * 1 - 0.5;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+      if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+    }
+    draw() {
+      ctx.fillStyle = 'rgba(0, 242, 254, 0.5)';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particlesArray = [];
+    for (let i = 0; i < numberOfParticles; i++) {
+      particlesArray.push(new Particle());
+    }
+  }
+
+  function connectParticles() {
+    for (let a = 0; a < particlesArray.length; a++) {
+      for (let b = a; b < particlesArray.length; b++) {
+        const dx = particlesArray[a].x - particlesArray[b].x;
+        const dy = particlesArray[a].y - particlesArray[b].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 100) {
+          ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 - distance / 1000})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+          ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particlesArray.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    connectParticles();
+    requestAnimationFrame(animateParticles);
+  }
+
+  initParticles();
+  animateParticles();
+
+  // Modal Elements
+  const ageModal = document.getElementById('ageModal');
+  const underageBtn = document.getElementById('underageBtn');
+  const adultBtn = document.getElementById('adultBtn');
+  const generateQrBtn = document.getElementById('generateQrBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // QR Code Generator Logic
+  function generateQRCode() {
+    const url = document.getElementById('qrUrl').value.trim();
+    const size = document.getElementById('qrSize').value;
+    const color = document.getElementById('qrColor').value;
+    
+    if (!url) {
+      alert('Please enter a URL');
+      return;
+    }
+    
+    const urlRegex = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+    if (!urlRegex.test(url)) {
+      alert('Invalid URL. Must start with http:// or https://');
+      return;
+    }
+    
+    // Clear any previous QR code
+    document.getElementById('qrcode').innerHTML = '';
+    
+    // Generate new QR code
+    new QRCode(document.getElementById('qrcode'), {
+      text: url,
+      width: size,
+      height: size,
+      colorDark: color,
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    document.getElementById('qrResult').style.display = 'block';
+  }
+  
+  function downloadQRCode() {
+    const canvas = document.querySelector('#qrcode canvas');
+    if (!canvas) {
+      alert('Generate a QR code first!');
+      return;
+    }
+    
+    const link = document.createElement('a');
+    link.download = 'opas-labs-qr-code.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+  
+  function resetQRCode() {
+    document.getElementById('qrUrl').value = '';
+    document.getElementById('qrSize').value = '200';
+    document.getElementById('qrColor').value = '#000000';
+    document.getElementById('qrResult').style.display = 'none';
+    document.getElementById('qrcode').innerHTML = '';
+  }
+
+  // Generate QR Code Button
+  generateQrBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Proceed with modal checks
+    if (localStorage.getItem('ageVerified') !== 'true') {
+      ageModal.style.display = 'flex';
+      return;
+    }
+    
+    generateQRCode();
+  });
+  
+  // Download QR Code Button
+  downloadBtn.addEventListener('click', downloadQRCode);
+  
+  // Reset QR Code Button
+  resetBtn.addEventListener('click', resetQRCode);
+
+  // Age Verification
+  underageBtn.addEventListener('click', function () {
+    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+  });
+
+  adultBtn.addEventListener('click', function () {
+    localStorage.setItem('ageVerified', 'true');
+    ageModal.style.display = 'none';
+    generateQRCode();
+  });
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function () {
+    // Show age modal on page load if not verified
+    if (localStorage.getItem('ageVerified') !== 'true') {
+      ageModal.style.display = 'flex';
+    }
+    
+    // Set default URL for demo purposes
+    document.getElementById('qrUrl').value = 'https://opaslabs.com';
+  });
+</script>
+</body>
+</html>
