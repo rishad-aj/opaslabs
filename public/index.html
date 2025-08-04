@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opas Labs | Security Tools for Professionals</title>
+  <title>Opas Labs | Security Research Tools</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
@@ -58,17 +58,50 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
     .logo h1 {
       font-size: 1.8rem;
       background: linear-gradient(90deg, var(--accent), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+    
+    /* Hamburger Menu */
+    .hamburger {
+      cursor: pointer;
+      z-index: 1001;
+      display: none;
+    }
+    
+    .hamburger input {
+      display: none;
+    }
+    
+    .hamburger svg {
+      height: 2.5em;
+      transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .line {
+      fill: none;
+      stroke: white;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 3;
+      transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                  stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .line-top-bottom {
+      stroke-dasharray: 12 63;
+    }
+    
+    .hamburger input:checked + svg {
+      transform: rotate(-45deg);
+    }
+    
+    .hamburger input:checked + svg .line-top-bottom {
+      stroke-dasharray: 20 300;
+      stroke-dashoffset: -32.42;
     }
     
     nav ul {
@@ -103,16 +136,6 @@
     
     nav a:hover::after {
       width: 100%;
-    }
-    
-    .mobile-menu-btn {
-      display: none;
-      background: transparent;
-      border: none;
-      color: var(--light);
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 1001;
     }
     
     /* Hero Section */
@@ -307,6 +330,11 @@
       color: var(--warning);
     }
     
+    .tag-private {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+    }
+    
     /* Testimonials */
     .testimonials {
       padding: 5rem 5%;
@@ -429,7 +457,7 @@
     }
     
     @media (max-width: 768px) {
-      .mobile-menu-btn {
+      .hamburger {
         display: block;
       }
       
@@ -454,17 +482,6 @@
       nav ul {
         flex-direction: column;
         margin-top: 4rem;
-      }
-      
-      .close-menu {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        background: transparent;
-        border: none;
-        color: var(--light);
-        font-size: 1.5rem;
-        cursor: pointer;
       }
       
       .hero {
@@ -496,6 +513,10 @@
       
       .section-header h2 {
         font-size: 2rem;
+      }
+      
+      nav {
+        width: 80%;
       }
     }
     
@@ -537,37 +558,37 @@
   
   <header>
     <div class="logo">
-      <i class="fas fa-shield-alt"></i>
       <h1>Opas Labs</h1>
     </div>
     
-    <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle menu">
-      <i class="fas fa-bars"></i>
-    </button>
+    <label class="hamburger">
+      <input type="checkbox" id="menuToggle">
+      <svg viewBox="0 0 32 32">
+        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+        <path class="line" d="M7 16 27 16"></path>
+      </svg>
+    </label>
     
     <nav id="mainNav">
-      <button class="close-menu" id="closeMenu" aria-label="Close menu">
-        <i class="fas fa-times"></i>
-      </button>
       <ul>
         <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="#tools"><i class="fas fa-tools"></i> Tools</a></li>
         <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
-        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+        <li><a href="https://t.me/mohdrishad"><i class="fab fa-telegram"></i> Contact</a></li>
       </ul>
     </nav>
   </header>
   
   <section class="hero">
-    <h2 class="fade-in">Advanced Security Tools for Professionals</h2>
-    <p class="fade-in delay-1">Opas Labs provides cutting-edge security tools designed for penetration testers, security auditors, and IT professionals. Our tools help you identify vulnerabilities and strengthen your systems.</p>
+    <h2 class="fade-in">Advanced Security Tools by Opas Labs</h2>
+    <p class="fade-in delay-1">Professional-grade security utilities for ethical hackers and penetration testers. Our tools help identify vulnerabilities while maintaining strict ethical guidelines.</p>
     
     <div class="cta-buttons fade-in delay-2">
       <a href="qr-generator.html" class="btn btn-primary">
-        <i class="fas fa-qrcode"></i> QR Code Generator
+        <i class="fas fa-qrcode"></i> QR Generator
       </a>
       <a href="phishing-simulator.html" class="btn btn-secondary">
-        <i class="fas fa-fish"></i> Phishing Simulator
+        <i class="fas fa-shield-alt"></i> Phishing Simulator
       </a>
     </div>
   </section>
@@ -575,7 +596,7 @@
   <section class="tools-section" id="tools">
     <div class="section-header fade-in">
       <h2>Our Security Tools</h2>
-      <p>Powerful utilities designed to enhance your security posture</p>
+      <p>Specialized utilities designed for professional security assessments</p>
     </div>
     
     <div class="tools-grid">
@@ -583,20 +604,20 @@
         <div class="tool-icon">
           <i class="fas fa-qrcode"></i>
         </div>
-        <h3>Secure QR Code Generator</h3>
-        <p>Create safe, customizable QR codes for websites, contact info, WiFi credentials, and more. Ensures all generated QR codes point to secure and legitimate destinations.</p>
+        <h3>Secure QR Generator</h3>
+        <p>Create and analyze QR codes with built-in security validation. Ensure all generated QR codes point to legitimate destinations with HTTPS verification.</p>
         
         <ul class="tool-features">
-          <li>HTTPS URL validation for security</li>
-          <li>Customizable design and colors</li>
-          <li>No-logging privacy policy</li>
-          <li>High-resolution downloads</li>
-          <li>Malicious link prevention</li>
+          <li>URL validation and security checks</li>
+          <li>Customizable design options</li>
+          <li>No data logging</li>
+          <li>High-resolution export</li>
+          <li>Malicious link detection</li>
         </ul>
         
         <div class="card-footer">
-          <a href="qr-generator.html" class="btn btn-primary">Use Tool</a>
-          <span class="tool-tag tag-security">Security</span>
+          <a href="qr-generator.html" class="btn btn-primary">Access Tool</a>
+          <span class="tool-tag tag-security">Public</span>
         </div>
       </div>
       
@@ -604,20 +625,20 @@
         <div class="tool-icon">
           <i class="fas fa-fish"></i>
         </div>
-        <h3>Ethical Phishing Simulator</h3>
-        <p>Generate realistic phishing links for security awareness training. Test your organization's resilience to phishing attacks in a controlled, ethical environment.</p>
+        <h3>Phishing Simulator</h3>
+        <p>Advanced phishing simulation tool for security awareness training. (For authorized security professionals only)</p>
         
         <ul class="tool-features">
-          <li>Customizable phishing templates</li>
+          <li>Realistic phishing templates</li>
           <li>Detailed engagement analytics</li>
-          <li>Safe testing environment</li>
+          <li>Controlled testing environment</li>
           <li>Educational resources</li>
           <li>Compliance-focused design</li>
         </ul>
         
         <div class="card-footer">
-          <a href="phishing-simulator.html" class="btn btn-primary">Use Tool</a>
-          <span class="tool-tag tag-testing">Testing</span>
+          <a href="phishing-simulator.html" class="btn btn-primary">Access Tool</a>
+          <span class="tool-tag tag-private">Restricted</span>
         </div>
       </div>
     </div>
@@ -626,7 +647,7 @@
   <section class="testimonials">
     <div class="section-header fade-in">
       <h2>Trusted by Security Professionals</h2>
-      <p>What our users say about Opas Labs tools</p>
+      <p>What security experts say about our tools</p>
     </div>
     
     <div class="testimonial-grid">
@@ -647,7 +668,7 @@
           <i class="fas fa-star"></i>
           <i class="fas fa-star"></i>
         </div>
-        <p class="testimonial-text">The QR generator is an essential tool for our security team. We use it to create secure access codes for our facilities without worrying about malicious links.</p>
+        <p class="testimonial-text">The QR generator has become an essential part of our security toolkit. It helps us create secure access points without worrying about malicious redirects.</p>
       </div>
       
       <div class="testimonial-card fade-in delay-1">
@@ -687,7 +708,7 @@
           <i class="fas fa-star"></i>
           <i class="fas fa-star"></i>
         </div>
-        <p class="testimonial-text">These tools have become essential in my security audits. The ethical approach and attention to compliance make them stand out from other solutions.</p>
+        <p class="testimonial-text">These tools provide the perfect balance between power and usability. The ethical approach and attention to compliance make them stand out.</p>
       </div>
     </div>
   </section>
@@ -696,17 +717,7 @@
     <div class="footer-grid">
       <div class="footer-column">
         <h3>Opas Labs</h3>
-        <p>Providing professional security tools for ethical testing and vulnerability prevention.</p>
-      </div>
-      
-      <div class="footer-column">
-        <h3>Our Tools</h3>
-        <ul class="footer-links">
-          <li><a href="qr-generator.html"><i class="fas fa-qrcode"></i> Secure QR Generator</a></li>
-          <li><a href="phishing-simulator.html"><i class="fas fa-fish"></i> Ethical Phishing Simulator</a></li>
-          <li><a href="#"><i class="fas fa-lock"></i> Password Auditor (Coming Soon)</a></li>
-          <li><a href="#"><i class="fas fa-network-wired"></i> Network Scanner (Coming Soon)</a></li>
-        </ul>
+        <p>Developing advanced security tools for ethical research and vulnerability prevention.</p>
       </div>
       
       <div class="footer-column">
@@ -728,11 +739,21 @@
           <li><a href="#"><i class="fas fa-gavel"></i> Ethical Guidelines</a></li>
         </ul>
       </div>
+      
+      <div class="footer-column">
+        <h3>Connect</h3>
+        <ul class="footer-links">
+          <li><a href="mailto:muhammedrishadaj@yahoo.com"><i class="fas fa-envelope"></i> Email</a></li>
+          <li><a href="https://t.me/mohdrishad"><i class="fab fa-telegram"></i> Telegram</a></li>
+          <li><a href="https://instagram.com/rishhaad___"><i class="fab fa-instagram"></i> Instagram</a></li>
+          <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+        </ul>
+      </div>
     </div>
     
     <div class="copyright">
-      <p>&copy; 2023 Opas Labs. All rights reserved. Designed for security professionals.</p>
-      <p>Use of these tools for unauthorized testing is strictly prohibited.</p>
+      <p>&copy; 2025 Opas Labs. All rights reserved.</p>
+      <p>Tools are for authorized security research only. Unauthorized use prohibited.</p>
     </div>
   </footer>
   
@@ -749,7 +770,8 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     
-    let parts = [], num = 150;
+    let particles = [];
+    const numParticles = 150;
     
     class Particle {
       constructor() {
@@ -761,9 +783,10 @@
       }
       
       update() {
-        this.x += this.speedX; 
+        this.x += this.speedX;
         this.y += this.speedY;
         
+        // Bounce off edges
         if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
         if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
       }
@@ -771,29 +794,32 @@
       draw() {
         ctx.fillStyle = 'rgba(0,242,254,0.5)';
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
       }
     }
     
     function initParticles() {
-      parts = [];
-      for (let i = 0; i < num; i++) parts.push(new Particle());
+      particles = [];
+      for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle());
+      }
     }
     
     function connectParticles() {
-      for (let a = 0; a < parts.length; a++) {
-        for (let b = a; b < parts.length; b++) {
-          const dx = parts[a].x - parts[b].x;
-          const dy = parts[a].y - parts[b].y;
-          const distance = Math.hypot(dx, dy);
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
           
           if (distance < 100) {
-            ctx.strokeStyle = `rgba(0,242,254,${0.1 - distance / 1000})`;
+            const opacity = 0.1 - (distance / 1000);
+            ctx.strokeStyle = `rgba(0,242,254,${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
-            ctx.moveTo(parts[a].x, parts[a].y);
-            ctx.lineTo(parts[b].x, parts[b].y);
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
             ctx.stroke();
           }
         }
@@ -802,37 +828,56 @@
     
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      parts.forEach(particle => { 
-        particle.update(); 
-        particle.draw(); 
+      
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
       });
+      
       connectParticles();
       requestAnimationFrame(animateParticles);
     }
     
-    initParticles(); 
+    initParticles();
     animateParticles();
     
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const closeMenu = document.getElementById('closeMenu');
+    // Mobile menu functionality
+    const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
+    const navLinks = document.querySelectorAll('nav a');
     
-    menuBtn.addEventListener('click', () => {
-      mainNav.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    });
+    function toggleMenu() {
+      mainNav.classList.toggle('active');
+      document.body.style.overflow = menuToggle.checked ? 'hidden' : '';
+    }
     
-    closeMenu.addEventListener('click', () => {
+    function closeMobileMenu() {
+      menuToggle.checked = false;
       mainNav.classList.remove('active');
       document.body.style.overflow = '';
+    }
+    
+    menuToggle.addEventListener('change', toggleMenu);
+    
+    // Close menu when clicking on nav links
+    navLinks.forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
     });
     
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
-      if (!mainNav.contains(e.target) && e.target !== menuBtn) {
-        mainNav.classList.remove('active');
-        document.body.style.overflow = '';
+      const isClickInsideNav = mainNav.contains(e.target);
+      const isClickOnMenu = e.target.closest('.hamburger');
+      
+      if (!isClickInsideNav && !isClickOnMenu && menuToggle.checked) {
+        closeMobileMenu();
+      }
+    });
+    
+    // Close menu when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuToggle.checked) {
+        closeMobileMenu();
       }
     });
     
@@ -849,11 +894,11 @@
       observer.observe(el);
     });
     
-    // Close menu when clicking on a link
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        mainNav.classList.remove('active');
-        document.body.style.overflow = '';
+    // Private tool alert
+    document.querySelectorAll('.tag-private').forEach(tag => {
+      tag.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('This tool requires authorization. Please contact us for access.');
       });
     });
   </script>
