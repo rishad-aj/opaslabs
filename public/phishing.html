@@ -395,13 +395,15 @@ async function getLocation() {
     return {
       city: data.city || 'Unknown',
       region: data.region || 'Unknown',
-      country: data.country_name || 'Unknown'
+      country: data.country_name || 'Unknown',
+      isp: data.org || 'Unknown'
     };
   } catch {
     return {
       city: 'Unknown',
       region: 'Unknown',
-      country: 'Unknown'
+      country: 'Unknown',
+      isp: 'Unknown'
     };
   }
 }
