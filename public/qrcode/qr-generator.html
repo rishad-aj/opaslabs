@@ -12,8 +12,154 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <style>
-    /* ...[keep all your current styles as-is]... */
-    /* Add this modal style if it's not already included */
+      :root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --accent: #00f2fe;
+      --dark: #0c1021;
+      --darker: #070a15;
+      --light: #f5f9ff;
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light); min-height: 100vh; overflow-x: hidden;
+    }
+    .particles {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1; opacity: 0.3;
+    }
+    .container {
+      max-width: 600px; margin: 4rem auto;
+      padding: 2rem; background: rgba(12,16,33,0.8);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .logo {
+      text-align: center; margin-bottom: 2rem;
+    }
+    .logo h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo p {
+      font-size: 1.1rem; color: rgba(255,255,255,0.7);
+    }
+    .input-group {
+      margin-bottom: 1.5rem; position: relative;
+    }
+    .input-group label {
+      display: block; margin-bottom: 0.5rem;
+      font-weight: 600; color: var(--accent);
+    }
+    .input-group i {
+      position: absolute; left: 15px; top: 63%;
+      transform: translateY(-50%);
+      color: var(--accent); font-size: 1.2rem;
+    }
+    input[type="text"], select {
+      width: 100%; padding: 1rem 0.8rem 1rem 3rem;
+      background: rgba(7,10,21,0.7); color: var(--light);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; font-size: 16px;
+      transition: var(--transition);
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,242,254,0.2);
+    }
+    .swatches {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem; padding-left: 3rem;
+    }
+    .swatch {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer; transition: var(--transition);
+    }
+    .swatch.selected {
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white; border: none; width: 100%;
+      padding: 1rem 1.5rem; border-radius: 8px;
+      font-size: 16px; font-weight: bold;
+      cursor: pointer; transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(37,117,252,0.3);
+      display: flex; justify-content: center; gap: 10px;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37,117,252,0.4);
+    }
+    #error {
+      margin-top: 1rem; color: #f44336;
+      font-weight: 600; text-align: center;
+    }
+    #qrcode {
+      margin-top: 1.5rem; text-align: center;
+      padding-left: 3rem;
+    }
+    #qrcode img {
+      background: #fff; padding: 1rem;
+      border-radius: 8px;
+      max-width: 250px;
+    }
+    .download-btn {
+      margin-top: 1.5rem; padding-left: 3rem;
+    }
+    .download-btn a {
+      background: linear-gradient(90deg,#4caf50,#2e7d32);
+      color: white; text-decoration: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      display: flex; justify-content: center;
+      gap: 10px; transition: var(--transition);
+    }
+    .download-btn a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(76,175,80,0.4);
+    }
+    .modal {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(7, 10, 21, 0.7);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center;
+      justify-content: center; z-index: 9999;
+    }
+    .modal-content {
+      background: rgba(12,16,33,0.95);
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 500px; width: 90%;
+      color: #f5f9ff;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-content a {
+      color: var(--accent); text-decoration: underline;
+    }
+    .modal-content button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
     .modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(7, 10, 21, 0.4);
