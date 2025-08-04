@@ -178,71 +178,6 @@
       background: linear-gradient(90deg, #f44336, #d32f2f);
     }
     
-    .note {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    /* Age Verification Modal */
-    .age-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(7, 10, 21, 0.3);
-      backdrop-filter: blur(10px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .age-modal-content {
-      background: rgba(12, 16, 33, 0.9);
-      padding: 2rem;
-      border-radius: 15px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-    
-    .age-modal h2 {
-      color: var(--accent);
-      margin-bottom: 1rem;
-      font-size: 1.8rem;
-    }
-    .age-modal p {
-      margin-bottom: 2rem;
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .age-btn-group {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    }
-    .age-btn {
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: var(--transition);
-      min-width: 120px;
-    }
-    .age-btn.underage {
-      background: linear-gradient(90deg, #f44336, #d32f2f);
-    }
-    .age-btn.adult {
-      background: linear-gradient(90deg, #4CAF50, #2E7D32);
-    }
-    .age-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-    
     @keyframes rotate {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -254,16 +189,6 @@
       }
       .logo h1 {
         font-size: 2rem;
-      }
-      .age-modal-content {
-        padding: 1.5rem;
-      }
-      .age-btn-group {
-        flex-direction: column;
-        gap: 0.8rem;
-      }
-      .age-btn {
-        width: 100%;
       }
       .qr-actions {
         flex-direction: column;
@@ -290,22 +215,6 @@
   </style>
 </head>
 <body>
-  <!-- Age Verification Modal -->
-  <div id="ageModal" class="age-modal">
-    <div class="age-modal-content">
-      <h2><i class="fas fa-exclamation-triangle"></i> Age Verification</h2>
-      <p>This tool is intended for adults only. By entering, you confirm that you are 18 years of age or older.</p>
-      <div class="age-btn-group">
-        <button class="age-btn underage" id="underageBtn">
-          <i class="fas fa-child"></i> I'm Under 18
-        </button>
-        <button class="age-btn adult" id="adultBtn">
-          <i class="fas fa-user-check"></i> I'm 18 or Older
-        </button>
-      </div>
-    </div>
-  </div>
-
   <canvas id="particles" class="particles"></canvas>
   
   <div class="container">
@@ -356,10 +265,6 @@
           <i class="fas fa-redo"></i> Reset
         </button>
       </div>
-    </div>
-
-    <div class="note">
-      <i class="fas fa-shield-alt"></i> This tool is for educational purposes only
     </div>
   </div>
 
@@ -437,14 +342,6 @@
   initParticles();
   animateParticles();
 
-  // Modal Elements
-  const ageModal = document.getElementById('ageModal');
-  const underageBtn = document.getElementById('underageBtn');
-  const adultBtn = document.getElementById('adultBtn');
-  const generateQrBtn = document.getElementById('generateQrBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const resetBtn = document.getElementById('resetBtn');
-
   // QR Code Generator Logic
   function generateQRCode() {
     const url = document.getElementById('qrUrl').value.trim();
@@ -500,45 +397,16 @@
   }
 
   // Generate QR Code Button
-  generateQrBtn.addEventListener('click', function(e) {
+  document.getElementById('generateQrBtn').addEventListener('click', function(e) {
     e.preventDefault();
-    
-    // Proceed with modal checks
-    if (localStorage.getItem('ageVerified') !== 'true') {
-      ageModal.style.display = 'flex';
-      return;
-    }
-    
     generateQRCode();
   });
   
   // Download QR Code Button
-  downloadBtn.addEventListener('click', downloadQRCode);
+  document.getElementById('downloadBtn').addEventListener('click', downloadQRCode);
   
   // Reset QR Code Button
-  resetBtn.addEventListener('click', resetQRCode);
-
-  // Age Verification
-  underageBtn.addEventListener('click', function () {
-    window.location.href = 'https://youtu.be/020g-0hhCAU?si=H64NYyVaQsrjHh2V';
-  });
-
-  adultBtn.addEventListener('click', function () {
-    localStorage.setItem('ageVerified', 'true');
-    ageModal.style.display = 'none';
-    generateQRCode();
-  });
-
-  // Initialize on page load
-  document.addEventListener('DOMContentLoaded', function () {
-    // Show age modal on page load if not verified
-    if (localStorage.getItem('ageVerified') !== 'true') {
-      ageModal.style.display = 'flex';
-    }
-    
-    // Set default URL for demo purposes
-    document.getElementById('qrUrl').value = 'https://opaslabs.com';
-  });
+  document.getElementById('resetBtn').addEventListener('click', resetQRCode);
 </script>
 </body>
 </html>
