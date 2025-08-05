@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <title>Secure QR Code Generator by Opas Labs | Free, Fast & Customizable</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Primary Meta Tags -->
-      <meta name="title" content="Secure QR Code Generator by Opas Labs | Free, Fast & Customizable">
-      <meta name="description" content="Generate safe, fast, and customizable QR codes with Opas Labs. Free tool for URLs, websites, contact info, and more. Supports all secure and legal links.">
-      <meta name="keywords" content="
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content="Secure QR Code Generator by Opas Labs | Free, Fast & Customizable">
+  <meta name="description" content="Generate safe, fast, and customizable QR codes with Opas Labs. Free tool for URLs, websites, contact info, and more. Supports all secure and legal links.">
+  <meta name="keywords" content="
          QR Code Generator, Free QR Code, Custom QR Code Maker, Safe QR Code Generator, Online QR Creator, 
          Professional QR Tool, Secure URL QR Code, Website QR Generator, QR for Business, Opas Labs QR, 
          No-login QR code, Stylish QR code, Dynamic QR code, Legal link QR, HTTPS QR Code, Non-porn QR, 
@@ -37,37 +36,34 @@
          QR Code History, QR Code Statistics, QR Code Reporting, Custom Domain QR, White Label QR, 
          QR Code Examples, QR Code Best Practices, QR Code Tutorial, How to Create QR Code
          ">
-      <!-- keep your current list here -->
-      <meta name="author" content="Opas Labs">
-      <meta name="robots" content="index, follow">
-      <meta name="google-site-verification" content="HkNYUKOw0Mnva9ux-dCrQWrsh6_zOfa3D8Bjjk6L7z8" />
-      <!-- Canonical URL -->
-      <link rel="canonical" href="https://opaslabs.vercel.app/qrcode/qr-generator.html" />
-      <!-- Open Graph / Facebook -->
-      <meta property="og:type" content="website">
-      <meta property="og:url" content="https://opaslabs.vercel.app/qrcode/qr-generator.html">
-      <meta property="og:title" content="Secure QR Code Generator by Opas Labs">
-      <meta property="og:description" content="Generate safe, fast, and customizable QR codes for URLs, contact info, events and more.">
-      <meta property="og:image" content="https://opaslabs.vercel.app/assets/qr-preview.jpg">
-      <meta property="og:site_name" content="Opas Labs QR Generator">
-      <!-- Twitter -->
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:title" content="Secure QR Code Generator by Opas Labs">
-      <meta name="twitter:description" content="Create secure, fast, customizable QR codes for free.">
-      <meta name="twitter:image" content="https://opaslabs.vercel.app/assets/qr-preview.jpg">
-      <!-- Structured Data -->
-      <script type="application/ld+json">
-         {
-           "@context": "https://schema.org",
-           "@type": "WebSite",
-           "name": "Opas Labs QR Generator",
-           "url": "https://opaslabs.vercel.app/qrcode/qr-generator.html"
-         }
-      </script>
-      <!-- Optional: Favicon -->
-      <link rel="icon" href="/favicon.ico" type="image/x-icon">
-      <!-- Styles & Scripts -->
-  <!-- Styles & Scripts -->
+  <meta name="author" content="Opas Labs">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://opaslabs.vercel.app/qrcode/qr-generator.html" />
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://opaslabs.vercel.app/qrcode/qr-generator.html">
+  <meta property="og:title" content="Secure QR Code Generator by Opas Labs">
+  <meta property="og:description" content="Generate safe, fast, and customizable QR codes for URLs, contact info, events and more.">
+  <meta property="og:image" content="https://opaslabs.vercel.app/assets/qr-preview.jpg">
+  <meta property="og:site_name" content="Opas Labs QR Generator">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Secure QR Code Generator by Opas Labs">
+  <meta name="twitter:description" content="Create secure, fast, customizable QR codes for free.">
+  <meta name="twitter:image" content="https://opaslabs.vercel.app/assets/qr-preview.jpg">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Opas Labs QR Generator",
+      "url": "https://opaslabs.vercel.app/qrcode/qr-generator.html",
+      "description": "Free online tool to create customizable QR codes with logo support",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
   <style>
@@ -79,6 +75,8 @@
       --darker: #070a15;
       --light: #f5f9ff;
       --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --success: #4CAF50;
+      --warning: #FF9800;
     }
     * {
       margin: 0;
@@ -92,6 +90,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       line-height: 1.6;
+      padding: 20px;
     }
     .particles {
       position: fixed;
@@ -103,12 +102,12 @@
       opacity: 0.3;
     }
     .container {
-      max-width: 800px;
-      margin: 4rem auto;
+      max-width: 850px;
+      margin: 0 auto;
       padding: 2rem;
-      background: rgba(12, 16, 33, 0.8);
+      background: rgba(12, 16, 33, 0.85);
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       position: relative;
@@ -129,6 +128,7 @@
     .logo {
       text-align: center;
       margin-bottom: 2rem;
+      padding-top: 1rem;
     }
     .logo h1 {
       font-size: 2.5rem;
@@ -219,15 +219,17 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
     }
     .download-btn {
       margin-top: 1.5rem;
       display: flex;
       justify-content: center;
       gap: 15px;
+      flex-wrap: wrap;
     }
     .download-btn a {
-      background: linear-gradient(90deg,#4caf50,#2e7d32);
+      background: linear-gradient(90deg, var(--success), #2e7d32);
       color: white;
       text-decoration: none;
       padding: 1rem 1.5rem;
@@ -263,7 +265,6 @@
       border-color: var(--accent);
       transform: scale(1.1);
     }
-    /* Preview styles */
     .preview-container {
       background: rgba(7, 10, 21, 0.5);
       border-radius: 12px;
@@ -303,7 +304,6 @@
     .url-preview a:hover {
       text-decoration: underline;
     }
-    /* Style controls */
     .style-controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -327,7 +327,6 @@
     .style-group h4 i {
       font-size: 1.2rem;
     }
-    /* Terms Modal */
     .terms-modal {
       position: fixed;
       top: 0;
@@ -342,7 +341,7 @@
       z-index: 1000;
     }
     .terms-modal-content {
-      background: rgba(12, 16, 33, 0.9);
+      background: rgba(12, 16, 33, 0.95);
       padding: 2rem;
       border-radius: 15px;
       max-width: 500px;
@@ -381,19 +380,222 @@
       background: linear-gradient(90deg, #f44336, #d32f2f);
     }
     .terms-btn.accept {
-      background: linear-gradient(90deg, #4CAF50, #2E7D32);
+      background: linear-gradient(90deg, var(--success), #2E7D32);
     }
     .terms-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
+    .logo-controls {
+      background: rgba(7, 10, 21, 0.5);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .logo-controls h4 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-controls h4 i {
+      font-size: 1.2rem;
+    }
+    .logo-preview {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .logo-preview img {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .logo-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .logo-btn {
+      background: rgba(7, 10, 21, 0.7);
+      color: var(--accent);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .logo-btn:hover {
+      background: rgba(0, 242, 254, 0.2);
+      border-color: var(--accent);
+    }
+    .logo-btn.remove {
+      color: #f44336;
+      border-color: rgba(244, 67, 54, 0.3);
+    }
+    .logo-btn.remove:hover {
+      background: rgba(244, 67, 54, 0.2);
+      border-color: #f44336;
+    }
+    .logo-input-group {
+      position: relative;
+      margin-top: 10px;
+    }
+    .logo-input-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    input[type="file"] {
+      width: 100%;
+      padding: 1rem 0.8rem 1rem 3rem;
+      background: rgba(7, 10, 21, 0.7);
+      color: var(--light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    input[type="file"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+    }
+    .logo-size-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .logo-size-control input {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      outline: none;
+    }
+    .logo-size-control input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .logo-size-value {
+      min-width: 40px;
+      text-align: center;
+      background: rgba(0, 242, 254, 0.1);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .loading-spinner {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+      z-index: 10;
+    }
+    .info-tooltip {
+      position: relative;
+      display: inline-block;
+      margin-left: 8px;
+      color: var(--accent);
+      cursor: help;
+    }
+    .info-tooltip .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: var(--darker);
+      color: var(--light);
+      text-align: center;
+      border-radius: 6px;
+      padding: 10px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85rem;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .info-tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      background: rgba(7, 10, 21, 0.5);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .stat-box {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
     @keyframes rotate {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
     @media (max-width: 768px) {
       .container {
-        margin: 2rem 1rem;
+        margin: 0;
         padding: 1.5rem;
       }
       .logo h1 {
@@ -415,17 +617,37 @@
       .download-btn {
         flex-direction: column;
       }
+      .swatches {
+        padding-left: 0;
+        justify-content: center;
+      }
+      .logo-preview {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .logo-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+      .logo-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .stats-container {
+        flex-direction: column;
+        gap: 15px;
+      }
     }
     @media (max-width: 480px) {
       .container {
-        margin: 1rem;
         padding: 1rem;
       }
       .logo h1 {
         font-size: 1.8rem;
       }
       input[type="text"],
-      select {
+      select,
+      input[type="file"] {
         padding: 0.8rem 0.6rem 0.8rem 2.5rem;
       }
       .input-group i {
@@ -436,6 +658,10 @@
         padding-left: 0;
         justify-content: center;
       }
+      .logo-size-control {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -444,13 +670,49 @@
   <div class="container">
     <div class="logo">
       <h1>Opas Labs</h1>
-      <p>Advanced QR Code Generator with Preview</p>
+      <p>Advanced QR Code Generator with Logo Support</p>
     </div>
     
     <div class="input-group">
       <label for="urlInput">Enter URL</label>
       <i class="fas fa-link"></i>
       <input type="text" id="urlInput" placeholder="https://example.com" value="https://example.com">
+    </div>
+    
+    <div class="logo-controls">
+      <h4>
+        <i class="fas fa-image"></i> Add Logo (Optional)
+        <span class="info-tooltip">
+          <i class="fas fa-info-circle"></i>
+          <span class="tooltip-text">Add your logo to the QR code. Recommended: 80-150px with transparent background.</span>
+        </span>
+      </h4>
+      
+      <div class="logo-input-group">
+        <i class="fas fa-upload"></i>
+        <input type="file" id="logoInput" accept="image/*">
+      </div>
+      
+      <div class="logo-preview">
+        <img id="logoPreview" alt="Logo preview">
+        <div>
+          <div id="logoFileName">No file selected</div>
+          <div class="logo-size-control">
+            <label for="logoSize">Logo Size:</label>
+            <input type="range" id="logoSize" min="10" max="40" value="25">
+            <span class="logo-size-value" id="logoSizeValue">25%</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="logo-actions">
+        <button class="logo-btn remove" id="removeLogoBtn">
+          <i class="fas fa-trash"></i> Remove Logo
+        </button>
+        <button class="logo-btn" id="previewLogoBtn">
+          <i class="fas fa-sync"></i> Apply Changes
+        </button>
+      </div>
     </div>
     
     <div class="input-group">
@@ -492,7 +754,9 @@
     <button id="genBtn"><i class="fas fa-qrcode"></i> Generate QR Code</button>
     <div id="error"></div>
     
-    <div id="qrcode"></div>
+    <div id="qrcode">
+      <div class="loading-spinner" id="loadingSpinner"></div>
+    </div>
     
     <div class="download-btn" id="dlBtn" style="display:none;">
       <a href="#" id="downloadPng"><i class="fas fa-download"></i> Download PNG</a>
@@ -508,6 +772,25 @@
         <p>QR Code will point to: <a href="#" id="previewLink">https://example.com</a></p>
       </div>
     </div>
+    
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-value" id="qrSizeStat">250px</div>
+        <div class="stat-label">QR Size</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="logoSizeStat">0%</div>
+        <div class="stat-label">Logo Size</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="qrType">Standard</div>
+        <div class="stat-label">QR Type</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>© 2025 Opas Labs. All rights reserved. | <a href="privacy-policy.html">Privacy Policy</a> | <a href="terms-and-condition.html">Terms of Service</a></p>
   </div>
   
   <!-- Terms Modal -->
@@ -516,9 +799,9 @@
       <h2><i class="fas fa-scroll"></i> Terms & Conditions</h2>
       <p>
         Please review our 
-        <a href="qr-terms-condition.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Terms and Conditions</a> 
+        <a href="terms-and-condition.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Terms and Conditions</a> 
         and 
-        <a href="qr-privacy-policy.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a> 
+        <a href="privacy-policy.html" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a> 
         before using this tool.
       </p>
       <p>By clicking "Accept" below, you agree to our terms and acknowledge that this tool is for legitimate purposes only.</p>
@@ -645,8 +928,7 @@
       width: 250,
       height: 250,
       type: "canvas",
-      data: "https://example.com",
-      image: "",
+      data: "https://opaslabs.com",
       margin: 10,
       qrOptions: {
         typeNumber: 0,
@@ -685,6 +967,50 @@
     const declineTermsBtn = document.getElementById('declineTermsBtn');
     const urlPreview = document.getElementById('previewLink');
     const urlInput = document.getElementById('urlInput');
+    const logoInput = document.getElementById('logoInput');
+    const logoPreview = document.getElementById('logoPreview');
+    const logoFileName = document.getElementById('logoFileName');
+    const removeLogoBtn = document.getElementById('removeLogoBtn');
+    const previewLogoBtn = document.getElementById('previewLogoBtn');
+    const logoSizeInput = document.getElementById('logoSize');
+    const logoSizeValue = document.getElementById('logoSizeValue');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const qrSizeStat = document.getElementById('qrSizeStat');
+    const logoSizeStat = document.getElementById('logoSizeStat');
+    const qrTypeStat = document.getElementById('qrType');
+    
+    // Logo state
+    let logoDataUrl = null;
+    let logoSize = 25; // percentage of QR code size
+    
+    // Update logo preview
+    function updateLogoPreview(file) {
+      if (!file) {
+        logoPreview.style.display = 'none';
+        logoFileName.textContent = 'No file selected';
+        logoSizeStat.textContent = '0%';
+        return;
+      }
+      
+      logoFileName.textContent = file.name;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        logoDataUrl = e.target.result;
+        logoPreview.src = logoDataUrl;
+        logoPreview.style.display = 'block';
+        logoSizeStat.textContent = `${logoSize}%`;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Update logo size value display
+    function updateLogoSizeDisplay() {
+      logoSizeValue.textContent = `${logoSize}%`;
+      if (logoDataUrl) {
+        logoSizeStat.textContent = `${logoSize}%`;
+      }
+    }
     
     // Update URL preview
     function updatePreview(url) {
@@ -699,7 +1025,8 @@
     }
     
     // Initialize preview
-    updatePreview("https://example.com");
+    updatePreview("https://opaslabs.com");
+    updateLogoSizeDisplay();
     
     // Validate URL
     function isValidUrl(url) {
@@ -725,56 +1052,90 @@
     }
     
     function generateQRCode() {
-      let url = urlInput.value.trim();
-      const size = parseInt(document.getElementById('qrSize').value);
-      const dotShape = document.getElementById('dotShape').value;
-      const cornerStyle = document.getElementById('cornerStyle').value;
+      loadingSpinner.style.display = 'block';
+      dlBtn.style.display = 'none';
       
-      errDiv.textContent = '';
-      
-      // Validate URL
-      if (!isValidUrl(url)) {
-        errDiv.textContent = 'Please enter a valid URL (e.g. "example.com" or "https://example.com")';
-        return false;
-      }
-      
-      // Add https:// if missing
-      if (!/^https?:\/\//i.test(url)) {
-        url = `https://${url}`;
-      }
-      
-      // Update preview
-      updatePreview(url);
-      
-      try {
-        // Update QR code
-        qrCode.update({
-          width: size,
-          height: size,
-          data: url,
-          dotsOptions: {
-            color: selectedColor,
-            type: dotShape
-          },
-          cornersSquareOptions: {
-            color: selectedColor,
-            type: cornerStyle
-          },
-          cornersDotOptions: {
-            color: selectedColor,
-            type: "square"
+      setTimeout(() => {
+        try {
+          let url = urlInput.value.trim();
+          const size = parseInt(document.getElementById('qrSize').value);
+          const dotShape = document.getElementById('dotShape').value;
+          const cornerStyle = document.getElementById('cornerStyle').value;
+          
+          errDiv.textContent = '';
+          
+          // Validate URL
+          if (!isValidUrl(url)) {
+            errDiv.textContent = 'Please enter a valid URL (e.g. "example.com" or "https://example.com")';
+            loadingSpinner.style.display = 'none';
+            return false;
           }
-        });
-        
-        // Show download buttons
-        dlBtn.style.display = 'flex';
-        
-        return true;
-      } catch (error) {
-        errDiv.textContent = 'Error generating QR code. Please try again.';
-        console.error('QR Code generation error:', error);
-        return false;
-      }
+          
+          // Add https:// if missing
+          if (!/^https?:\/\//i.test(url)) {
+            url = `https://${url}`;
+          }
+          
+          // Update preview
+          updatePreview(url);
+          
+          // Update stats
+          qrSizeStat.textContent = `${size}px`;
+          qrTypeStat.textContent = logoDataUrl ? "With Logo" : "Standard";
+          
+          // Prepare options for QR code
+          const options = {
+            width: size,
+            height: size,
+            data: url,
+            dotsOptions: {
+              color: selectedColor,
+              type: dotShape
+            },
+            cornersSquareOptions: {
+              color: selectedColor,
+              type: cornerStyle
+            },
+            cornersDotOptions: {
+              color: selectedColor,
+              type: "square"
+            },
+            backgroundOptions: {
+              color: "#ffffff"
+            },
+            onRenderingEnd: () => {
+              // After QR code is rendered, find the logo image and style it
+              const logoImg = document.querySelector('#qrcode img[aria-label="Logo"]');
+              if (logoImg) {
+                logoImg.style.borderRadius = '10px';
+              }
+              loadingSpinner.style.display = 'none';
+              dlBtn.style.display = 'flex';
+            }
+          };
+          
+          // Add logo if exists
+          if (logoDataUrl) {
+            options.image = logoDataUrl;
+            options.imageOptions = {
+              margin: 6,
+              crossOrigin: "anonymous",
+              hideBackgroundDots: true,
+              imageSize: logoSize / 100 // convert percentage to decimal
+            };
+          }
+          
+          // Update QR code
+          qrCode.update(options);
+          
+          return true;
+        } catch (error) {
+          errDiv.textContent = 'Error generating QR code. Please try again.';
+          console.error('QR Code generation error:', error);
+          loadingSpinner.style.display = 'none';
+          return false;
+        }
+      }, 300); // Small delay to show loading spinner
     }
     
     // Download handlers
@@ -826,6 +1187,38 @@
       }
     });
     
+    // Logo event handlers
+    logoInput.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        updateLogoPreview(this.files[0]);
+      }
+    });
+    
+    removeLogoBtn.addEventListener('click', function() {
+      logoInput.value = '';
+      logoDataUrl = null;
+      logoPreview.style.display = 'none';
+      logoFileName.textContent = 'No file selected';
+      logoSizeStat.textContent = '0%';
+      if (document.getElementById('dlBtn').style.display !== 'none') {
+        generateQRCode();
+      }
+    });
+    
+    previewLogoBtn.addEventListener('click', function() {
+      if (document.getElementById('dlBtn').style.display !== 'none') {
+        generateQRCode();
+      }
+    });
+    
+    logoSizeInput.addEventListener('input', function() {
+      logoSize = parseInt(this.value);
+      updateLogoSizeDisplay();
+      if (document.getElementById('dlBtn').style.display !== 'none' && logoDataUrl) {
+        generateQRCode();
+      }
+    });
+    
     // Terms modal buttons
     acceptTermsBtn.addEventListener('click', () => {
       localStorage.setItem('qrTermsAccepted', 'true');
@@ -855,6 +1248,14 @@
     urlInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         genBtn.click();
+      }
+    });
+    
+    // Update QR size stat when changed
+    document.getElementById('qrSize').addEventListener('change', function() {
+      qrSizeStat.textContent = `${this.value}px`;
+      if (document.getElementById('dlBtn').style.display !== 'none') {
+        generateQRCode();
       }
     });
   </script>
