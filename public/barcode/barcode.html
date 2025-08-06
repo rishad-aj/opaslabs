@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Barcode Generator | Opas Labs</title>
+  <meta name="description" content="Free online barcode generator tool. Create custom barcodes in multiple formats including CODE128, EAN-13, UPC-A and more. Download as PNG or SVG.">
+  <meta name="keywords" content="barcode generator, free barcode, online barcode creator, custom barcode, barcode maker, QR code alternative">
+  <meta name="author" content="Opas Labs">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://opaslabs.vercel.app/barcode-generator.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://opaslabs.vercel.app/barcode-generator.html">
+  <meta property="og:title" content="Advanced Barcode Generator | Opas Labs">
+  <meta property="og:description" content="Free online tool to create custom barcodes in multiple formats. Download as PNG or SVG.">
+  <meta property="og:image" content="https://opaslabs.vercel.app/assets/barcode-preview.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://opaslabs.vercel.app/barcode-generator.html">
+  <meta property="twitter:title" content="Advanced Barcode Generator | Opas Labs">
+  <meta property="twitter:description" content="Free online tool to create custom barcodes in multiple formats. Download as PNG or SVG.">
+  <meta property="twitter:image" content="https://opaslabs.vercel.app/assets/barcode-preview.jpg">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Opas Labs Barcode Generator",
+      "url": "https://opaslabs.vercel.app/barcode-generator.html",
+      "applicationCategory": "Utility",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --accent: #00f2fe;
+      --dark: #0c1021;
+      --darker: #070a15;
+      --light: #f5f9ff;
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --success: #4CAF50;
+      --warning: #FF9800;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: rgba(12, 16, 33, 0.85);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-top: 1rem;
+    }
+    .logo h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .logo p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+    }
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 70%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 1rem 0.8rem 1rem 3rem;
+      background: rgba(7, 10, 21, 0.7);
+      color: var(--light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+    }
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    }
+    #error {
+      margin-top: 1rem;
+      color: #f44336;
+      font-weight: 600;
+      text-align: center;
+      min-height: 24px;
+    }
+    #barcode-container {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      max-width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      min-height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    #barcode {
+      max-width: 100%;
+      height: auto;
+    }
+    .download-btn {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .download-btn a {
+      background: linear-gradient(90deg, var(--success), #2e7d32);
+      color: white;
+      text-decoration: none;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+      min-width: 180px;
+      text-align: center;
+    }
+    .download-btn a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+    }
+    .swatches {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding-left: 3rem;
+    }
+    .swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .swatch.selected {
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+    .style-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 25px;
+    }
+    .style-group {
+      background: rgba(7, 10, 21, 0.5);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .style-group h4 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .style-group h4 i {
+      font-size: 1.2rem;
+    }
+    .loading-spinner {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+      z-index: 10;
+    }
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      background: rgba(7, 10, 21, 0.5);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .stat-box {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .display-options {
+      padding: 10px;
+    }
+    .display-options label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .display-options input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+    .legal-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .legal-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .legal-links a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 0;
+        padding: 1.5rem;
+      }
+      .logo h1 {
+        font-size: 2rem;
+      }
+      .style-controls {
+        grid-template-columns: 1fr;
+      }
+      .download-btn {
+        flex-direction: column;
+      }
+      .swatches {
+        padding-left: 0;
+        justify-content: center;
+      }
+      .stats-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+      input[type="text"],
+      select {
+        padding: 0.8rem 0.6rem 0.8rem 2.5rem;
+      }
+      .input-group i {
+        font-size: 1rem;
+        left: 12px;
+      }
+      .swatches {
+        padding-left: 0;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles" class="particles"></canvas>
+  <div class="container">
+    <div class="logo">
+      <h1>Opas Labs</h1>
+      <p>Advanced Barcode Generator</p>
+    </div>
+    
+    <div class="input-group">
+      <label for="barcodeInput">Enter Barcode Data</label>
+      <i class="fas fa-barcode"></i>
+      <input type="text" id="barcodeInput" placeholder="Enter numbers or text" value="1234567890">
+    </div>
+    
+    <div class="input-group">
+      <label for="barcodeType">Barcode Type</label>
+      <i class="fas fa-qrcode"></i>
+      <select id="barcodeType">
+        <option value="CODE128">CODE128</option>
+        <option value="CODE39">CODE39</option>
+        <option value="EAN13">EAN-13</option>
+        <option value="EAN8">EAN-8</option>
+        <option value="UPC">UPC-A</option>
+        <option value="ITF">ITF (Interleaved 2 of 5)</option>
+        <option value="MSI">MSI</option>
+        <option value="pharmacode">Pharmacode</option>
+      </select>
+    </div>
+    
+    <div class="style-controls">
+      <div class="style-group">
+        <h4><i class="fas fa-paint-brush"></i> Barcode Color</h4>
+        <div class="swatches" id="colorSwatches">
+          <div class="swatch selected" style="background-color: #000000;" data-color="#000000"></div>
+          <div class="swatch" style="background-color: #0066cc;" data-color="#0066cc"></div>
+          <div class="swatch" style="background-color: #cc0000;" data-color="#cc0000"></div>
+          <div class="swatch" style="background-color: #00aa00;" data-color="#00aa00"></div>
+          <div class="swatch" style="background-color: #6600cc;" data-color="#6600cc"></div>
+          <div class="swatch" style="background-color: #ffaa00;" data-color="#ffaa00"></div>
+        </div>
+      </div>
+      
+      <div class="style-group">
+        <h4><i class="fas fa-sliders-h"></i> Display Options</h4>
+        <div class="display-options">
+          <label>
+            <input type="checkbox" id="showText" checked>
+            <span>Show text below barcode</span>
+          </label>
+          
+          <label>
+            <input type="checkbox" id="showBackground">
+            <span>Transparent background</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <label for="barcodeWidth">Barcode Width</label>
+      <i class="fas fa-arrows-alt-h"></i>
+      <select id="barcodeWidth">
+        <option value="1">Thin</option>
+        <option value="2" selected>Normal</option>
+        <option value="3">Thick</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <label for="barcodeHeight">Barcode Height</label>
+      <i class="fas fa-arrows-alt-v"></i>
+      <select id="barcodeHeight">
+        <option value="40">Short</option>
+        <option value="60" selected>Medium</option>
+        <option value="80">Tall</option>
+        <option value="100">Extra Tall</option>
+      </select>
+    </div>
+    
+    <button id="genBtn"><i class="fas fa-barcode"></i> Generate Barcode</button>
+    <div id="error"></div>
+    
+    <div id="barcode-container">
+      <div class="loading-spinner" id="loadingSpinner"></div>
+      <canvas id="barcode"></canvas>
+    </div>
+    
+    <div class="download-btn" id="dlBtn" style="display:none;">
+      <a href="#" id="downloadPng"><i class="fas fa-download"></i> Download PNG</a>
+      <a href="#" id="downloadSvg"><i class="fas fa-download"></i> Download SVG</a>
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-value" id="barcodeTypeStat">CODE128</div>
+        <div class="stat-label">Barcode Type</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="dataLengthStat">10</div>
+        <div class="stat-label">Data Length</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="barcodeSize">60px</div>
+        <div class="stat-label">Height</div>
+      </div>
+    </div>
+    
+    <div class="legal-links">
+      <a href="terms-and-conditions.html">Terms and Conditions</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>© 2023 Opas Labs. All rights reserved.</p>
+  </div>
+  
+  <script>
+    // Particle animation
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    let particles = [], num = 150;
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = Math.random() - 0.5;
+        this.speedY = Math.random() - 0.5;
+      }
+      
+      update() {
+        this.x += this.speedX; 
+        this.y += this.speedY;
+        
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      
+      draw() {
+        ctx.fillStyle = 'rgba(0,242,254,0.5)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+    
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < num; i++) particles.push(new Particle());
+    }
+    
+    function connectParticles() {
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a; b < particles.length; b++) {
+          let dx = particles[a].x - particles[b].x;
+          let dy = particles[a].y - particles[b].y;
+          let distance = Math.hypot(dx, dy);
+          
+          if (distance < 100) {
+            ctx.strokeStyle = `rgba(0,242,254,${0.1 - distance / 1000})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { 
+        p.update(); 
+        p.draw(); 
+      });
+      connectParticles();
+      requestAnimationFrame(animateParticles);
+    }
+    
+    initParticles(); 
+    animateParticles();
+
+    // Barcode Generator Logic
+    const barcodeInput = document.getElementById('barcodeInput');
+    const barcodeType = document.getElementById('barcodeType');
+    const barcodeWidth = document.getElementById('barcodeWidth');
+    const barcodeHeight = document.getElementById('barcodeHeight');
+    const showText = document.getElementById('showText');
+    const showBackground = document.getElementById('showBackground');
+    const genBtn = document.getElementById('genBtn');
+    const dlBtn = document.getElementById('dlBtn');
+    const dlPng = document.getElementById('downloadPng');
+    const dlSvg = document.getElementById('downloadSvg');
+    const errDiv = document.getElementById('error');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const barcodeCanvas = document.getElementById('barcode');
+    const barcodeTypeStat = document.getElementById('barcodeTypeStat');
+    const dataLengthStat = document.getElementById('dataLengthStat');
+    const barcodeSize = document.getElementById('barcodeSize');
+    
+    let selectedColor = '#000000';
+    
+    // Color swatches selection
+    document.querySelectorAll('.swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        selectedColor = swatch.getAttribute('data-color');
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+        swatch.classList.add('selected');
+        if (dlBtn.style.display !== 'none') {
+          generateBarcode();
+        }
+      });
+    });
+
+    function validateInput(type, value) {
+      const typeValidations = {
+        EAN13: value => /^\d{12,13}$/.test(value),
+        EAN8: value => /^\d{7,8}$/.test(value),
+        UPC: value => /^\d{11,12}$/.test(value),
+        ITF: value => /^\d+$/.test(value) && value.length % 2 === 0,
+        MSI: value => /^\d+$/.test(value),
+        pharmacode: value => {
+          const num = parseInt(value, 10);
+          return /^\d+$/.test(value) && num >= 3 && num <= 131070;
+        }
+      };
+      
+      if (typeValidations[type] && !typeValidations[type](value)) {
+        const errorMessages = {
+          EAN13: "EAN-13 requires 12 or 13 digits",
+          EAN8: "EAN-8 requires 7 or 8 digits",
+          UPC: "UPC-A requires 11 or 12 digits",
+          ITF: "ITF requires digits and even number of digits",
+          MSI: "MSI requires only digits",
+          pharmacode: "Pharmacode requires a number between 3-131070"
+        };
+        
+        return errorMessages[type] || "Invalid format for selected barcode type";
+      }
+      
+      return null;
+    }
+    
+    function generateBarcode() {
+      loadingSpinner.style.display = 'block';
+      dlBtn.style.display = 'none';
+      
+      setTimeout(() => {
+        try {
+          const value = barcodeInput.value.trim();
+          const type = barcodeType.value;
+          const width = parseFloat(barcodeWidth.value);
+          const height = parseInt(barcodeHeight.value);
+          const displayValue = showText.checked;
+          const transparent = showBackground.checked;
+          
+          // Validate input
+          if (!value) {
+            errDiv.textContent = 'Please enter data for the barcode';
+            loadingSpinner.style.display = 'none';
+            return;
+          }
+          
+          const validationError = validateInput(type, value);
+          if (validationError) {
+            errDiv.textContent = validationError;
+            loadingSpinner.style.display = 'none';
+            return;
+          }
+          
+          errDiv.textContent = '';
+          
+          // Update stats
+          barcodeTypeStat.textContent = type;
+          dataLengthStat.textContent = value.length;
+          barcodeSize.textContent = `${height}px`;
+          
+          // Generate barcode
+          const options = {
+            format: type,
+            width: width,
+            height: height,
+            displayValue: displayValue,
+            font: "monospace",
+            fontOptions: "bold",
+            textMargin: 5,
+            background: transparent ? "transparent" : "#ffffff",
+            lineColor: selectedColor
+          };
+          
+          // Clear previous barcode
+          const ctx = barcodeCanvas.getContext('2d');
+          ctx.clearRect(0, 0, barcodeCanvas.width, barcodeCanvas.height);
+          
+          // Generate new barcode
+          JsBarcode(barcodeCanvas, value, options);
+          
+          // Show download buttons
+          dlBtn.style.display = 'flex';
+          loadingSpinner.style.display = 'none';
+          
+        } catch (error) {
+          errDiv.textContent = 'Error generating barcode. Please try again.';
+          console.error('Barcode generation error:', error);
+          loadingSpinner.style.display = 'none';
+        }
+      }, 300);
+    }
+    
+    // Download handlers
+    dlPng.addEventListener('click', function(e) {
+      e.preventDefault();
+      try {
+        const dataUrl = barcodeCanvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'opas-barcode.png';
+        link.href = dataUrl;
+        link.click();
+      } catch (error) {
+        errDiv.textContent = 'Error downloading PNG. Please try again.';
+        console.error('PNG download error:', error);
+      }
+    });
+    
+    dlSvg.addEventListener('click', function(e) {
+      e.preventDefault();
+      try {
+        // Create SVG element for download
+        const svgElement = document.createElement('svg');
+        svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        
+        // Generate SVG barcode
+        JsBarcode(svgElement, barcodeInput.value.trim(), {
+          format: barcodeType.value,
+          width: parseFloat(barcodeWidth.value),
+          height: parseInt(barcodeHeight.value),
+          displayValue: showText.checked,
+          background: showBackground.checked ? "transparent" : "#ffffff",
+          lineColor: selectedColor
+        });
+        
+        // Serialize SVG to string
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        
+        // Create Blob and download
+        const blob = new Blob([svgData], {type: "image/svg+xml"});
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.download = 'opas-barcode.svg';
+        link.href = url;
+        link.click();
+        
+        // Clean up
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      } catch (error) {
+        errDiv.textContent = 'Error downloading SVG. Please try again.';
+        console.error('SVG download error:', error);
+      }
+    });
+    
+    // Generate barcode on page load
+    window.addEventListener('load', function() {
+      generateBarcode();
+    });
+    
+    // Generate when clicking button
+    genBtn.addEventListener('click', generateBarcode);
+    
+    // Generate when changing settings
+    [barcodeType, barcodeWidth, barcodeHeight, showText, showBackground].forEach(element => {
+      element.addEventListener('change', function() {
+        if (barcodeInput.value.trim()) {
+          generateBarcode();
+        }
+      });
+    });
+    
+    // Generate when pressing Enter in input
+    barcodeInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        generateBarcode();
+      }
+    });
+  </script>
+</body>
+</html>
