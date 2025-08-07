@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Chat Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        
+        :root {
+            --dark-bg: #0c1317;
+            --dark-header: #202c33;
+            --dark-input: #2a3942;
+            --dark-chat-bg: #0b141a;
+            --dark-received: #202c33;
+            --dark-sent: #005c4b;
+            --dark-text: #e9edef;
+            --dark-secondary: #aebac1;
+            --dark-border: #2a3942;
+            
+            --light-bg: #e6e6e6;
+            --light-header: #f0f2f5;
+            --light-input: #ffffff;
+            --light-chat-bg: #e5ddd5;
+            --light-received: #ffffff;
+            --light-sent: #dcf8c6;
+            --light-text: #3b4a54;
+            --light-secondary: #667781;
+            --light-border: #d1d7db;
+            
+            --whatsapp-green: #00a884;
+            --blue-tick: #53bdeb;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        body.light-mode {
+            background: var(--light-bg);
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            height: 90vh;
+            max-height: 850px;
+        }
+        
+        .top-bar {
+            background: var(--dark-header);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--dark-text);
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .light-mode .top-bar {
+            background: var(--light-header);
+            color: var(--light-text);
+            border-bottom: 1px solid var(--light-border);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 500;
+        }
+        
+        .logo i {
+            color: var(--whatsapp-green);
+        }
+        
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .generator-panel {
+            width: 300px;
+            background: var(--dark-header);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--dark-border);
+            overflow-y: auto;
+        }
+        
+        .light-mode .generator-panel {
+            background: var(--light-header);
+            border-right: 1px solid var(--light-border);
+        }
+        
+        .preview-panel {
+            flex: 1;
+            background: var(--dark-chat-bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .light-mode .preview-panel {
+            background: var(--light-chat-bg);
+        }
+        
+        .header {
+            background: var(--dark-header);
+            color: var(--dark-text);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .light-mode .header {
+            background: var(--light-header);
+            color: var(--light-text);
+            border-bottom: 1px solid var(--light-border);
+        }
+        
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--dark-secondary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .light-mode .back-btn {
+            color: var(--light-secondary);
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+        
+        .light-mode .contact-name {
+            color: var(--light-text);
+        }
+        
+        .contact-status {
+            font-size: 13px;
+            color: var(--dark-secondary);
+            margin-top: 3px;
+        }
+        
+        .light-mode .contact-status {
+            color: var(--light-secondary);
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 18px;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode .header-icons {
+            color: var(--light-secondary);
+        }
+        
+        .chat-container {
+            flex: 1;
+            padding: 15px;
+            background-color: var(--dark-chat-bg);
+            background-image: url("https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80");
+            background-blend-mode: overlay;
+            background-size: cover;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .light-mode .chat-container {
+            background-color: var(--light-chat-bg);
+            background-image: url("https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80");
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 8px 12px 4px 12px;
+            border-radius: 8px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .received {
+            align-self: flex-start;
+            background: var(--dark-received);
+            border-top-left-radius: 0;
+            color: var(--dark-text);
+        }
+        
+        .light-mode .received {
+            background: var(--light-received);
+            color: var(--light-text);
+        }
+        
+        .sent {
+            align-self: flex-end;
+            background: var(--dark-sent);
+            border-top-right-radius: 0;
+            color: var(--dark-text);
+        }
+        
+        .light-mode .sent {
+            background: var(--light-sent);
+            color: var(--light-text);
+        }
+        
+        /* Message tails */
+        .received::before {
+            content: "";
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-top: 0px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 8px solid var(--dark-received);
+        }
+        
+        .light-mode .received::before {
+            border-right: 8px solid var(--light-received);
+        }
+        
+        .sent::before {
+            content: "";
+            position: absolute;
+            right: -8px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-top: 0px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 8px solid var(--dark-sent);
+        }
+        
+        .light-mode .sent::before {
+            border-left: 8px solid var(--light-sent);
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: var(--dark-secondary);
+            text-align: right;
+            margin-top: 3px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .light-mode .message-time {
+            color: var(--light-secondary);
+        }
+        
+        .sent .message-time {
+            color: #86bbd0;
+        }
+        
+        .light-mode .sent .message-time {
+            color: #4d7e5c;
+        }
+        
+        /* Blue tick styling */
+        .double-tick {
+            display: inline-block;
+            width: 16px;
+            height: 12px;
+            margin-left: 4px;
+        }
+        
+        .double-tick svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--dark-secondary);
+        }
+        
+        .sent .double-tick svg {
+            fill: #86bbd0;
+        }
+        
+        .light-mode .sent .double-tick svg {
+            fill: #4d7e5c;
+        }
+        
+        .blue-tick .double-tick svg {
+            fill: var(--blue-tick);
+        }
+        
+        /* Keyboard/Input section */
+        .input-area {
+            background: var(--dark-header);
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        .light-mode .input-area {
+            background: var(--light-header);
+            border-top: 1px solid var(--light-border);
+        }
+        
+        .mention-preview {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid var(--whatsapp-green);
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            position: relative;
+            animation: slideDown 0.2s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .light-mode .mention-preview {
+            background: rgba(0,0,0,0.05);
+            border-left: 3px solid #128c7e;
+        }
+        
+        .mention-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mention-name {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--whatsapp-green);
+        }
+        
+        .light-mode .mention-name {
+            color: #128c7e;
+        }
+        
+        .mention-content {
+            font-size: 14px;
+            color: var(--dark-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 3px;
+        }
+        
+        .light-mode .mention-content {
+            color: var(--light-secondary);
+        }
+        
+        .cancel-mention {
+            background: none;
+            border: none;
+            color: var(--dark-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+        
+        .light-mode .cancel-mention {
+            color: var(--light-secondary);
+        }
+        
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .input-icons {
+            display: flex;
+            gap: 15px;
+            color: var(--dark-secondary);
+            font-size: 22px;
+        }
+        
+        .light-mode .input-icons {
+            color: var(--light-secondary);
+        }
+        
+        .message-input {
+            flex: 1;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 20px;
+            font-size: 15px;
+            outline: none;
+            background: var(--dark-input);
+            color: var(--dark-text);
+        }
+        
+        .light-mode .message-input {
+            background: var(--light-input);
+            color: var(--light-text);
+        }
+        
+        .send-btn {
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .send-btn:hover {
+            background: #008069;
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            color: var(--whatsapp-green);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--dark-border);
+        }
+        
+        .light-mode .panel-title {
+            color: #128c7e;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode label {
+            color: var(--light-secondary);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            font-size: 15px;
+            background: var(--dark-input);
+            color: var(--dark-text);
+        }
+        
+        .light-mode input, .light-mode select {
+            background: var(--light-input);
+            color: var(--light-text);
+            border-color: var(--light-border);
+        }
+        
+        .btn {
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #008069;
+        }
+        
+        .light-mode .btn {
+            background: #128c7e;
+        }
+        
+        .light-mode .btn:hover {
+            background: #0e766a;
+        }
+        
+        .btn-secondary {
+            background: var(--dark-input);
+        }
+        
+        .light-mode .btn-secondary {
+            background: #e0e0e0;
+            color: var(--light-text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--dark-header);
+        }
+        
+        .light-mode .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .message-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .message-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            background: var(--dark-input);
+            color: var(--dark-text);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .light-mode .message-btn {
+            background: var(--light-input);
+            color: var(--light-text);
+            border-color: var(--light-border);
+        }
+        
+        .message-btn:hover {
+            background: var(--dark-header);
+        }
+        
+        .light-mode .message-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .screenshot-btn {
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: transform 0.2s, background 0.3s;
+        }
+        
+        .screenshot-btn:hover {
+            transform: scale(1.1);
+            background: #008069;
+        }
+        
+        .light-mode .screenshot-btn {
+            background: #25d366;
+        }
+        
+        .light-mode .screenshot-btn:hover {
+            background: #1fc15a;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--whatsapp-green);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+            z-index: 1000;
+        }
+        
+        .light-mode .notification {
+            background: #25d366;
+        }
+        
+        @keyframes slideIn {
+            from { top: -50px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: var(--dark-secondary);
+            text-align: center;
+            margin: 10px 0;
+            background: rgba(134, 150, 160, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .light-mode .timestamp {
+            color: var(--light-secondary);
+            background: rgba(102, 119, 129, 0.2);
+        }
+        
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            background: var(--dark-header);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 10;
+            width: 300px;
+            height: 250px;
+            overflow-y: auto;
+        }
+        
+        .light-mode .emoji-picker {
+            background: var(--light-header);
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+        
+        .emoji {
+            font-size: 20px;
+            text-align: center;
+            padding: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 5px;
+        }
+        
+        .emoji:hover {
+            background: var(--dark-input);
+        }
+        
+        .light-mode .emoji:hover {
+            background: #f0f0f0;
+        }
+        
+        .attachment-menu {
+            position: absolute;
+            bottom: 70px;
+            left: 20px;
+            background: var(--dark-header);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 10;
+            width: 200px;
+        }
+        
+        .light-mode .attachment-menu {
+            background: var(--light-header);
+        }
+        
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--dark-text);
+        }
+        
+        .light-mode .attachment-item {
+            color: var(--light-text);
+        }
+        
+        .attachment-item:hover {
+            background: var(--dark-input);
+        }
+        
+        .light-mode .attachment-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .attachment-item i {
+            font-size: 20px;
+        }
+        
+        .attachment-item:nth-child(1) i { color: var(--whatsapp-green); }
+        .attachment-item:nth-child(2) i { color: #e83e8c; }
+        .attachment-item:nth-child(3) i { color: #f1c40f; }
+        .attachment-item:nth-child(4) i { color: #3498db; }
+        
+        .status-indicator {
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        
+        .typing-indicator {
+            background: var(--dark-received);
+            color: var(--dark-secondary);
+            padding: 10px 15px;
+            border-radius: 8px;
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .light-mode .typing-indicator {
+            background: var(--light-received);
+            color: var(--light-secondary);
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--dark-secondary);
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 1px;
+        }
+        
+        .light-mode .typing-indicator span {
+            background: var(--light-secondary);
+        }
+        
+        .typing-indicator span:nth-child(1) { animation: bounce 1.3s infinite; }
+        .typing-indicator span:nth-child(2) { animation: bounce 1.3s infinite 0.2s; }
+        .typing-indicator span:nth-child(3) { animation: bounce 1.3s infinite 0.4s; }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .message-options {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--dark-header);
+            border-radius: 20px;
+            padding: 5px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .light-mode .message-options {
+            background: var(--light-header);
+        }
+        
+        .message:hover .message-options {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .message-options i {
+            font-size: 14px;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode .message-options i {
+            color: var(--light-secondary);
+        }
+        
+        .message-options i:hover {
+            background: var(--dark-input);
+        }
+        
+        .light-mode .message-options i:hover {
+            background: #f0f0f0;
+        }
+        
+        .reaction {
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            background: var(--dark-header);
+            border-radius: 10px;
+            padding: 3px 6px;
+            font-size: 12px;
+            display: flex;
+            gap: 3px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        
+        .light-mode .reaction {
+            background: var(--light-header);
+        }
+        
+        .reaction.visible {
+            display: flex;
+        }
+        
+        .reaction span {
+            cursor: pointer;
+        }
+        
+        .reaction-options {
+            position: absolute;
+            bottom: -40px;
+            right: 0;
+            background: var(--dark-header);
+            border-radius: 20px;
+            padding: 5px;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
+        
+        .light-mode .reaction-options {
+            background: var(--light-header);
+        }
+        
+        .reaction-options.visible {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .reaction-options span {
+            font-size: 16px;
+            padding: 3px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .reaction-options span:hover {
+            transform: scale(1.3);
+        }
+        
+        .mentioned-message {
+            background: rgba(0, 0, 0, 0.1);
+            border-left: 3px solid var(--whatsapp-green);
+            padding: 8px 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode .mentioned-message {
+            color: var(--light-secondary);
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 3px solid #128c7e;
+        }
+        
+        .mentioned-name {
+            font-weight: 500;
+            color: var(--whatsapp-green);
+        }
+        
+        .light-mode .mentioned-name {
+            color: #128c7e;
+        }
+        
+        .date-indicator {
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .date-indicator span {
+            background: rgba(134, 150, 160, 0.2);
+            color: var(--dark-secondary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .light-mode .date-indicator span {
+            background: rgba(102, 119, 129, 0.2);
+            color: var(--light-secondary);
+        }
+        
+        .profile-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .profile-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--dark-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-upload-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--dark-input);
+            border-radius: 8px;
+            color: var(--dark-text);
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .light-mode .profile-upload-btn {
+            background: var(--light-input);
+            color: var(--light-text);
+        }
+        
+        .profile-upload-btn:hover {
+            background: var(--dark-header);
+        }
+        
+        .light-mode .profile-upload-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .hidden-file-input {
+            display: none;
+        }
+        
+        .message-content {
+            margin-bottom: 4px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .generator-panel {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--dark-border);
+                max-height: 300px;
+            }
+            
+            .light-mode .generator-panel {
+                border-bottom: 1px solid var(--light-border);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .app-container {
+                height: 95vh;
+            }
+            
+            .top-bar {
+                padding: 10px 15px;
+            }
+            
+            .logo {
+                font-size: 18px;
+            }
+            
+            .theme-switch {
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .profile-pic {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .contact-name {
+                font-size: 16px;
+            }
+            
+            .header-icons {
+                font-size: 16px;
+                gap: 15px;
+            }
+            
+            .screenshot-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px;
+                font-size: 20px;
+            }
+            
+            .input-icons {
+                gap: 10px;
+            }
+            
+            .message-input {
+                padding: 10px 15px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .logo span {
+                display: none;
+            }
+            
+            .logo i {
+                font-size: 28px;
+            }
+            
+            .theme-switch span {
+                display: none;
+            }
+            
+            .theme-switch {
+                padding: 8px;
+                width: 40px;
+                height: 40px;
+                justify-content: center;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(134, 150, 160, 0.3);
+            border-radius: 4px;
+        }
+        
+        .light-mode ::-webkit-scrollbar-thumb {
+            background: rgba(102, 119, 129, 0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(134, 150, 160, 0.5);
+        }
+        
+        .light-mode ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 119, 129, 0.5);
+        }
+        
+        /* Theme switch in left panel */
+        .theme-switch-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        .light-mode .theme-switch-container {
+            border-top: 1px solid var(--light-border);
+        }
+        
+        .theme-switch-btn {
+            background: var(--dark-input);
+            border: none;
+            color: var(--dark-text);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .light-mode .theme-switch-btn {
+            background: #e0e0e0;
+            color: var(--light-text);
+        }
+        
+        .theme-switch-btn:hover {
+            background: var(--dark-header);
+        }
+        
+        .light-mode .theme-switch-btn:hover {
+            background: #d0d0d0;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="app-container">
+        <div class="top-bar">
+            <div class="logo">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp Chat Generator</span>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="generator-panel">
+                <h2 class="panel-title">Chat Settings</h2>
+                
+                <div class="form-group">
+                    <label for="contact-name">Contact Name</label>
+                    <input type="text" id="contact-name" value="Sarah Johnson">
+                </div>
+                
+                <div class="form-group">
+                    <label for="contact-status">Status</label>
+                    <input type="text" id="contact-status" value="Online">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-pic">Profile Picture</label>
+                    <div class="profile-upload">
+                        <div class="profile-preview" id="profile-preview">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-upload-btn" id="profile-upload-btn">Upload Image</div>
+                        <input type="file" id="profile-upload" class="hidden-file-input" accept="image/*">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="chat-theme">Chat Background</label>
+                    <select id="chat-theme">
+                        <option value="default">Default</option>
+                        <option value="dark">Dark Mode</option>
+                        <option value="blue">Blue</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                </div>
+                
+                <h2 class="panel-title" style="margin-top: 30px;">Add Messages</h2>
+                
+                <div class="form-group">
+                    <label for="new-message">Your Message</label>
+                    <input type="text" id="new-message" placeholder="Type your message...">
+                </div>
+                
+                <div class="message-controls">
+                    <button class="message-btn" id="add-sent">Add as Sent</button>
+                    <button class="message-btn" id="add-received">Add as Received</button>
+                </div>
+                
+                <button class="btn btn-secondary" id="clear-chat">Clear Chat</button>
+                <button class="btn" id="add-sample">Add Sample Conversation</button>
+                
+                <!-- Theme switch in left panel -->
+                <div class="theme-switch-container">
+                    <button class="theme-switch-btn" id="theme-switch">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="preview-panel" id="chat-preview">
+                <div class="header">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <div class="profile-pic">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-name">Sarah Johnson</div>
+                        <div class="contact-status">Online</div>
+                    </div>
+                    <div class="header-icons">
+                        <i class="fas fa-video"></i>
+                        <i class="fas fa-phone"></i>
+                        <i class="fas fa-ellipsis-v"></i>
+                    </div>
+                </div>
+                
+                <div class="chat-container" id="chat-container">
+                    <div class="date-indicator">
+                        <span>Today</span>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            <div class="mentioned-message">
+                                <div class="mentioned-name">You</div>
+                                <div>Check out this new chat generator!</div>
+                            </div>
+                            Hey there! How are you doing?
+                        </div>
+                        <div class="message-time">10:30 AM</div>
+                        <div class="message-options">
+                            <i class="fas fa-reply reply-btn"></i>
+                            <i class="fas fa-trash-alt delete-btn"></i>
+                            <i class="fas fa-smile react-btn"></i>
+                        </div>
+                        <div class="reaction visible">❤️</div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-content">
+                            I'm doing great! Just working on this ultra-realistic WhatsApp generator
+                        </div>
+                        <div class="message-time">10:31 AM 
+                            <span class="double-tick blue-tick">
+                                <svg viewBox="0 0 16 12">
+                                    <path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="message-options">
+                            <i class="fas fa-reply reply-btn"></i>
+                            <i class="fas fa-trash-alt delete-btn"></i>
+                            <i class="fas fa-smile react-btn"></i>
+                        </div>
+                        <div class="reaction visible">👍</div>
+                    </div>
+                    
+                    <div class="date-indicator">
+                        <span>Yesterday</span>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            That looks amazing! How did you make it so realistic?
+                        </div>
+                        <div class="message-time">10:32 AM</div>
+                        <div class="message-options">
+                            <i class="fas fa-reply reply-btn"></i>
+                            <i class="fas fa-trash-alt delete-btn"></i>
+                            <i class="fas fa-smile react-btn"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-content">
+                            Lots of attention to detail - chat bubbles with tails, authentic background patterns, status indicators, and more!
+                        </div>
+                        <div class="message-time">10:33 AM 
+                            <span class="double-tick blue-tick">
+                                <svg viewBox="0 0 16 12">
+                                    <path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="message-options">
+                            <i class="fas fa-reply reply-btn"></i>
+                            <i class="fas fa-trash-alt delete-btn"></i>
+                            <i class="fas fa-smile react-btn"></i>
+                        </div>
+                        <div class="reaction visible">😍</div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            Wow, the blue double ticks look so authentic! 😍
+                        </div>
+                        <div class="message-time">10:34 AM</div>
+                        <div class="message-options">
+                            <i class="fas fa-reply reply-btn"></i>
+                            <i class="fas fa-trash-alt delete-btn"></i>
+                            <i class="fas fa-smile react-btn"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Keyboard/Input section -->
+                <div class="input-area">
+                    <!-- Mention preview section -->
+                    <div class="mention-preview" id="mention-preview">
+                        <div class="mention-header">
+                            <span>Replying to <span class="mention-name" id="mention-name">Sarah Johnson</span></span>
+                            <button class="cancel-mention" id="cancel-mention">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mention-content" id="mention-content">This is the message being replied to</div>
+                    </div>
+                    
+                    <div class="input-container">
+                        <div class="input-icons">
+                            <i class="fas fa-plus-circle" id="attachment-btn"></i>
+                            <i class="far fa-smile" id="emoji-btn"></i>
+                        </div>
+                        <input type="text" class="message-input" placeholder="Type a message" id="message-input" autofocus>
+                        <button class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emoji-picker" id="emoji-picker">
+                    <div class="emoji-grid">
+                        <!-- Emojis will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="attachment-menu" id="attachment-menu">
+                    <div class="attachment-item">
+                        <i class="fas fa-image"></i>
+                        <span>Photo & Video</span>
+                    </div>
+                    <div class="attachment-item">
+                        <i class="fas fa-file"></i>
+                        <span>Document</span>
+                    </div>
+                    <div class="attachment-item">
+                        <i class="fas fa-camera"></i>
+                        <span>Camera</span>
+                    </div>
+                    <div class="attachment-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Payment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="screenshot-btn" id="screenshot-btn">
+        <i class="fas fa-camera"></i>
+    </button>
+    
+    <script>
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus on the message input
+            document.getElementById('message-input').focus();
+            
+            // Generate emojis for picker
+            const emojiContainer = document.getElementById('emoji-picker');
+            const emojis = ['😀', '😂', '😍', '🤔', '😎', '🥳', '😊', '🙂', '😉', '😘', '🥰', '😋', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😒', '😓', '😔', '😕', '🙃', '🫠', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '😬', '😰', '😱', '😳', '🤯', '😵', '😡', '😠', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤠', '🥳', '🥸', '😈', '👿', '👹', '👺', '💀', '☠️', '💩', '🤡', '👻', '👽', '👾', '🤖', '💌', '💘', '💝', '💖', '💗', '💓', '💞', '💕', '💟', '❣️', '💔', '❤️‍🔥', '❤️‍🩹', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💯', '💢', '💥', '💫', '💦', '💨', '🕳️', '💣', '💬', '👁️‍🗨️', '🗨️', '🗯️', '💭', '💤'];
+            
+            emojis.forEach(emoji => {
+                const emojiElement = document.createElement('div');
+                emojiElement.className = 'emoji';
+                emojiElement.textContent = emoji;
+                emojiElement.addEventListener('click', () => {
+                    document.getElementById('message-input').value += emoji;
+                    document.getElementById('message-input').focus();
+                });
+                emojiContainer.querySelector('.emoji-grid').appendChild(emojiElement);
+            });
+            
+            // Toggle emoji picker
+            document.getElementById('emoji-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const picker = document.getElementById('emoji-picker');
+                const attachmentMenu = document.getElementById('attachment-menu');
+                picker.style.display = picker.style.display === 'block' ? 'none' : 'block';
+                attachmentMenu.style.display = 'none';
+            });
+            
+            // Toggle attachment menu
+            document.getElementById('attachment-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const menu = document.getElementById('attachment-menu');
+                const emojiPicker = document.getElementById('emoji-picker');
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                emojiPicker.style.display = 'none';
+            });
+            
+            // Close menus when clicking elsewhere
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#attachment-btn') && !e.target.closest('#attachment-menu')) {
+                    document.getElementById('attachment-menu').style.display = 'none';
+                }
+                if (!e.target.closest('#emoji-btn') && !e.target.closest('#emoji-picker')) {
+                    document.getElementById('emoji-picker').style.display = 'none';
+                }
+            });
+            
+            // Theme toggle
+            document.getElementById('theme-switch').addEventListener('click', function() {
+                const body = document.body;
+                const isLight = body.classList.contains('light-mode');
+                body.classList.toggle('light-mode', !isLight);
+                this.innerHTML = isLight ? 
+                    '<i class="fas fa-moon"></i> <span>Dark Mode</span>' : 
+                    '<i class="fas fa-sun"></i> <span>Light Mode</span>';
+            });
+            
+            // Update contact info
+            document.getElementById('contact-name').addEventListener('input', function() {
+                document.querySelector('.contact-name').textContent = this.value;
+            });
+            
+            document.getElementById('contact-status').addEventListener('input', function() {
+                document.querySelector('.contact-status').textContent = this.value;
+            });
+            
+            // Profile picture upload
+            const profileUpload = document.getElementById('profile-upload');
+            const profilePreview = document.getElementById('profile-preview');
+            const profilePic = document.querySelector('.profile-pic');
+            
+            document.getElementById('profile-upload-btn').addEventListener('click', function() {
+                profileUpload.click();
+            });
+            
+            profileUpload.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        // Update preview in settings panel
+                        profilePreview.innerHTML = '';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        profilePreview.appendChild(img);
+                        
+                        // Update profile picture in chat
+                        profilePic.innerHTML = '';
+                        const chatImg = document.createElement('img');
+                        chatImg.src = e.target.result;
+                        profilePic.appendChild(chatImg);
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            
+            // Add messages
+            document.getElementById('add-sent').addEventListener('click', addSentMessage);
+            document.getElementById('add-received').addEventListener('click', addReceivedMessage);
+            document.getElementById('new-message').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addSentMessage();
+                }
+            });
+            
+            document.getElementById('message-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addSentMessageFromInput();
+                }
+            });
+            
+            document.querySelector('.send-btn').addEventListener('click', addSentMessageFromInput);
+            
+            // Event delegation for message options
+            document.getElementById('chat-container').addEventListener('click', function(e) {
+                // Delete button
+                if (e.target.classList.contains('delete-btn')) {
+                    const message = e.target.closest('.message');
+                    message.style.animation = 'fadeOut 0.3s forwards';
+                    setTimeout(() => {
+                        message.remove();
+                        showNotification('Message deleted');
+                    }, 300);
+                }
+                
+                // Reply (mention) button
+                if (e.target.classList.contains('reply-btn')) {
+                    const message = e.target.closest('.message');
+                    const content = message.querySelector('.message-content').textContent;
+                    const isSent = message.classList.contains('sent');
+                    
+                    // Set mention preview
+                    const mentionPreview = document.getElementById('mention-preview');
+                    const mentionName = document.getElementById('mention-name');
+                    const mentionContent = document.getElementById('mention-content');
+                    
+                    mentionName.textContent = isSent ? 'You' : document.querySelector('.contact-name').textContent;
+                    mentionContent.textContent = content;
+                    mentionPreview.style.display = 'block';
+                    
+                    // Store the quoted message data
+                    activeMention = {
+                        sender: isSent ? 'You' : document.querySelector('.contact-name').textContent,
+                        content: content
+                    };
+                    
+                    // Focus on input
+                    document.getElementById('message-input').focus();
+                }
+                
+                // Reaction button
+                if (e.target.classList.contains('react-btn')) {
+                    const message = e.target.closest('.message');
+                    const reactionOptions = message.querySelector('.reaction-options');
+                    reactionOptions.classList.toggle('visible');
+                    
+                    // Hide other reaction options
+                    document.querySelectorAll('.reaction-options').forEach(options => {
+                        if (options !== reactionOptions) {
+                            options.classList.remove('visible');
+                        }
+                    });
+                }
+                
+                // Reaction option selection
+                if (e.target.classList.contains('reaction-option')) {
+                    const message = e.target.closest('.message');
+                    const reaction = message.querySelector('.reaction');
+                    reaction.textContent = e.target.textContent;
+                    reaction.classList.add('visible');
+                    
+                    // Hide reaction options
+                    message.querySelector('.reaction-options').classList.remove('visible');
+                }
+            });
+            
+            // Close reaction options when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('reaction-option') && 
+                    !e.target.classList.contains('react-btn')) {
+                    document.querySelectorAll('.reaction-options').forEach(options => {
+                        options.classList.remove('visible');
+                    });
+                }
+            });
+            
+            // Cancel mention
+            document.getElementById('cancel-mention').addEventListener('click', function() {
+                const mentionPreview = document.getElementById('mention-preview');
+                mentionPreview.style.display = 'none';
+                activeMention = null;
+            });
+            
+            // Store active mention
+            let activeMention = null;
+            
+            function addSentMessageFromInput() {
+                const message = document.getElementById('message-input').value;
+                if (!message) return;
+                
+                // Check if we're replying to a message
+                let formattedMessage = message;
+                if (activeMention) {
+                    formattedMessage = `
+                        <div class="mentioned-message">
+                            <div class="mentioned-name">${activeMention.sender}</div>
+                            <div>${activeMention.content}</div>
+                        </div>
+                        ${message}
+                    `;
+                    
+                    // Clear mention
+                    document.getElementById('mention-preview').style.display = 'none';
+                    activeMention = null;
+                }
+                
+                addMessage(formattedMessage, 'sent');
+                document.getElementById('message-input').value = '';
+                document.getElementById('message-input').focus();
+                scrollToBottom();
+            }
+            
+            function addSentMessage() {
+                const message = document.getElementById('new-message').value;
+                if (!message) return;
+                
+                addMessage(message, 'sent');
+                document.getElementById('new-message').value = '';
+                document.getElementById('new-message').focus();
+                scrollToBottom();
+            }
+            
+            function addReceivedMessage() {
+                const message = document.getElementById('new-message').value;
+                if (!message) return;
+                
+                addMessage(message, 'received');
+                document.getElementById('new-message').value = '';
+                document.getElementById('new-message').focus();
+                scrollToBottom();
+            }
+            
+            function addMessage(text, type) {
+                const chatContainer = document.getElementById('chat-container');
+                const time = getCurrentTime();
+                
+                const messageEl = document.createElement('div');
+                messageEl.className = `message ${type}`;
+                
+                // Add random message status for sent messages
+                let statusHtml = '';
+                if (type === 'sent') {
+                    const statusOptions = [
+                        `<span class="double-tick"><svg viewBox="0 0 16 12"><path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path></svg></span>`,
+                        `<span class="double-tick"><svg viewBox="0 0 16 12"><path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path></svg></span>`,
+                        `<span class="double-tick blue-tick"><svg viewBox="0 0 16 12"><path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path></svg></span>`
+                    ];
+                    statusHtml = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+                }
+                
+                messageEl.innerHTML = `
+                    <div class="message-content">${text}</div>
+                    <div class="message-time">${time} ${statusHtml}</div>
+                    <div class="message-options">
+                        <i class="fas fa-reply reply-btn"></i>
+                        <i class="fas fa-trash-alt delete-btn"></i>
+                        <i class="fas fa-smile react-btn"></i>
+                    </div>
+                    <div class="reaction-options">
+                        <span class="reaction-option">👍</span>
+                        <span class="reaction-option">❤️</span>
+                        <span class="reaction-option">😂</span>
+                        <span class="reaction-option">😮</span>
+                        <span class="reaction-option">😢</span>
+                        <span class="reaction-option">👏</span>
+                    </div>
+                    <div class="reaction"></div>
+                `;
+                
+                chatContainer.appendChild(messageEl);
+                scrollToBottom();
+            }
+            
+            function getCurrentTime() {
+                const now = new Date();
+                return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            
+            // Clear chat
+            document.getElementById('clear-chat').addEventListener('click', function() {
+                const chatContainer = document.getElementById('chat-container');
+                chatContainer.innerHTML = '<div class="date-indicator"><span>Today</span></div>';
+                showNotification('Chat cleared successfully');
+            });
+            
+            // Add sample conversation
+            document.getElementById('add-sample').addEventListener('click', function() {
+                const chatContainer = document.getElementById('chat-container');
+                
+                // Clear existing messages except the date indicator
+                const existingDate = chatContainer.querySelector('.date-indicator');
+                chatContainer.innerHTML = '';
+                if (existingDate) {
+                    chatContainer.appendChild(existingDate);
+                } else {
+                    chatContainer.innerHTML = '<div class="date-indicator"><span>Today</span></div>';
+                }
+                
+                // Add sample messages
+                const messages = [
+                    { type: 'received', content: 'This looks exactly like WhatsApp!' },
+                    { type: 'sent', content: "Yes, it's designed to be ultra-realistic with all the details." },
+                    { type: 'received', content: 'The chat bubbles with tails and status indicators are perfect!' },
+                    { type: 'sent', content: 'Try deleting messages or adding reactions to see all the features!' },
+                ];
+                
+                messages.forEach(msg => {
+                    addMessage(msg.content, msg.type);
+                });
+                
+                showNotification('Sample conversation loaded');
+                scrollToBottom();
+            });
+            
+            // Take screenshot
+            document.getElementById('screenshot-btn').addEventListener('click', function() {
+                html2canvas(document.getElementById('chat-preview')).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'whatsapp-chat-screenshot.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    showNotification('Screenshot downloaded!');
+                });
+            });
+            
+            // Scroll to bottom
+            function scrollToBottom() {
+                const container = document.getElementById('chat-container');
+                container.scrollTop = container.scrollHeight;
+            }
+            
+            // Show notification
+            function showNotification(text) {
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = text;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'fadeOut 0.5s forwards';
+                    setTimeout(() => notification.remove(), 500);
+                }, 2500);
+            }
+            
+            // Initialize
+            scrollToBottom();
+        });
+    </script>
+</body>
+</html>
