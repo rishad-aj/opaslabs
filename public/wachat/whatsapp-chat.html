@@ -1410,7 +1410,7 @@
     </div>
     
     <button class="screenshot-btn" id="screenshot-btn">
-        <i class="fas fa-camera"></i>
+        <i class="fas fa-download"></i>
     </button>
     
     <script>
@@ -1740,14 +1740,72 @@
                 scrollToBottom();
             });
             
-            // Take screenshot
+            // Take screenshot with 9:16 aspect ratio
             document.getElementById('screenshot-btn').addEventListener('click', function() {
-                html2canvas(document.getElementById('chat-preview')).then(canvas => {
+                const previewElement = document.getElementById('chat-preview');
+                const originalWidth = previewElement.offsetWidth;
+                const originalHeight = previewElement.offsetHeight;
+                
+                // Calculate target dimensions for 9:16 ratio
+                const targetRatio = 9/16;
+                let targetWidth, targetHeight;
+                
+                if (originalWidth / originalHeight > targetRatio) {
+                    // Too wide - adjust width
+                    targetHeight = originalHeight;
+                    targetWidth = targetHeight * targetRatio;
+                } else {
+                    // Too tall - adjust height
+                    targetWidth = originalWidth;
+                    targetHeight = targetWidth / targetRatio;
+                }
+                
+                // Create temporary canvas for cropping
+                html2canvas(previewElement, {
+                    scale: 2,
+                    logging: false,
+                    useCORS: true
+                }).then(canvas => {
+                    // Create new canvas with fixed 9:16 ratio
+                    const croppedCanvas = document.createElement('canvas');
+                    const ctx = croppedCanvas.getContext('2d');
+                    
+                    // Set dimensions to 9:16 ratio
+                    croppedCanvas.width = 900;  // Fixed width for 9:16
+                    croppedCanvas.height = 1600; // Fixed height for 9:16
+                    
+                    // Calculate scaling factors
+                    const scaleX = croppedCanvas.width / targetWidth;
+                    const scaleY = croppedCanvas.height / targetHeight;
+                    const scale = Math.min(scaleX, scaleY);
+                    
+                    // Calculate position to center the image
+                    const x = (croppedCanvas.width - targetWidth * scale) / 2;
+                    const y = (croppedCanvas.height - targetHeight * scale) / 2;
+                    
+                    // Draw the original canvas onto the new canvas with proper scaling
+                    ctx.fillStyle = document.body.classList.contains('light-mode') ? 
+                        'var(--light-chat-bg)' : 'var(--dark-chat-bg)';
+                    ctx.fillRect(0, 0, croppedCanvas.width, croppedCanvas.height);
+                    ctx.drawImage(
+                        canvas, 
+                        0, 
+                        0, 
+                        originalWidth, 
+                        originalHeight,
+                        x,
+                        y,
+                        targetWidth * scale,
+                        targetHeight * scale
+                    );
+                    
+                    // Create download link
                     const link = document.createElement('a');
                     link.download = 'whatsapp-chat-screenshot.png';
-                    link.href = canvas.toDataURL('image/png');
+                    link.href = croppedCanvas.toDataURL('image/png');
                     link.click();
-                    showNotification('Screenshot downloaded!');
+                    
+                    showNotification('Screenshot downloaded in 9:16 ratio!');
                 });
             });
             
