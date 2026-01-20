@@ -214,9 +214,10 @@
             flex: 1;
             padding: 15px;
             background-color: var(--dark-chat-bg);
-            background-image: url("https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80");
+            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_dark.png");
             background-blend-mode: overlay;
             background-size: cover;
+            background-position: center;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -225,7 +226,7 @@
         
         .light-mode .chat-container {
             background-color: var(--light-chat-bg);
-            background-image: url("https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80");
+            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_light.png");
         }
         
         .message {
@@ -871,6 +872,7 @@
             gap: 3px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: none;
+            cursor: pointer;
         }
         
         .light-mode .reaction {
@@ -911,10 +913,16 @@
             padding: 3px;
             cursor: pointer;
             transition: transform 0.2s;
+            border-radius: 5px;
         }
         
         .reaction-options span:hover {
             transform: scale(1.3);
+            background: var(--dark-input);
+        }
+        
+        .light-mode .reaction-options span:hover {
+            background: #f0f0f0;
         }
         
         .mentioned-message {
@@ -1018,6 +1026,53 @@
             margin-bottom: 4px;
         }
         
+        /* Chat themes with individual wallpapers */
+        .chat-container.default-bg {
+            background-color: var(--dark-chat-bg);
+            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_dark.png");
+        }
+        
+        .light-mode .chat-container.default-bg {
+            background-color: var(--light-chat-bg);
+            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_light.png");
+        }
+        
+        .chat-container.dark-bg {
+            background-color: #000000;
+            background-image: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-blend-mode: overlay;
+        }
+        
+        .light-mode .chat-container.dark-bg {
+            background-color: #222222;
+            background-image: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-blend-mode: overlay;
+        }
+        
+        .chat-container.blue-bg {
+            background-color: #0a2540;
+            background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-blend-mode: overlay;
+        }
+        
+        .light-mode .chat-container.blue-bg {
+            background-color: #d4e6ff;
+            background-image: url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-blend-mode: overlay;
+        }
+        
+        .chat-container.purple-bg {
+            background-color: #2d1b69;
+            background-image: url("https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-blend-mode: overlay;
+        }
+        
+        .light-mode .chat-container.purple-bg {
+            background-color: #e8dfff;
+            background-image: url("https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-blend-mode: overlay;
+        }
+        
         /* Responsive design */
         @media (max-width: 900px) {
             .container {
@@ -1091,6 +1146,18 @@
             .message-input {
                 padding: 10px 15px;
             }
+            
+            .emoji-picker {
+                width: 250px;
+                height: 200px;
+                right: 10px;
+                bottom: 60px;
+            }
+            
+            .attachment-menu {
+                left: 10px;
+                bottom: 60px;
+            }
         }
         
         @media (max-width: 400px) {
@@ -1111,6 +1178,11 @@
                 width: 40px;
                 height: 40px;
                 justify-content: center;
+            }
+            
+            .emoji-picker {
+                width: 200px;
+                height: 180px;
             }
         }
         
@@ -1180,13 +1252,112 @@
         .light-mode .theme-switch-btn:hover {
             background: #d0d0d0;
         }
+        
+        /* Focus styles for accessibility */
+        button:focus,
+        input:focus,
+        select:focus {
+            outline: 2px solid var(--whatsapp-green);
+            outline-offset: 2px;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Remove reaction button */
+        .remove-reaction {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .reaction:hover .remove-reaction {
+            display: flex;
+        }
+        
+        /* Force solid background for messages */
+        .sent {
+            background-color: var(--dark-sent) !important;
+        }
+        
+        .light-mode .sent {
+            background-color: var(--light-sent) !important;
+        }
+        
+        /* Emoji reaction hover support */
+        .react-btn:hover + .reaction-options,
+        .reaction-options:hover {
+            display: flex !important;
+        }
+        
+        /* Hover states for message options */
+        .message:hover .reaction-options {
+            display: flex;
+        }
+        
+        /* Custom scrollbar for chat container */
+        .chat-container {
+            scrollbar-width: thin;
+            scrollbar-color: var(--dark-border) transparent;
+        }
+        
+        /* WhatsApp-like message hover effect */
+        .message:hover {
+            opacity: 0.95;
+            transition: opacity 0.2s;
+        }
+        
+        /* Profile preview in side menu should match chat profile */
+        #profile-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--dark-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        #profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .light-mode #profile-preview {
+            background: var(--light-input);
+        }
     </style>
 </head>
-<body class="dark-mode">
+<body>
     <div class="app-container">
         <div class="top-bar">
             <div class="logo">
-                <i class="fab fa-whatsapp"></i>
+                <i class="fab fa-whatsapp" aria-hidden="true"></i>
                 <span>WhatsApp Chat Generator</span>
             </div>
         </div>
@@ -1209,18 +1380,18 @@
                     <label for="profile-pic">Profile Picture</label>
                     <div class="profile-upload">
                         <div class="profile-preview" id="profile-preview">
-                            <i class="fas fa-user"></i>
+                            <i class="fas fa-user" aria-hidden="true"></i>
                         </div>
                         <div class="profile-upload-btn" id="profile-upload-btn">Upload Image</div>
-                        <input type="file" id="profile-upload" class="hidden-file-input" accept="image/*">
+                        <input type="file" id="profile-upload" class="hidden-file-input" accept="image/*" aria-label="Upload profile picture">
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="chat-theme">Chat Background</label>
                     <select id="chat-theme">
-                        <option value="default">Default</option>
-                        <option value="dark">Dark Mode</option>
+                        <option value="default">Default (WhatsApp)</option>
+                        <option value="dark">Dark</option>
                         <option value="blue">Blue</option>
                         <option value="purple">Purple</option>
                     </select>
@@ -1243,31 +1414,31 @@
                 
                 <!-- Theme switch in left panel -->
                 <div class="theme-switch-container">
-                    <button class="theme-switch-btn" id="theme-switch">
-                        <i class="fas fa-moon"></i>
-                        <span>Dark Mode</span>
+                    <button class="theme-switch-btn" id="theme-switch" aria-label="Toggle theme">
+                        <i class="fas fa-moon" aria-hidden="true"></i>
+                        <span>Switch to Light Mode</span>
                     </button>
                 </div>
             </div>
             
             <div class="preview-panel" id="chat-preview">
                 <div class="header">
-                    <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <button class="back-btn" aria-label="Go back"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>
                     <div class="profile-pic">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user" aria-hidden="true"></i>
                     </div>
                     <div class="contact-info">
                         <div class="contact-name">Sarah Johnson</div>
                         <div class="contact-status">Online</div>
                     </div>
                     <div class="header-icons">
-                        <i class="fas fa-video"></i>
-                        <i class="fas fa-phone"></i>
-                        <i class="fas fa-ellipsis-v"></i>
+                        <i class="fas fa-video" aria-label="Start video call"></i>
+                        <i class="fas fa-phone" aria-label="Start voice call"></i>
+                        <i class="fas fa-ellipsis-v" aria-label="More options"></i>
                     </div>
                 </div>
                 
-                <div class="chat-container" id="chat-container">
+                <div class="chat-container default-bg" id="chat-container">
                     <div class="date-indicator">
                         <span>Today</span>
                     </div>
@@ -1282,11 +1453,18 @@
                         </div>
                         <div class="message-time">10:30 AM</div>
                         <div class="message-options">
-                            <i class="fas fa-reply reply-btn"></i>
-                            <i class="fas fa-trash-alt delete-btn"></i>
-                            <i class="fas fa-smile react-btn"></i>
+                            <i class="fas fa-reply reply-btn" aria-label="Reply to message"></i>
+                            <i class="fas fa-trash-alt delete-btn" aria-label="Delete message"></i>
+                            <i class="fas fa-smile react-btn" aria-label="Add reaction"></i>
                         </div>
-                        <div class="reaction visible">❤️</div>
+                        <div class="reaction-options">
+                            <span class="reaction-option">👍</span>
+                            <span class="reaction-option">❤️</span>
+                            <span class="reaction-option">😂</span>
+                            <span class="reaction-option">😮</span>
+                            <span class="reaction-option">😢</span>
+                        </div>
+                        <div class="reaction visible">❤️<span class="remove-reaction">×</span></div>
                     </div>
                     
                     <div class="message sent">
@@ -1301,11 +1479,18 @@
                             </span>
                         </div>
                         <div class="message-options">
-                            <i class="fas fa-reply reply-btn"></i>
-                            <i class="fas fa-trash-alt delete-btn"></i>
-                            <i class="fas fa-smile react-btn"></i>
+                            <i class="fas fa-reply reply-btn" aria-label="Reply to message"></i>
+                            <i class="fas fa-trash-alt delete-btn" aria-label="Delete message"></i>
+                            <i class="fas fa-smile react-btn" aria-label="Add reaction"></i>
                         </div>
-                        <div class="reaction visible">👍</div>
+                        <div class="reaction-options">
+                            <span class="reaction-option">👍</span>
+                            <span class="reaction-option">❤️</span>
+                            <span class="reaction-option">😂</span>
+                            <span class="reaction-option">😮</span>
+                            <span class="reaction-option">😢</span>
+                        </div>
+                        <div class="reaction visible">👍<span class="remove-reaction">×</span></div>
                     </div>
                     
                     <div class="date-indicator">
@@ -1318,10 +1503,18 @@
                         </div>
                         <div class="message-time">10:32 AM</div>
                         <div class="message-options">
-                            <i class="fas fa-reply reply-btn"></i>
-                            <i class="fas fa-trash-alt delete-btn"></i>
-                            <i class="fas fa-smile react-btn"></i>
+                            <i class="fas fa-reply reply-btn" aria-label="Reply to message"></i>
+                            <i class="fas fa-trash-alt delete-btn" aria-label="Delete message"></i>
+                            <i class="fas fa-smile react-btn" aria-label="Add reaction"></i>
                         </div>
+                        <div class="reaction-options">
+                            <span class="reaction-option">👍</span>
+                            <span class="reaction-option">❤️</span>
+                            <span class="reaction-option">😂</span>
+                            <span class="reaction-option">😮</span>
+                            <span class="reaction-option">😢</span>
+                        </div>
+                        <div class="reaction"></div>
                     </div>
                     
                     <div class="message sent">
@@ -1336,11 +1529,18 @@
                             </span>
                         </div>
                         <div class="message-options">
-                            <i class="fas fa-reply reply-btn"></i>
-                            <i class="fas fa-trash-alt delete-btn"></i>
-                            <i class="fas fa-smile react-btn"></i>
+                            <i class="fas fa-reply reply-btn" aria-label="Reply to message"></i>
+                            <i class="fas fa-trash-alt delete-btn" aria-label="Delete message"></i>
+                            <i class="fas fa-smile react-btn" aria-label="Add reaction"></i>
                         </div>
-                        <div class="reaction visible">😍</div>
+                        <div class="reaction-options">
+                            <span class="reaction-option">👍</span>
+                            <span class="reaction-option">❤️</span>
+                            <span class="reaction-option">😂</span>
+                            <span class="reaction-option">😮</span>
+                            <span class="reaction-option">😢</span>
+                        </div>
+                        <div class="reaction visible">😍<span class="remove-reaction">×</span></div>
                     </div>
                     
                     <div class="message received">
@@ -1349,10 +1549,18 @@
                         </div>
                         <div class="message-time">10:34 AM</div>
                         <div class="message-options">
-                            <i class="fas fa-reply reply-btn"></i>
-                            <i class="fas fa-trash-alt delete-btn"></i>
-                            <i class="fas fa-smile react-btn"></i>
+                            <i class="fas fa-reply reply-btn" aria-label="Reply to message"></i>
+                            <i class="fas fa-trash-alt delete-btn" aria-label="Delete message"></i>
+                            <i class="fas fa-smile react-btn" aria-label="Add reaction"></i>
                         </div>
+                        <div class="reaction-options">
+                            <span class="reaction-option">👍</span>
+                            <span class="reaction-option">❤️</span>
+                            <span class="reaction-option">😂</span>
+                            <span class="reaction-option">😮</span>
+                            <span class="reaction-option">😢</span>
+                        </div>
+                        <div class="reaction"></div>
                     </div>
                 </div>
                 
@@ -1362,8 +1570,8 @@
                     <div class="mention-preview" id="mention-preview">
                         <div class="mention-header">
                             <span>Replying to <span class="mention-name" id="mention-name">Sarah Johnson</span></span>
-                            <button class="cancel-mention" id="cancel-mention">
-                                <i class="fas fa-times"></i>
+                            <button class="cancel-mention" id="cancel-mention" aria-label="Cancel reply">
+                                <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="mention-content" id="mention-content">This is the message being replied to</div>
@@ -1371,12 +1579,12 @@
                     
                     <div class="input-container">
                         <div class="input-icons">
-                            <i class="fas fa-plus-circle" id="attachment-btn"></i>
-                            <i class="far fa-smile" id="emoji-btn"></i>
+                            <i class="fas fa-plus-circle" id="attachment-btn" aria-label="Attach file"></i>
+                            <i class="far fa-smile" id="emoji-btn" aria-label="Open emoji picker"></i>
                         </div>
-                        <input type="text" class="message-input" placeholder="Type a message" id="message-input" autofocus>
-                        <button class="send-btn">
-                            <i class="fas fa-paper-plane"></i>
+                        <input type="text" class="message-input" placeholder="Type a message" id="chat-message-input" autofocus>
+                        <button class="send-btn" id="send-btn" aria-label="Send message">
+                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -1389,19 +1597,19 @@
                 
                 <div class="attachment-menu" id="attachment-menu">
                     <div class="attachment-item">
-                        <i class="fas fa-image"></i>
+                        <i class="fas fa-image" aria-hidden="true"></i>
                         <span>Photo & Video</span>
                     </div>
                     <div class="attachment-item">
-                        <i class="fas fa-file"></i>
+                        <i class="fas fa-file" aria-hidden="true"></i>
                         <span>Document</span>
                     </div>
                     <div class="attachment-item">
-                        <i class="fas fa-camera"></i>
+                        <i class="fas fa-camera" aria-hidden="true"></i>
                         <span>Camera</span>
                     </div>
                     <div class="attachment-item">
-                        <i class="fas fa-money-bill-wave"></i>
+                        <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
                         <span>Payment</span>
                     </div>
                 </div>
@@ -1409,417 +1617,660 @@
         </div>
     </div>
     
-    <button class="screenshot-btn" id="screenshot-btn">
-        <i class="fas fa-download"></i>
+    <button class="screenshot-btn" id="screenshot-btn" aria-label="Take screenshot">
+        <i class="fas fa-download" aria-hidden="true"></i>
     </button>
     
-    <script>
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Focus on the message input
-            document.getElementById('message-input').focus();
-            
-            // Generate emojis for picker
-            const emojiContainer = document.getElementById('emoji-picker');
-            const emojis = ['😀', '😂', '😍', '🤔', '😎', '🥳', '😊', '🙂', '😉', '😘', '🥰', '😋', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😒', '😓', '😔', '😕', '🙃', '🫠', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '😬', '😰', '😱', '😳', '🤯', '😵', '😡', '😠', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤠', '🥳', '🥸', '😈', '👿', '👹', '👺', '💀', '☠️', '💩', '🤡', '👻', '👽', '👾', '🤖', '💌', '💘', '💝', '💖', '💗', '💓', '💞', '💕', '💟', '❣️', '💔', '❤️‍🔥', '❤️‍🩹', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💯', '💢', '💥', '💫', '💦', '💨', '🕳️', '💣', '💬', '👁️‍🗨️', '🗨️', '🗯️', '💭', '💤'];
-            
-            emojis.forEach(emoji => {
-                const emojiElement = document.createElement('div');
-                emojiElement.className = 'emoji';
-                emojiElement.textContent = emoji;
-                emojiElement.addEventListener('click', () => {
-                    document.getElementById('message-input').value += emoji;
-                    document.getElementById('message-input').focus();
-                });
-                emojiContainer.querySelector('.emoji-grid').appendChild(emojiElement);
-            });
-            
-            // Toggle emoji picker
-            document.getElementById('emoji-btn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                const picker = document.getElementById('emoji-picker');
-                const attachmentMenu = document.getElementById('attachment-menu');
-                picker.style.display = picker.style.display === 'block' ? 'none' : 'block';
-                attachmentMenu.style.display = 'none';
-            });
-            
-            // Toggle attachment menu
-            document.getElementById('attachment-btn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                const menu = document.getElementById('attachment-menu');
-                const emojiPicker = document.getElementById('emoji-picker');
-                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                emojiPicker.style.display = 'none';
-            });
-            
-            // Close menus when clicking elsewhere
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('#attachment-btn') && !e.target.closest('#attachment-menu')) {
-                    document.getElementById('attachment-menu').style.display = 'none';
-                }
-                if (!e.target.closest('#emoji-btn') && !e.target.closest('#emoji-picker')) {
-                    document.getElementById('emoji-picker').style.display = 'none';
-                }
-            });
-            
-            // Theme toggle
-            document.getElementById('theme-switch').addEventListener('click', function() {
-                const body = document.body;
-                const isLight = body.classList.contains('light-mode');
-                body.classList.toggle('light-mode', !isLight);
-                this.innerHTML = isLight ? 
-                    '<i class="fas fa-moon"></i> <span>Dark Mode</span>' : 
-                    '<i class="fas fa-sun"></i> <span>Light Mode</span>';
-            });
-            
-            // Update contact info
-            document.getElementById('contact-name').addEventListener('input', function() {
-                document.querySelector('.contact-name').textContent = this.value;
-            });
-            
-            document.getElementById('contact-status').addEventListener('input', function() {
-                document.querySelector('.contact-status').textContent = this.value;
-            });
-            
-            // Profile picture upload
-            const profileUpload = document.getElementById('profile-upload');
-            const profilePreview = document.getElementById('profile-preview');
-            const profilePic = document.querySelector('.profile-pic');
-            
-            document.getElementById('profile-upload-btn').addEventListener('click', function() {
-                profileUpload.click();
-            });
-            
-            profileUpload.addEventListener('change', function(e) {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        // Update preview in settings panel
-                        profilePreview.innerHTML = '';
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        profilePreview.appendChild(img);
-                        
-                        // Update profile picture in chat
-                        profilePic.innerHTML = '';
-                        const chatImg = document.createElement('img');
-                        chatImg.src = e.target.result;
-                        profilePic.appendChild(chatImg);
-                    }
-                    
-                    reader.readAsDataURL(this.files[0]);
-                }
-            });
-            
-            // Add messages
-            document.getElementById('add-sent').addEventListener('click', addSentMessage);
-            document.getElementById('add-received').addEventListener('click', addReceivedMessage);
-            document.getElementById('new-message').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    addSentMessage();
-                }
-            });
-            
-            document.getElementById('message-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    addSentMessageFromInput();
-                }
-            });
-            
-            document.querySelector('.send-btn').addEventListener('click', addSentMessageFromInput);
-            
-            // Event delegation for message options
-            document.getElementById('chat-container').addEventListener('click', function(e) {
-                // Delete button
-                if (e.target.classList.contains('delete-btn')) {
-                    const message = e.target.closest('.message');
-                    message.style.animation = 'fadeOut 0.3s forwards';
-                    setTimeout(() => {
-                        message.remove();
-                        showNotification('Message deleted');
-                    }, 300);
-                }
-                
-                // Reply (mention) button
-                if (e.target.classList.contains('reply-btn')) {
-                    const message = e.target.closest('.message');
-                    const content = message.querySelector('.message-content').textContent;
-                    const isSent = message.classList.contains('sent');
-                    
-                    // Set mention preview
-                    const mentionPreview = document.getElementById('mention-preview');
-                    const mentionName = document.getElementById('mention-name');
-                    const mentionContent = document.getElementById('mention-content');
-                    
-                    mentionName.textContent = isSent ? 'You' : document.querySelector('.contact-name').textContent;
-                    mentionContent.textContent = content;
-                    mentionPreview.style.display = 'block';
-                    
-                    // Store the quoted message data
-                    activeMention = {
-                        sender: isSent ? 'You' : document.querySelector('.contact-name').textContent,
-                        content: content
-                    };
-                    
-                    // Focus on input
-                    document.getElementById('message-input').focus();
-                }
-                
-                // Reaction button
-                if (e.target.classList.contains('react-btn')) {
-                    const message = e.target.closest('.message');
-                    const reactionOptions = message.querySelector('.reaction-options');
-                    reactionOptions.classList.toggle('visible');
-                    
-                    // Hide other reaction options
-                    document.querySelectorAll('.reaction-options').forEach(options => {
-                        if (options !== reactionOptions) {
-                            options.classList.remove('visible');
-                        }
-                    });
-                }
-                
-                // Reaction option selection
-                if (e.target.classList.contains('reaction-option')) {
-                    const message = e.target.closest('.message');
-                    const reaction = message.querySelector('.reaction');
-                    reaction.textContent = e.target.textContent;
-                    reaction.classList.add('visible');
-                    
-                    // Hide reaction options
-                    message.querySelector('.reaction-options').classList.remove('visible');
-                }
-            });
-            
-            // Close reaction options when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.classList.contains('reaction-option') && 
-                    !e.target.classList.contains('react-btn')) {
-                    document.querySelectorAll('.reaction-options').forEach(options => {
-                        options.classList.remove('visible');
-                    });
-                }
-            });
-            
-            // Cancel mention
-            document.getElementById('cancel-mention').addEventListener('click', function() {
-                const mentionPreview = document.getElementById('mention-preview');
-                mentionPreview.style.display = 'none';
-                activeMention = null;
-            });
-            
-            // Store active mention
-            let activeMention = null;
-            
-            function addSentMessageFromInput() {
-                const message = document.getElementById('message-input').value;
-                if (!message) return;
-                
-                // Check if we're replying to a message
-                let formattedMessage = message;
-                if (activeMention) {
-                    formattedMessage = `
-                        <div class="mentioned-message">
-                            <div class="mentioned-name">${activeMention.sender}</div>
-                            <div>${activeMention.content}</div>
-                        </div>
-                        ${message}
-                    `;
-                    
-                    // Clear mention
-                    document.getElementById('mention-preview').style.display = 'none';
-                    activeMention = null;
-                }
-                
-                addMessage(formattedMessage, 'sent');
-                document.getElementById('message-input').value = '';
-                document.getElementById('message-input').focus();
-                scrollToBottom();
-            }
-            
-            function addSentMessage() {
-                const message = document.getElementById('new-message').value;
-                if (!message) return;
-                
-                addMessage(message, 'sent');
-                document.getElementById('new-message').value = '';
-                document.getElementById('new-message').focus();
-                scrollToBottom();
-            }
-            
-            function addReceivedMessage() {
-                const message = document.getElementById('new-message').value;
-                if (!message) return;
-                
-                addMessage(message, 'received');
-                document.getElementById('new-message').value = '';
-                document.getElementById('new-message').focus();
-                scrollToBottom();
-            }
-            
-            function addMessage(text, type) {
-                const chatContainer = document.getElementById('chat-container');
-                const time = getCurrentTime();
-                
-                const messageEl = document.createElement('div');
-                messageEl.className = `message ${type}`;
-                
-                // Add random message status for sent messages
-                let statusHtml = '';
-                if (type === 'sent') {
-                    const statusOptions = [
-                        `<span class="double-tick"><svg viewBox="0 0 16 12"><path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path></svg></span>`,
-                        `<span class="double-tick"><svg viewBox="0 0 16 12"><path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path></svg></span>`,
-                        `<span class="double-tick blue-tick"><svg viewBox="0 0 16 12"><path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path></svg></span>`
-                    ];
-                    statusHtml = statusOptions[Math.floor(Math.random() * statusOptions.length)];
-                }
-                
-                messageEl.innerHTML = `
-                    <div class="message-content">${text}</div>
-                    <div class="message-time">${time} ${statusHtml}</div>
-                    <div class="message-options">
-                        <i class="fas fa-reply reply-btn"></i>
-                        <i class="fas fa-trash-alt delete-btn"></i>
-                        <i class="fas fa-smile react-btn"></i>
-                    </div>
-                    <div class="reaction-options">
-                        <span class="reaction-option">👍</span>
-                        <span class="reaction-option">❤️</span>
-                        <span class="reaction-option">😂</span>
-                        <span class="reaction-option">😮</span>
-                        <span class="reaction-option">😢</span>
-                        <span class="reaction-option">👏</span>
-                    </div>
-                    <div class="reaction"></div>
-                `;
-                
-                chatContainer.appendChild(messageEl);
-                scrollToBottom();
-            }
-            
-            function getCurrentTime() {
-                const now = new Date();
-                return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            }
-            
-            // Clear chat
-            document.getElementById('clear-chat').addEventListener('click', function() {
-                const chatContainer = document.getElementById('chat-container');
-                chatContainer.innerHTML = '<div class="date-indicator"><span>Today</span></div>';
-                showNotification('Chat cleared successfully');
-            });
-            
-            // Add sample conversation
-            document.getElementById('add-sample').addEventListener('click', function() {
-                const chatContainer = document.getElementById('chat-container');
-                
-                // Clear existing messages except the date indicator
-                const existingDate = chatContainer.querySelector('.date-indicator');
-                chatContainer.innerHTML = '';
-                if (existingDate) {
-                    chatContainer.appendChild(existingDate);
-                } else {
-                    chatContainer.innerHTML = '<div class="date-indicator"><span>Today</span></div>';
-                }
-                
-                // Add sample messages
-                const messages = [
-                    { type: 'received', content: 'This looks exactly like WhatsApp!' },
-                    { type: 'sent', content: "Yes, it's designed to be ultra-realistic with all the details." },
-                    { type: 'received', content: 'The chat bubbles with tails and status indicators are perfect!' },
-                    { type: 'sent', content: 'Try deleting messages or adding reactions to see all the features!' },
-                ];
-                
-                messages.forEach(msg => {
-                    addMessage(msg.content, msg.type);
-                });
-                
-                showNotification('Sample conversation loaded');
-                scrollToBottom();
-            });
-            
-            // Take screenshot with perfect 9:16 aspect ratio
-            document.getElementById('screenshot-btn').addEventListener('click', function() {
-                const previewElement = document.getElementById('chat-preview');
-                
-                // Create a clone for screenshot to avoid disrupting the UI
-                const clone = previewElement.cloneNode(true);
-                clone.style.position = 'fixed';
-                clone.style.left = '-9999px';
-                clone.style.width = '360px'; // 9:16 ratio width
-                clone.style.height = '640px'; // 9:16 ratio height
-                clone.style.zIndex = '10000';
-                clone.style.opacity = '0';
-                document.body.appendChild(clone);
-                
-                // Hide floating elements that shouldn't be in the screenshot
-                const cloneScreenshotBtn = clone.querySelector('#screenshot-btn');
-                if (cloneScreenshotBtn) cloneScreenshotBtn.style.display = 'none';
-                
-                // Add a loading indicator
-                const loadingIndicator = document.createElement('div');
-                loadingIndicator.style.position = 'fixed';
-                loadingIndicator.style.top = '50%';
-                loadingIndicator.style.left = '50%';
-                loadingIndicator.style.transform = 'translate(-50%, -50%)';
-                loadingIndicator.style.background = 'rgba(0,0,0,0.7)';
-                loadingIndicator.style.color = 'white';
-                loadingIndicator.style.padding = '20px';
-                loadingIndicator.style.borderRadius = '10px';
-                loadingIndicator.style.zIndex = '10001';
-                loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing screenshot...';
-                document.body.appendChild(loadingIndicator);
-                
-                setTimeout(() => {
-                    html2canvas(clone, {
-                        scale: 2,
-                        logging: false,
-                        useCORS: true,
-                        width: 360,
-                        height: 640
-                    }).then(canvas => {
-                        // Create download link
-                        const link = document.createElement('a');
-                        link.download = 'whatsapp-chat-screenshot.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        
-                        // Clean up
-                        document.body.removeChild(clone);
-                        document.body.removeChild(loadingIndicator);
-                        
-                        showNotification('Screenshot downloaded in 9:16 ratio!');
-                    });
-                }, 500);
-            });
-            
-            // Scroll to bottom
-            function scrollToBottom() {
-                const container = document.getElementById('chat-container');
-                container.scrollTop = container.scrollHeight;
-            }
-            
-            // Show notification
-            function showNotification(text) {
-                const existing = document.querySelector('.notification');
-                if (existing) existing.remove();
-                
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.textContent = text;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'fadeOut 0.5s forwards';
-                    setTimeout(() => notification.remove(), 500);
-                }, 2500);
-            }
-            
-            // Initialize
-            scrollToBottom();
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const body = document.body;
+    const chatMessageInput = document.getElementById('chat-message-input');
+    const newMessageInput = document.getElementById('new-message');
+    const emojiPicker = document.getElementById('emoji-picker');
+    const attachmentMenu = document.getElementById('attachment-menu');
+    const chatContainer = document.getElementById('chat-container');
+    const profileUpload = document.getElementById('profile-upload');
+    const profilePreview = document.getElementById('profile-preview');
+    const profilePic = document.querySelector('.profile-pic');
+    const contactNameInput = document.getElementById('contact-name');
+    const contactStatusInput = document.getElementById('contact-status');
+    const chatThemeSelect = document.getElementById('chat-theme');
+    
+    // State variables
+    let activeMention = null;
+    let isUserNearBottom = true;
+    let messageCount = 0;
+    let hoverTimeout = null;
+    
+    // Initialize
+    chatMessageInput.focus();
+    setupEventListeners();
+    initializeEmojiPicker();
+    setupChatTheme();
+    updateContactInfo();
+    
+    /* ================= EVENT LISTENERS SETUP ================= */
+    function setupEventListeners() {
+        // Contact info updates
+        contactNameInput.addEventListener('input', updateContactInfo);
+        contactStatusInput.addEventListener('input', updateContactInfo);
+        
+        // Theme toggle
+        document.getElementById('theme-switch').addEventListener('click', toggleTheme);
+        
+        // Profile picture upload
+        document.getElementById('profile-upload-btn').addEventListener('click', () => profileUpload.click());
+        profileUpload.addEventListener('change', handleProfileUpload);
+        
+        // Message sending from chat input
+        document.getElementById('send-btn').addEventListener('click', () => sendMessageFromInput(chatMessageInput));
+        chatMessageInput.addEventListener('keypress', e => { 
+            if(e.key === 'Enter') sendMessageFromInput(chatMessageInput); 
         });
-    </script>
+        
+        // Message sending from left panel
+        document.getElementById('add-sent').addEventListener('click', () => {
+            sendMessageFromPanel('sent');
+        });
+        document.getElementById('add-received').addEventListener('click', () => {
+            sendMessageFromPanel('received');
+        });
+        
+        // Chat controls
+        document.getElementById('clear-chat').addEventListener('click', clearChat);
+        document.getElementById('add-sample').addEventListener('click', addSampleConversation);
+        
+        // Screenshot functionality
+        document.getElementById('screenshot-btn').addEventListener('click', takeScreenshot);
+        
+        // Chat theme
+        chatThemeSelect.addEventListener('change', changeChatTheme);
+        
+        // Cancel mention
+        document.getElementById('cancel-mention').addEventListener('click', cancelMention);
+        
+        // Toggle pickers
+        document.getElementById('emoji-btn').addEventListener('click', toggleEmojiPicker);
+        document.getElementById('attachment-btn').addEventListener('click', toggleAttachmentMenu);
+        
+        // Close pickers when clicking outside
+        document.addEventListener('click', closePickers);
+        
+        // Track scroll position
+        chatContainer.addEventListener('scroll', trackScrollPosition);
+        
+        // Event delegation for message options
+        chatContainer.addEventListener('click', handleMessageOptions);
+        
+        // Mouse hover events for emoji reactions
+        setupHoverReactions();
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', handleKeyboardShortcuts);
+    }
+    
+    /* ================= EMOJI PICKER ================= */
+    function initializeEmojiPicker() {
+        const emojiGrid = emojiPicker.querySelector('.emoji-grid');
+        const emojis = [
+            '😀','😂','😍','🤔','😎','🥳','😊','😉','😘','🥰','😜','🤪','😴','😭',
+            '😡','🤯','💀','👻','🤖','❤️','💛','💚','💙','💜','🖤','💯','👍','👎',
+            '👏','🙌','🤝','🤞','✌️','🤟','👌','🤙','👋','🤚','🖐️','✋','🖖','👐',
+            '🙏','🤲','💅','🤳','💪','🦵','🦶','👂','👃','🧠','🦷','🦴','👀','👁️',
+            '👅','👄','👶','🧒','👦','👧','🧑','👨','👩','🧔','👴','👵','🧓','👱'
+        ];
+        
+        emojis.forEach(emoji => {
+            const el = document.createElement('div');
+            el.className = 'emoji';
+            el.textContent = emoji;
+            el.setAttribute('role', 'button');
+            el.setAttribute('aria-label', `Add ${emoji} emoji`);
+            el.onclick = () => {
+                chatMessageInput.value += emoji;
+                chatMessageInput.focus();
+            };
+            emojiGrid.appendChild(el);
+        });
+    }
+    
+    function toggleEmojiPicker(e) {
+        e.stopPropagation();
+        emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
+        attachmentMenu.style.display = 'none';
+    }
+    
+    function toggleAttachmentMenu(e) {
+        e.stopPropagation();
+        attachmentMenu.style.display = attachmentMenu.style.display === 'block' ? 'none' : 'block';
+        emojiPicker.style.display = 'none';
+    }
+    
+    function closePickers(e) {
+        if (!e.target.closest('#emoji-btn') && !e.target.closest('#emoji-picker')) {
+            emojiPicker.style.display = 'none';
+        }
+        if (!e.target.closest('#attachment-btn') && !e.target.closest('#attachment-menu')) {
+            attachmentMenu.style.display = 'none';
+        }
+    }
+    
+    /* ================= THEME MANAGEMENT ================= */
+    function toggleTheme() {
+        body.classList.toggle('light-mode');
+        const themeBtn = document.getElementById('theme-switch');
+        themeBtn.innerHTML = body.classList.contains('light-mode') ? 
+            '<i class="fas fa-sun" aria-hidden="true"></i> <span>Switch to Dark Mode</span>' :
+            '<i class="fas fa-moon" aria-hidden="true"></i> <span>Switch to Light Mode</span>';
+        
+        // Update wallpaper based on theme
+        updateWallpaper();
+    }
+    
+    /* ================= WALLPAPER ================= */
+    function updateWallpaper() {
+        // Remove all background classes first
+        chatContainer.classList.remove('default-bg', 'dark-bg', 'blue-bg', 'purple-bg');
+        
+        // Get current theme
+        const theme = chatThemeSelect.value;
+        
+        // Add appropriate background class
+        chatContainer.classList.add(`${theme}-bg`);
+    }
+    
+    /* ================= PROFILE PICTURE ================= */
+    function handleProfileUpload() {
+        if(this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                showNotification('Please select an image file');
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Image size should be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onloadstart = () => {
+                showNotification('Uploading image...');
+            };
+            
+            reader.onload = e => {
+                // Update side menu profile preview
+                const imgPreview = document.createElement('img');
+                imgPreview.src = e.target.result;
+                imgPreview.alt = 'Profile picture';
+                profilePreview.innerHTML = '';
+                profilePreview.appendChild(imgPreview);
+                
+                // Update chat header profile picture
+                const chatImg = document.createElement('img');
+                chatImg.src = e.target.result;
+                chatImg.alt = 'Contact profile picture';
+                profilePic.innerHTML = '';
+                profilePic.appendChild(chatImg);
+                
+                showNotification('Profile picture updated');
+            };
+            
+            reader.onerror = () => {
+                showNotification('Error uploading image');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    /* ================= CONTACT INFO ================= */
+    function updateContactInfo() {
+        document.querySelector('.contact-name').textContent = contactNameInput.value || 'Contact';
+        document.querySelector('.contact-status').textContent = contactStatusInput.value || 'Online';
+    }
+    
+    /* ================= CHAT THEME ================= */
+    function setupChatTheme() {
+        // Remove existing theme classes
+        chatContainer.className = 'chat-container default-bg';
+        // Apply selected theme
+        changeChatTheme();
+    }
+    
+    function changeChatTheme() {
+        const theme = chatThemeSelect.value;
+        // Remove all theme classes
+        chatContainer.classList.remove('default-bg', 'dark-bg', 'blue-bg', 'purple-bg');
+        
+        chatContainer.classList.add(`${theme}-bg`);
+    }
+    
+    /* ================= MESSAGE MANAGEMENT ================= */
+    function sendMessageFromInput(inputElement) {
+        const value = inputElement.value.trim();
+        if (!value) return;
+        addMessage(value, 'sent', activeMention);
+        inputElement.value = '';
+        clearMention();
+        inputElement.focus();
+    }
+    
+    function sendMessageFromPanel(type) {
+        const value = newMessageInput.value.trim();
+        if (!value) {
+            showNotification('Please enter a message');
+            return;
+        }
+        addMessage(value, type, activeMention);
+        newMessageInput.value = '';
+        clearMention();
+        newMessageInput.focus();
+    }
+    
+    function addMessage(text, type, mention = null) {
+        messageCount++;
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.dataset.id = `msg-${messageCount}`;
+        
+        let contentHTML = text;
+        
+        if (mention) {
+            contentHTML = `
+                <div class="mentioned-message">
+                    <div class="mentioned-name">${mention.sender}</div>
+                    <div>${mention.content}</div>
+                </div>
+                ${text}`;
+        }
+        
+        let statusHTML = '';
+        if (type === 'sent') {
+            // Complete SVG path for double tick
+            statusHTML = `<span class="double-tick blue-tick">
+                <svg viewBox="0 0 16 12">
+                    <path d="M11.0714 0.652832C10.991 0.585124 10.8894 0.55127 10.7667 0.55127C10.6186 0.55127 10.4916 0.610514 10.3858 0.729004L4.19688 8.36523L1.79112 6.09277C1.7488 6.04622 1.69802 6.01025 1.63877 5.98486C1.57953 5.95947 1.51817 5.94678 1.45469 5.94678C1.32351 5.94678 1.20925 5.99544 1.11192 6.09277L0.800883 6.40381C0.707784 6.49268 0.661235 6.60482 0.661235 6.74023C0.661235 6.87565 0.707784 6.98991 0.800883 7.08301L3.79698 10.0791C3.94509 10.2145 4.11224 10.2822 4.29844 10.2822C4.40424 10.2822 4.5058 10.259 4.60313 10.2124C4.70046 10.1659 4.78086 10.1003 4.84434 10.0156L11.4903 1.59863C11.5623 1.5013 11.5982 1.40186 11.5982 1.30029C11.5982 1.14372 11.5348 1.01888 11.4078 0.925781L11.0714 0.652832ZM8.6212 8.32715C8.43077 8.20866 8.2488 8.09017 8.0753 7.97168C7.99489 7.89128 7.8891 7.85107 7.75791 7.85107C7.6098 7.85107 7.4892 7.90397 7.3961 8.00977L7.10411 8.33984C7.01947 8.43717 6.97715 8.54508 6.97715 8.66357C6.97715 8.79476 7.0237 8.90902 7.1168 9.00635L8.1959 10.0791C8.33132 10.2145 8.49636 10.2822 8.69102 10.2822C8.79681 10.2822 8.89838 10.259 8.99571 10.2124C9.09304 10.1659 9.17556 10.1003 9.24327 10.0156L15.8639 1.62402C15.9358 1.53939 15.9718 1.43994 15.9718 1.32568C15.9718 1.1818 15.9125 1.05697 15.794 0.951172L15.4386 0.678223C15.3582 0.610514 15.2587 0.57666 15.1402 0.57666C14.9964 0.57666 14.8715 0.635905 14.7657 0.754395L8.6212 8.32715Z"></path>
+                </svg>
+            </span>`;
+        }
+        
+        const time = getTime();
+        
+        msg.innerHTML = `
+            <div class="message-content">${contentHTML}</div>
+            <div class="message-time">${time} ${statusHTML}</div>
+            <div class="message-options">
+                <i class="fas fa-reply reply-btn" aria-label="Reply to message"></i>
+                <i class="fas fa-trash-alt delete-btn" aria-label="Delete message"></i>
+                <i class="fas fa-smile react-btn" aria-label="Add reaction"></i>
+            </div>
+            <div class="reaction-options">
+                <span class="reaction-option" role="button" aria-label="Like">👍</span>
+                <span class="reaction-option" role="button" aria-label="Love">❤️</span>
+                <span class="reaction-option" role="button" aria-label="Laugh">😂</span>
+                <span class="reaction-option" role="button" aria-label="Surprised">😮</span>
+                <span class="reaction-option" role="button" aria-label="Sad">😢</span>
+            </div>
+            <div class="reaction"></div>
+        `;
+        
+        chatContainer.appendChild(msg);
+        
+        // Set up hover for the new message
+        setupMessageHover(msg);
+        
+        // Only scroll if user is near bottom
+        if (isUserNearBottom) {
+            scrollToBottom();
+        }
+    }
+    
+    function getTime() {
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Convert 0 to 12
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        return `${hours}:${minutes} ${ampm}`;
+    }
+    
+    function trackScrollPosition() {
+        const threshold = 100; // pixels from bottom
+        const position = chatContainer.scrollTop + chatContainer.clientHeight;
+        const height = chatContainer.scrollHeight;
+        
+        isUserNearBottom = position > height - threshold;
+    }
+    
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    /* ================= HOVER REACTIONS SETUP ================= */
+    function setupHoverReactions() {
+        // Add hover effects to existing messages
+        document.querySelectorAll('.message').forEach(setupMessageHover);
+    }
+    
+    function setupMessageHover(message) {
+        const reactBtn = message.querySelector('.react-btn');
+        const reactionOptions = message.querySelector('.reaction-options');
+        
+        if (reactBtn && reactionOptions) {
+            // Show on hover
+            reactBtn.addEventListener('mouseenter', () => {
+                if (hoverTimeout) clearTimeout(hoverTimeout);
+                reactionOptions.style.display = 'flex';
+                reactionOptions.classList.add('visible');
+            });
+            
+            // Hide after delay when leaving
+            reactBtn.addEventListener('mouseleave', () => {
+                hoverTimeout = setTimeout(() => {
+                    if (!reactionOptions.matches(':hover')) {
+                        reactionOptions.style.display = 'none';
+                        reactionOptions.classList.remove('visible');
+                    }
+                }, 300);
+            });
+            
+            // Keep visible when hovering over options
+            reactionOptions.addEventListener('mouseenter', () => {
+                if (hoverTimeout) clearTimeout(hoverTimeout);
+                reactionOptions.style.display = 'flex';
+                reactionOptions.classList.add('visible');
+            });
+            
+            // Hide when leaving options
+            reactionOptions.addEventListener('mouseleave', () => {
+                hoverTimeout = setTimeout(() => {
+                    reactionOptions.style.display = 'none';
+                    reactionOptions.classList.remove('visible');
+                }, 300);
+            });
+        }
+    }
+    
+    /* ================= MESSAGE OPTIONS HANDLING ================= */
+    function handleMessageOptions(e) {
+        const message = e.target.closest('.message');
+        if (!message) return;
+        
+        // Delete message
+        if (e.target.classList.contains('delete-btn')) {
+            const isMentioned = document.querySelector(`.mentioned-message div:contains("${message.querySelector('.message-content').textContent.substring(0, 50)}")`);
+            if (isMentioned) {
+                showNotification('Cannot delete a message that is being replied to');
+                return;
+            }
+            
+            message.style.animation = 'fadeIn 0.3s ease-out reverse';
+            setTimeout(() => {
+                message.remove();
+                showNotification('Message deleted');
+            }, 300);
+        }
+        
+        // Reply to message
+        if (e.target.classList.contains('reply-btn')) {
+            const content = message.querySelector('.message-content').textContent;
+            const isSent = message.classList.contains('sent');
+            const sender = isSent ? 'You' : document.querySelector('.contact-name').textContent;
+            
+            document.getElementById('mention-name').textContent = sender;
+            document.getElementById('mention-content').textContent = 
+                content.length > 100 ? content.substring(0, 100) + '...' : content;
+            document.getElementById('mention-preview').style.display = 'block';
+            
+            activeMention = {
+                sender: sender,
+                content: content,
+                messageId: message.dataset.id
+            };
+            
+            chatMessageInput.focus();
+        }
+        
+        // React to message (click still works)
+        if (e.target.classList.contains('react-btn')) {
+            e.stopPropagation();
+            const options = message.querySelector('.reaction-options');
+            const isVisible = options.style.display === 'flex';
+            options.style.display = isVisible ? 'none' : 'flex';
+            if (!isVisible) {
+                options.classList.add('visible');
+            } else {
+                options.classList.remove('visible');
+            }
+        }
+        
+        // Add reaction
+        if (e.target.classList.contains('reaction-option')) {
+            const reaction = message.querySelector('.reaction');
+            reaction.textContent = e.target.textContent;
+            reaction.innerHTML = e.target.textContent + '<span class="remove-reaction">×</span>';
+            reaction.classList.add('visible');
+            message.querySelector('.reaction-options').style.display = 'none';
+            message.querySelector('.reaction-options').classList.remove('visible');
+            showNotification('Reaction added');
+        }
+        
+        // Remove reaction
+        if (e.target.classList.contains('remove-reaction')) {
+            const reaction = e.target.closest('.reaction');
+            reaction.classList.remove('visible');
+            reaction.textContent = '';
+            showNotification('Reaction removed');
+        }
+    }
+    
+    function cancelMention() {
+        document.getElementById('mention-preview').style.display = 'none';
+        activeMention = null;
+    }
+    
+    function clearMention() {
+        document.getElementById('mention-preview').style.display = 'none';
+        activeMention = null;
+    }
+    
+    /* ================= KEYBOARD SHORTCUTS ================= */
+    function handleKeyboardShortcuts(e) {
+        // Ctrl/Cmd + Enter to send message
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            if (document.activeElement === chatMessageInput || document.activeElement === newMessageInput) {
+                const activeInput = document.activeElement;
+                if (activeInput.value.trim()) {
+                    if (activeInput === chatMessageInput) {
+                        sendMessageFromInput(chatMessageInput);
+                    } else {
+                        // Determine if we should send as sent or received based on which panel is focused
+                        if (document.activeElement.closest('.generator-panel')) {
+                            sendMessageFromPanel('sent');
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Escape to cancel mention
+        if (e.key === 'Escape' && activeMention) {
+            cancelMention();
+        }
+        
+        // Ctrl/Cmd + S for screenshot
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            takeScreenshot();
+        }
+    }
+    
+    /* ================= CHAT CONTROLS ================= */
+    function clearChat() {
+        chatContainer.innerHTML = '<div class="date-indicator"><span>Today</span></div>';
+        messageCount = 0;
+        showNotification('Chat cleared');
+    }
+    
+    function addSampleConversation() {
+        clearChat();
+        
+        const messages = [
+            { type: 'received', content: 'This looks exactly like WhatsApp!' },
+            { type: 'sent', content: "Yes, it's designed to be ultra-realistic with all the details." },
+            { type: 'received', content: 'The chat bubbles with tails and status indicators are perfect!' },
+            { type: 'sent', content: 'Try deleting messages or adding reactions to see all the features!' },
+            { type: 'received', content: 'Can I customize the background theme?' },
+            { type: 'sent', content: 'Yes! Use the theme selector in the settings panel.' }
+        ];
+        
+        messages.forEach(m => addMessage(m.content, m.type));
+        
+        showNotification('Sample conversation loaded');
+    }
+    
+    /* ================= SCREENSHOT FUNCTIONALITY ================= */
+    async function takeScreenshot() {
+        showNotification('Taking screenshot...');
+        
+        // Hide screenshot button temporarily
+        const screenshotBtn = document.getElementById('screenshot-btn');
+        const originalDisplay = screenshotBtn.style.display;
+        screenshotBtn.style.display = 'none';
+        
+        try {
+            // Clone the chat preview to avoid modifying the original
+            const chatPreview = document.getElementById('chat-preview');
+            const clone = chatPreview.cloneNode(true);
+            
+            // Apply inline styles to ensure proper rendering
+            clone.style.width = chatPreview.offsetWidth + 'px';
+            clone.style.height = chatPreview.offsetHeight + 'px';
+            
+            // Ensure all messages have solid backgrounds in the clone
+            const messages = clone.querySelectorAll('.message');
+            messages.forEach(msg => {
+                // Force solid background for screenshot
+                if (msg.classList.contains('sent')) {
+                    msg.style.backgroundColor = body.classList.contains('light-mode') ? '#dcf8c6' : '#005c4b';
+                    msg.style.color = body.classList.contains('light-mode') ? '#3b4a54' : '#e9edef';
+                } else {
+                    msg.style.backgroundColor = body.classList.contains('light-mode') ? '#ffffff' : '#202c33';
+                    msg.style.color = body.classList.contains('light-mode') ? '#3b4a54' : '#e9edef';
+                }
+                msg.style.boxShadow = '0 1px 1px rgba(0, 0, 0, 0.1)';
+            });
+            
+            // Ensure chat container has proper background
+            const chatContainerClone = clone.querySelector('.chat-container');
+            if (chatContainerClone) {
+                // Get current theme
+                const theme = chatThemeSelect.value;
+                const isLightMode = body.classList.contains('light-mode');
+                
+                // Set background based on theme
+                switch(theme) {
+                    case 'default':
+                        chatContainerClone.style.background = isLightMode 
+                            ? '#e5ddd5 url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_light.png")'
+                            : '#0b141a url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_dark.png")';
+                        break;
+                    case 'dark':
+                        chatContainerClone.style.background = isLightMode
+                            ? '#222222 url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")'
+                            : '#000000 url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")';
+                        break;
+                    case 'blue':
+                        chatContainerClone.style.background = isLightMode
+                            ? '#d4e6ff url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")'
+                            : '#0a2540 url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")';
+                        break;
+                    case 'purple':
+                        chatContainerClone.style.background = isLightMode
+                            ? '#e8dfff url("https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")'
+                            : '#2d1b69 url("https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")';
+                        break;
+                }
+                chatContainerClone.style.backgroundSize = 'cover';
+                chatContainerClone.style.backgroundPosition = 'center';
+                chatContainerClone.style.backgroundBlendMode = 'overlay';
+            }
+            
+            // Hide elements that shouldn't be in screenshot
+            const elementsToHide = clone.querySelectorAll('.message-options, .emoji-picker, .attachment-menu, .mention-preview');
+            elementsToHide.forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+            
+            // Temporarily append clone to body
+            clone.style.position = 'fixed';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            document.body.appendChild(clone);
+            
+            // Capture screenshot
+            const canvas = await html2canvas(clone, {
+                backgroundColor: null,
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                allowTaint: true,
+                removeContainer: true
+            });
+            
+            // Remove clone
+            document.body.removeChild(clone);
+            
+            // Restore screenshot button
+            screenshotBtn.style.display = originalDisplay;
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = `whatsapp-chat-${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+            
+            showNotification('Screenshot downloaded!');
+        } catch (err) {
+            console.error('Screenshot error:', err);
+            screenshotBtn.style.display = originalDisplay;
+            showNotification('Error taking screenshot. Please try again.');
+        }
+    }
+    
+    /* ================= NOTIFICATION SYSTEM ================= */
+    function showNotification(text) {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = text;
+        notification.setAttribute('role', 'alert');
+        
+        document.body.appendChild(notification);
+        
+        // Remove after animation completes (3 seconds total)
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 3000);
+    }
+    
+    // Initial scroll to bottom
+    scrollToBottom();
+});
+</script>
 </body>
 </html>
