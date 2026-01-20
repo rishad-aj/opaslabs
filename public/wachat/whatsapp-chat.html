@@ -47,10 +47,92 @@
             flex-direction: column;
             align-items: center;
             transition: background 0.3s;
+            position: relative;
         }
         
         body.light-mode {
             background: var(--light-bg);
+        }
+        
+        /* Loader styles */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .loader-overlay.light-mode {
+            background: var(--light-bg);
+        }
+        
+        .loader-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .loader-inner {
+            width: 100%;
+            height: 100%;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--whatsapp-green);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        .light-mode .loader-inner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top-color: var(--whatsapp-green);
+        }
+        
+        .loader-text {
+            color: var(--dark-text);
+            font-size: 18px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .light-mode .loader-text {
+            color: var(--light-text);
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .light-mode .progress-bar {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--whatsapp-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .app-container {
@@ -63,6 +145,14 @@
             overflow: hidden;
             height: 90vh;
             max-height: 850px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        
+        .app-container.loaded {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .top-bar {
@@ -214,7 +304,6 @@
             flex: 1;
             padding: 15px;
             background-color: var(--dark-chat-bg);
-            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_dark.png");
             background-blend-mode: overlay;
             background-size: cover;
             background-position: center;
@@ -222,11 +311,22 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            position: relative;
         }
         
-        .light-mode .chat-container {
-            background-color: var(--light-chat-bg);
-            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_light.png");
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+        
+        .light-mode .chat-container::before {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         .message {
@@ -236,6 +336,7 @@
             position: relative;
             animation: fadeIn 0.3s ease-out;
             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            z-index: 1;
         }
         
         @keyframes fadeIn {
@@ -670,6 +771,8 @@
             width: fit-content;
             margin-left: auto;
             margin-right: auto;
+            position: relative;
+            z-index: 1;
         }
         
         .light-mode .timestamp {
@@ -784,6 +887,8 @@
             gap: 5px;
             font-size: 14px;
             animation: pulse 1.5s infinite;
+            position: relative;
+            z-index: 1;
         }
         
         .light-mode .typing-indicator {
@@ -962,6 +1067,8 @@
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
+            position: relative;
+            z-index: 1;
         }
         
         .light-mode .date-indicator span {
@@ -1026,51 +1133,45 @@
             margin-bottom: 4px;
         }
         
-        /* Chat themes with individual wallpapers */
+        /* Chat themes with specified wallpapers */
         .chat-container.default-bg {
-            background-color: var(--dark-chat-bg);
-            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_dark.png");
+            background-image: url("https://i.pinimg.com/736x/d4/19/aa/d419aab5254a2e8d417abb4aa22d38b2.jpg");
+            background-color: rgba(0, 0, 0, 0.6);
         }
         
         .light-mode .chat-container.default-bg {
-            background-color: var(--light-chat-bg);
-            background-image: url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_light.png");
+            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+            background-color: rgba(255, 255, 255, 0.4);
         }
         
         .chat-container.dark-bg {
-            background-color: #000000;
-            background-image: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-blend-mode: overlay;
+            background-image: url("https://i.pinimg.com/736x/d4/19/aa/d419aab5254a2e8d417abb4aa22d38b2.jpg");
+            background-color: rgba(0, 0, 0, 0.7);
         }
         
         .light-mode .chat-container.dark-bg {
-            background-color: #222222;
-            background-image: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-blend-mode: overlay;
+            background-image: url("https://i.pinimg.com/736x/d4/19/aa/d419aab5254a2e8d417abb4aa22d38b2.jpg");
+            background-color: rgba(0, 0, 0, 0.4);
         }
         
         .chat-container.blue-bg {
-            background-color: #0a2540;
-            background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-blend-mode: overlay;
+            background-image: url("https://i.pinimg.com/736x/b5/fc/fe/b5fcfe133eba8e563a8c59123cb6959f.jpg");
+            background-color: rgba(0, 30, 60, 0.7);
         }
         
         .light-mode .chat-container.blue-bg {
-            background-color: #d4e6ff;
-            background-image: url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-blend-mode: overlay;
+            background-image: url("https://i.pinimg.com/736x/b5/fc/fe/b5fcfe133eba8e563a8c59123cb6959f.jpg");
+            background-color: rgba(255, 255, 255, 0.2);
         }
         
         .chat-container.purple-bg {
-            background-color: #2d1b69;
-            background-image: url("https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-blend-mode: overlay;
+            background-image: url("https://i.pinimg.com/736x/e2/86/04/e2860419450ae1cbbdadebaceba50722.jpg");
+            background-color: rgba(40, 0, 60, 0.7);
         }
         
         .light-mode .chat-container.purple-bg {
-            background-color: #e8dfff;
-            background-image: url("https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-blend-mode: overlay;
+            background-image: url("https://i.pinimg.com/736x/e2/86/04/e2860419450ae1cbbdadebaceba50722.jpg");
+            background-color: rgba(255, 255, 255, 0.2);
         }
         
         /* Responsive design */
@@ -1261,21 +1362,6 @@
             outline-offset: 2px;
         }
         
-        /* Loading indicator */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
         /* Remove reaction button */
         .remove-reaction {
             position: absolute;
@@ -1354,7 +1440,18 @@
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <!-- Loader Overlay -->
+    <div class="loader-overlay" id="loader-overlay">
+        <div class="loader">
+            <div class="loader-inner"></div>
+        </div>
+        <div class="loader-text">Loading WhatsApp Chat Generator...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+    
+    <div class="app-container" id="app-container">
         <div class="top-bar">
             <div class="logo">
                 <i class="fab fa-whatsapp" aria-hidden="true"></i>
@@ -1582,7 +1679,7 @@
                             <i class="fas fa-plus-circle" id="attachment-btn" aria-label="Attach file"></i>
                             <i class="far fa-smile" id="emoji-btn" aria-label="Open emoji picker"></i>
                         </div>
-                        <input type="text" class="message-input" placeholder="Type a message" id="chat-message-input" autofocus>
+                        <input type="text" class="message-input" placeholder="Type a message" id="chat-message-input">
                         <button class="send-btn" id="send-btn" aria-label="Send message">
                             <i class="fas fa-paper-plane" aria-hidden="true"></i>
                         </button>
@@ -1635,19 +1732,94 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactNameInput = document.getElementById('contact-name');
     const contactStatusInput = document.getElementById('contact-status');
     const chatThemeSelect = document.getElementById('chat-theme');
+    const loaderOverlay = document.getElementById('loader-overlay');
+    const progressFill = document.getElementById('progress-fill');
+    const appContainer = document.getElementById('app-container');
     
     // State variables
     let activeMention = null;
     let isUserNearBottom = true;
     let messageCount = 0;
     let hoverTimeout = null;
+    let imagesLoaded = 0;
+    let totalImages = 0;
     
-    // Initialize
-    chatMessageInput.focus();
-    setupEventListeners();
-    initializeEmojiPicker();
-    setupChatTheme();
-    updateContactInfo();
+    // Initialize with loader
+    initializeLoader();
+    
+    /* ================= LOADER INITIALIZATION ================= */
+    function initializeLoader() {
+        // Define all wallpaper images to preload
+        const wallpaperUrls = [
+            // Default theme
+            "https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png",
+            "https://i.pinimg.com/736x/d4/19/aa/d419aab5254a2e8d417abb4aa22d38b2.jpg",
+            // Blue theme (same image for light/dark, but different overlays)
+            "https://i.pinimg.com/736x/b5/fc/fe/b5fcfe133eba8e563a8c59123cb6959f.jpg",
+            // Purple theme (same image for light/dark, but different overlays)
+            "https://i.pinimg.com/736x/e2/86/04/e2860419450ae1cbbdadebaceba50722.jpg"
+        ];
+        
+        totalImages = wallpaperUrls.length;
+        
+        if (totalImages === 0) {
+            // No images to load, hide loader immediately
+            hideLoader();
+            return;
+        }
+        
+        // Update progress bar
+        updateProgressBar();
+        
+        // Preload all wallpaper images
+        wallpaperUrls.forEach(url => {
+            const img = new Image();
+            img.onload = imageLoaded;
+            img.onerror = imageLoaded; // Count as loaded even if error
+            img.src = url;
+        });
+    }
+    
+    function imageLoaded() {
+        imagesLoaded++;
+        updateProgressBar();
+        
+        if (imagesLoaded >= totalImages) {
+            // All images loaded, hide loader after a short delay
+            setTimeout(hideLoader, 500);
+        }
+    }
+    
+    function updateProgressBar() {
+        const progress = (imagesLoaded / totalImages) * 100;
+        progressFill.style.width = `${progress}%`;
+    }
+    
+    function hideLoader() {
+        // Update loader text
+        const loaderText = document.querySelector('.loader-text');
+        if (loaderText) {
+            loaderText.textContent = 'Ready!';
+        }
+        
+        // Hide loader overlay
+        setTimeout(() => {
+            loaderOverlay.classList.add('hidden');
+            
+            // Show app container with animation
+            setTimeout(() => {
+                appContainer.classList.add('loaded');
+                chatMessageInput.focus();
+                
+                // Remove loader from DOM after animation completes
+                setTimeout(() => {
+                    if (loaderOverlay.parentNode) {
+                        loaderOverlay.style.display = 'none';
+                    }
+                }, 500);
+            }, 300);
+        }, 500);
+    }
     
     /* ================= EVENT LISTENERS SETUP ================= */
     function setupEventListeners() {
@@ -1758,6 +1930,8 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ================= THEME MANAGEMENT ================= */
     function toggleTheme() {
         body.classList.toggle('light-mode');
+        loaderOverlay.classList.toggle('light-mode');
+        
         const themeBtn = document.getElementById('theme-switch');
         themeBtn.innerHTML = body.classList.contains('light-mode') ? 
             '<i class="fas fa-sun" aria-hidden="true"></i> <span>Switch to Dark Mode</span>' :
@@ -2180,24 +2354,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Set background based on theme
                 switch(theme) {
                     case 'default':
-                        chatContainerClone.style.background = isLightMode 
-                            ? '#e5ddd5 url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_light.png")'
-                            : '#0b141a url("https://raw.githubusercontent.com/WhatsApp/stickers/master/Web/wa_assets/wallpaper_dark.png")';
+                        if (isLightMode) {
+                            chatContainerClone.style.background = '#e5ddd5 url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")';
+                            chatContainerClone.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+                        } else {
+                            chatContainerClone.style.background = 'url("https://i.pinimg.com/736x/d4/19/aa/d419aab5254a2e8d417abb4aa22d38b2.jpg")';
+                            chatContainerClone.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+                        }
                         break;
                     case 'dark':
-                        chatContainerClone.style.background = isLightMode
-                            ? '#222222 url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")'
-                            : '#000000 url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")';
+                        chatContainerClone.style.background = 'url("https://i.pinimg.com/736x/d4/19/aa/d419aab5254a2e8d417abb4aa22d38b2.jpg")';
+                        chatContainerClone.style.backgroundColor = isLightMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.7)';
                         break;
                     case 'blue':
-                        chatContainerClone.style.background = isLightMode
-                            ? '#d4e6ff url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")'
-                            : '#0a2540 url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")';
+                        chatContainerClone.style.background = 'url("https://i.pinimg.com/736x/b5/fc/fe/b5fcfe133eba8e563a8c59123cb6959f.jpg")';
+                        chatContainerClone.style.backgroundColor = isLightMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 30, 60, 0.7)';
                         break;
                     case 'purple':
-                        chatContainerClone.style.background = isLightMode
-                            ? '#e8dfff url("https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")'
-                            : '#2d1b69 url("https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")';
+                        chatContainerClone.style.background = 'url("https://i.pinimg.com/736x/e2/86/04/e2860419450ae1cbbdadebaceba50722.jpg")';
+                        chatContainerClone.style.backgroundColor = isLightMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(40, 0, 60, 0.7)';
                         break;
                 }
                 chatContainerClone.style.backgroundSize = 'cover';
@@ -2268,8 +2443,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 3000);
     }
     
-    // Initial scroll to bottom
-    scrollToBottom();
+    // Initialize app after loader is done
+    setTimeout(() => {
+        setupEventListeners();
+        initializeEmojiPicker();
+        setupChatTheme();
+        updateContactInfo();
+        scrollToBottom();
+    }, 1500);
 });
 </script>
 </body>
