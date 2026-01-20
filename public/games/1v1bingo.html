@@ -1,171 +1,384 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-
-<!-- ================= SEO START ================= -->
-
-<title>1v1 Bingo Game | Indian Bingo AI vs Human | Play Free Online</title>
-
-<meta name="description" content="Play 1v1 Bingo online – Human vs AI Bingo game designed for Indian players. Custom numbers, smart AI, hard mode, mobile-friendly, free Bingo game with no downloads.">
-
-<meta name="keywords" content="bingo game online, indian bingo, bingo ai vs human, 1v1 bingo game, play bingo online india, free bingo game, smart bingo ai, custom bingo board, mobile bingo game">
-
-<meta name="robots" content="index, follow">
-<meta name="googlebot" content="index, follow">
-
-<link rel="canonical" href="https://example.com/1v1-bingo-ai-vs-human">
-
-<!-- Theme / Mobile -->
-<meta name="theme-color" content="#f5f1e6">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-<!-- Open Graph (Facebook / WhatsApp) -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="1v1 Bingo Game – Indian Bingo AI vs Human">
-<meta property="og:description" content="Challenge a smart AI in this 1v1 Bingo game. Custom boards, hard mode, and smooth mobile gameplay made for Indian Bingo lovers.">
-<meta property="og:url" content="https://example.com/1v1-bingo-ai-vs-human">
-<meta property="og:image" content="https://example.com/assets/bingo-preview.png">
-<meta property="og:site_name" content="Indian Bingo Games">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="1v1 Bingo Game | AI vs Human Bingo">
-<meta name="twitter:description" content="Play Indian-style Bingo online. Human vs AI, custom numbers, hard mode, and mobile-first design.">
-<meta name="twitter:image" content="https://example.com/assets/bingo-preview.png">
-
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "GameApplication",
-  "name": "1v1 Bingo – AI vs Human",
-  "description": "An Indian-style 1v1 Bingo game where a human player competes against a smart AI. Includes custom numbers, hard mode, and mobile-friendly gameplay.",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web",
-  "genre": "Board Game",
-  "playMode": "SinglePlayer",
-  "audience": {
-    "@type": "Audience",
-    "geographicArea": {
-      "@type": "AdministrativeArea",
-      "name": "India"
-    }
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "INR"
-  }
-}
-</script>
-
-<style>
-  body { font-family: 'Caveat', cursive; background-color:#f5f1e6; margin:0; padding:15px; color:#3a3429; max-width:100%; overflow-x:hidden;}
-  h1 {text-align:center;font-size:3.5rem;margin:10px 0 20px;color:#2c2416;text-shadow:2px 2px 3px rgba(0,0,0,0.1);letter-spacing:2px;font-weight:700;font-family:'Shadows Into Light',cursive;position:relative;}
-  h1:after {content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:60%;height:3px;background-color:#3a3429;border-radius:2px;}
-  #controls { display:flex; justify-content:center; gap:20px; margin:20px 0; flex-wrap:wrap;}
-  button { font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700;padding:10px 25px;background-color:#f9f5eb;border:none;border-radius:8px;cursor:pointer;color:#3a3429;box-shadow:3px 3px 0px #d4c9ae,5px 5px 8px rgba(0,0,0,0.15);transition:0.2s; position:relative; letter-spacing:1px;}
-  button:hover{ transform: translateY(-2px); box-shadow:3px 5px 0px #d4c9ae,7px 7px 10px rgba(0,0,0,0.15);}
-  button:active{ transform: translateY(1px); box-shadow:1px 1px 0px #d4c9ae,3px 3px 5px rgba(0,0,0,0.1);}
-  #instruction { text-align:center;font-size:1.4rem;margin:15px 10px 25px;line-height:1.4;padding:12px;border-radius:6px;background-color: rgba(249,245,235,0.8);}
-  .boards { display:flex; flex-direction:column; gap:30px; margin:20px auto; max-width:1000px;}
-  @media (min-width:768px){ .boards{ flex-direction:row; justify-content:space-around; align-items:flex-start; } }
-  .boards > div { flex:1; min-width:280px; max-width:500px; margin:0 auto; padding:15px; background-color:#f9f5eb; border-radius:12px; box-shadow:5px 5px 0px #e5ddcd,8px 8px 15px rgba(0,0,0,0.1), inset 0 0 15px rgba(255,255,255,0.5); position:relative; overflow:hidden;}
-  .boards > div:before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background: linear-gradient(90deg,#f9f5eb,#d4c9ae,#f9f5eb);}
-  .boardTitle { text-align:center; font-size:1.8rem; font-weight:700; margin-bottom:10px; font-family:'Shadows Into Light', cursive;}
-  .bingoLetters{ display:flex; justify-content:space-between; margin-bottom:10px;}
-  .letter{ width:18%; height:40px; display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:700; color:#3a3429; font-family:'Shadows Into Light', cursive; position:relative;}
-  .letter.done{ color:#2e7d32;}
-  .letter.done:after{ content:""; position:absolute; bottom:5px; left:10%; width:80%; height:3px; background-color:#2e7d32; border-radius:2px;}
-  .board{ display:grid; grid-template-columns:repeat(5,1fr); grid-gap:6px; position:relative;}
-  .cell{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:700; background-color:#fefcf7; cursor:pointer; position:relative; transition:all 0.3s; color:#3a3429; border:2px solid #3a3429; border-radius:4px; box-shadow:1px 1px 0px #3a3429,2px 2px 3px rgba(0,0,0,0.1);}
-  .cell span.number{ display:block; transition: filter 0.5s;}
-  .cell.marked{ background-color: rgba(212,201,174,0.3); color:#7a6f5a;}
-  .cell.marked:before{ content:""; position:absolute; top:50%; left:10%; width:80%; height:3px; background-color:#3a3429; transform:translateY(-50%) rotate(-5deg); border-radius:2px; opacity:0.7;}
-  .cell.called{ animation:pulse 1s ease-in-out; box-shadow:0 0 0 3px rgba(244,67,54,0.3),1px 1px 0px #3a3429,2px 2px 3px rgba(0,0,0,0.1);}
-  .cell.lineWin{ background-color: rgba(46,125,50,0.2); animation: glow 2s infinite alternate;}
-  @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
-  @keyframes glow{from{box-shadow:0 0 5px rgba(46,125,50,0.5);}to{box-shadow:0 0 10px rgba(46,125,50,0.8);}}
-  #computerBoard .cell span.number{ filter: blur(4px);}
-  #computerBoard .cell.revealed span.number{ filter: blur(0);}
-  #status { text-align:center;font-size:1.8rem;font-weight:700;margin:25px 0;padding:10px;background-color:rgba(249,245,235,0.9); border-radius:8px; border:1px dashed #d4c9ae; color:#2c2416;}
-  .popup{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0); background-color:#f9f5eb; padding:40px 60px; border-radius:12px; font-size:3rem; font-weight:700; text-align:center; color:#2c2416; box-shadow:0 0 0 1000px rgba(58,52,41,0.8),10px 10px 20px rgba(0,0,0,0.3); z-index:1000; transition:transform 0.4s; border:3px solid #3a3429; font-family:'Shadows Into Light',cursive; letter-spacing:2px;}
-  .popup.show{ transform:translate(-50%,-50%) scale(1);}
-  @media(max-width:600px){ h1{ font-size:2.8rem;} .cell{ font-size:1.6rem;} .letter{ font-size:1.9rem;} .popup{ font-size:2.2rem; padding:30px 40px; width:80%; } button{ font-size:1.4rem; padding:8px 20px;} #instruction{ font-size:1.2rem;} #status{ font-size:1.5rem;} .boardTitle{ font-size:1.5rem;} }
-</style>
-</head>
-<body>
-
-<h1>1v1 Bingo</h1>
-
-<div id="controls">
-  <button onclick="resetBoard()">Random Reset</button>
-  <button onclick="startCustom()">Custom Numbers</button>
-</div>
-
-<p id="instruction">Click boxes one by one to assign numbers in order (1 → 25) for custom numbers.</p>
-
-<div class="boards">
-  <div>
-    <div class="boardTitle">You</div>
-    <div class="bingoLetters" id="playerLetters"></div>
-    <div id="playerBoard" class="board"></div>
-  </div>
-  <div>
-    <div class="boardTitle">AI</div>
-    <div class="bingoLetters" id="computerLetters"></div>
-    <div id="computerBoard" class="board"></div>
-  </div>
-</div>
-
-<p id="status">Your Turn</p>
-<div id="popup" class="popup"></div>
-
+<!DOCTYPE html>    
+<html lang="en">    
+<head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+  
+<!-- ================= SEO START ================= -->  
+  
+<title>1v1 Bingo Game | Indian Bingo AI vs Human | Play Free Online</title>  
+  
+<meta name="description" content="Play 1v1 Bingo online – Human vs AI Bingo game designed for Indian players. Custom numbers, smart AI, hard mode, mobile-friendly, free Bingo game with no downloads.">  
+  
+<meta name="keywords" content="bingo game online, indian bingo, bingo ai vs human, 1v1 bingo game, play bingo online india, free bingo game, smart bingo ai, custom bingo board, mobile bingo game">  
+  
+<meta name="robots" content="index, follow">  
+<meta name="googlebot" content="index, follow">  
+  
+<link rel="canonical" href="https://example.com/1v1-bingo-ai-vs-human">  
+  
+<!-- Theme / Mobile -->  
+<meta name="theme-color" content="#f5f1e6">  
+<meta name="apple-mobile-web-app-capable" content="yes">  
+<meta name="apple-mobile-web-app-status-bar-style" content="default">  
+  
+<!-- Open Graph (Facebook / WhatsApp) -->  
+<meta property="og:type" content="website">  
+<meta property="og:title" content="1v1 Bingo Game – Indian Bingo AI vs Human">  
+<meta property="og:description" content="Challenge a smart AI in this 1v1 Bingo game. Custom boards, hard mode, and smooth mobile gameplay made for Indian Bingo lovers.">  
+<meta property="og:url" content="https://example.com/1v1-bingo-ai-vs-human">  
+<meta property="og:image" content="https://example.com/assets/bingo-preview.png">  
+<meta property="og:site_name" content="Indian Bingo Games">  
+  
+<!-- Twitter Card -->  
+<meta name="twitter:card" content="summary_large_image">  
+<meta name="twitter:title" content="1v1 Bingo Game | AI vs Human Bingo">  
+<meta name="twitter:description" content="Play Indian-style Bingo online. Human vs AI, custom numbers, hard mode, and mobile-first design.">  
+<meta name="twitter:image" content="https://example.com/assets/bingo-preview.png">  
+  
+<!-- JSON-LD Schema -->  
+<script type="application/ld+json">  
+{  
+  "@context": "https://schema.org",  
+  "@type": "GameApplication",  
+  "name": "1v1 Bingo – AI vs Human",  
+  "description": "An Indian-style 1v1 Bingo game where a human player competes against a smart AI. Includes custom numbers, hard mode, and mobile-friendly gameplay.",  
+  "applicationCategory": "Game",  
+  "operatingSystem": "Web",  
+  "genre": "Board Game",  
+  "playMode": "SinglePlayer",  
+  "audience": {  
+    "@type": "Audience",  
+    "geographicArea": {  
+      "@type": "AdministrativeArea",  
+      "name": "India"  
+    }  
+  },  
+  "offers": {  
+    "@type": "Offer",  
+    "price": "0",  
+    "priceCurrency": "INR"  
+  }  
+}  
+</script>  
+  
+<style>  
+  body { font-family: 'Caveat', cursive; background-color:#f5f1e6; margin:0; padding:15px; color:#3a3429; max-width:100%; overflow-x:hidden;}  
+  h1 {text-align:center;font-size:3.5rem;margin:10px 0 20px;color:#2c2416;text-shadow:2px 2px 3px rgba(0,0,0,0.1);letter-spacing:2px;font-weight:700;font-family:'Shadows Into Light',cursive;position:relative;}  
+  h1:after {content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:60%;height:3px;background-color:#3a3429;border-radius:2px;}  
+  #controls { display:flex; justify-content:center; gap:20px; margin:20px 0; flex-wrap:wrap;}  
+  button { font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700;padding:10px 25px;background-color:#f9f5eb;border:none;border-radius:8px;cursor:pointer;color:#3a3429;box-shadow:3px 3px 0px #d4c9ae,5px 5px 8px rgba(0,0,0,0.15);transition:0.2s; position:relative; letter-spacing:1px;}  
+  button:hover{ transform: translateY(-2px); box-shadow:3px 5px 0px #d4c9ae,7px 7px 10px rgba(0,0,0,0.15);}  
+  button:active{ transform: translateY(1px); box-shadow:1px 1px 0px #d4c9ae,3px 3px 5px rgba(0,0,0,0.1);}  
+  #instruction { text-align:center;font-size:1.4rem;margin:15px 10px 25px;line-height:1.4;padding:12px;border-radius:6px;background-color: rgba(249,245,235,0.8);}  
+  .boards { display:flex; flex-direction:column; gap:30px; margin:20px auto; max-width:1000px;}  
+  @media (min-width:768px){ .boards{ flex-direction:row; justify-content:space-around; align-items:flex-start; } }  
+  .boards > div { flex:1; min-width:280px; max-width:500px; margin:0 auto; padding:15px; background-color:#f9f5eb; border-radius:12px; box-shadow:5px 5px 0px #e5ddcd,8px 8px 15px rgba(0,0,0,0.1), inset 0 0 15px rgba(255,255,255,0.5); position:relative; overflow:hidden;}  
+  .boards > div:before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background: linear-gradient(90deg,#f9f5eb,#d4c9ae,#f9f5eb);}  
+  .boardTitle { text-align:center; font-size:1.8rem; font-weight:700; margin-bottom:10px; font-family:'Shadows Into Light', cursive;}  
+  .bingoLetters{ display:flex; justify-content:space-between; margin-bottom:10px;}  
+  .letter{ width:18%; height:40px; display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:700; color:#3a3429; font-family:'Shadows Into Light', cursive; position:relative;}  
+  .letter.done{ color:#2e7d32;}  
+  .letter.done:after{ content:""; position:absolute; bottom:5px; left:10%; width:80%; height:3px; background-color:#2e7d32; border-radius:2px;}  
+  .board{ display:grid; grid-template-columns:repeat(5,1fr); grid-gap:6px; position:relative;}  
+  .cell{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:700; background-color:#fefcf7; cursor:pointer; position:relative; transition:all 0.3s; color:#3a3429; border:2px solid #3a3429; border-radius:4px; box-shadow:1px 1px 0px #3a3429,2px 2px 3px rgba(0,0,0,0.1);}  
+  .cell span.number{ display:block; transition: filter 0.5s;}  
+  .cell.marked{ background-color: rgba(212,201,174,0.3); color:#7a6f5a;}  
+  .cell.marked:before{ content:""; position:absolute; top:50%; left:10%; width:80%; height:3px; background-color:#3a3429; transform:translateY(-50%) rotate(-5deg); border-radius:2px; opacity:0.7;}  
+  .cell.called{ animation:pulse 1s ease-in-out; box-shadow:0 0 0 3px rgba(244,67,54,0.3),1px 1px 0px #3a3429,2px 2px 3px rgba(0,0,0,0.1);}  
+  .cell.lineWin{ background-color: rgba(46,125,50,0.2); animation: glow 2s infinite alternate;}  
+  @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}  
+  @keyframes glow{from{box-shadow:0 0 5px rgba(46,125,50,0.5);}to{box-shadow:0 0 10px rgba(46,125,50,0.8);}}  
+  #computerBoard .cell span.number{ filter: blur(4px);}  
+  #computerBoard .cell.revealed span.number{ filter: blur(0);}  
+  #status { text-align:center;font-size:1.8rem;font-weight:700;margin:25px 0;padding:10px;background-color:rgba(249,245,235,0.9); border-radius:8px; border:1px dashed #d4c9ae; color:#2c2416;}  
+  .popup{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0); background-color:#f9f5eb; padding:40px 60px; border-radius:12px; font-size:3rem; font-weight:700; text-align:center; color:#2c2416; box-shadow:0 0 0 1000px rgba(58,52,41,0.8),10px 10px 20px rgba(0,0,0,0.3); z-index:1000; transition:transform 0.4s; border:3px solid #3a3429; font-family:'Shadows Into Light',cursive; letter-spacing:2px;}  
+  .popup.show{ transform:translate(-50%,-50%) scale(1);}  
+  @media(max-width:600px){ h1{ font-size:2.8rem;} .cell{ font-size:1.6rem;} .letter{ font-size:1.9rem;} .popup{ font-size:2.2rem; padding:30px 40px; width:80%; } button{ font-size:1.4rem; padding:8px 20px;} #instruction{ font-size:1.2rem;} #status{ font-size:1.5rem;} .boardTitle{ font-size:1.5rem;} }  
+</style>  
+</head>  
+<body>  
+  
+<h1>1v1 Bingo</h1>  
+  
+<div id="controls">  
+  <button onclick="resetBoard()">Random Reset</button>  
+  <button onclick="startCustom()">Custom Numbers</button>  
+</div>  
+  
+<p id="instruction">Click boxes one by one to assign numbers in order (1 → 25) for custom numbers.</p>  
+  
+<div class="boards">  
+  <div>  
+    <div class="boardTitle">You</div>  
+    <div class="bingoLetters" id="playerLetters"></div>  
+    <div id="playerBoard" class="board"></div>  
+  </div>  
+  <div>  
+    <div class="boardTitle">AI</div>  
+    <div class="bingoLetters" id="computerLetters"></div>  
+    <div id="computerBoard" class="board"></div>  
+  </div>  
+</div>  
+  
+<p id="status">Your Turn</p>  
+<div id="popup" class="popup"></div>  
+  
 <script>
-const SIZE=5; const letters=["B","I","N","G","O"]; let nums=Array.from({length:25},(_,i)=>i+1);
-let playerNums=[], computerNums=[]; let playerMarked=new Set(), computerMarked=new Set(), called=new Set(); let turn="player";
+const SIZE=5;
+const letters=["B","I","N","G","O"];
+let nums=Array.from({length:25},(_,i)=>i+1);
+
+let playerNums=[], computerNums=[];
+let playerMarked=new Set(), computerMarked=new Set(), called=new Set();
+let turn="player";
+
 let customMode=false, nextNumber=1;
-drawLetters("playerLetters"); drawLetters("computerLetters"); resetBoard();
 
-function shuffle(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
-function drawLetters(id){let box=document.getElementById(id);box.innerHTML="";letters.forEach(l=>{let div=document.createElement("div");div.className="letter";div.textContent=l;box.appendChild(div);});}
+drawLetters("playerLetters");
+drawLetters("computerLetters");
+resetBoard();
 
-function drawBoard(id, numsArr, hide){
-  let board=document.getElementById(id); board.innerHTML="";
-  numsArr.forEach((n,i)=>{
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function drawLetters(id){
+  let box=document.getElementById(id);
+  box.innerHTML="";
+  letters.forEach(l=>{
+    let div=document.createElement("div");
+    div.className="letter";
+    div.textContent=l;
+    box.appendChild(div);
+  });
+}
+
+function drawBoard(id, numsArr, isComputer){
+  let board=document.getElementById(id);
+  board.innerHTML="";
+  numsArr.forEach(n=>{
     let div=document.createElement("div");
     div.className="cell";
     div.id=id+"-"+n;
+
     let span=document.createElement("span");
     span.className="number";
     span.textContent=n;
     div.appendChild(span);
-    if(!hide) div.onclick=()=>customMode?customSelect(div):playerCall(n);
+
+    if(!isComputer){
+      div.onclick=()=>{
+        if(customMode) customSelect(div);
+        else playerCall(n);
+      };
+    }
+
     board.appendChild(div);
   });
 }
 
-function resetBoard(){customMode=false;nextNumber=1;playerNums=shuffle([...nums]);computerNums=shuffle([...nums]);playerMarked=new Set();computerMarked=new Set();called=new Set();turn="player";status("Your Turn");document.getElementById("popup").classList.remove("show");drawBoard("playerBoard",playerNums,false);drawBoard("computerBoard",computerNums,false);}
-function startCustom(){customMode=true;nextNumber=1;playerNums=Array(25).fill(0);drawBoard("playerBoard",Array(25).fill(0), false);document.getElementById("instruction").textContent="Click boxes one by one to assign numbers in order (1→25).";}
-function customSelect(cell){if(nextNumber>25){customMode=false;return;}cell.querySelector("span.number").textContent=nextNumber;playerNums[Array.from(cell.parentNode.children).indexOf(cell)]=nextNumber;nextNumber++;if(nextNumber>25){customMode=false;document.getElementById("instruction").textContent="Custom numbers set! Now play.";}}
+function resetBoard(){
+  customMode=false;
+  nextNumber=1;
 
-function playerCall(n){if(turn!=="player"||called.has(n)) return;called.add(n);animateCall(n);processMark(n);turn="computer";status("Computer thinking...");setTimeout(computerCall,2000);}
-function computerCall(){let move=smartPick();if(!move){move=nums.find(n=>!called.has(n));}called.add(move);animateCall(move);processMark(move);turn="player";status("Your Turn");}
-function smartPick(){let remaining=nums.filter(n=>!called.has(n));let win=bestLineMove(computerNums,computerMarked,remaining);if(win) return win;let block=bestLineMove(playerNums,playerMarked,remaining);if(block) return block;return bestStrategicMove(computerNums,computerMarked,remaining);}
-function bestLineMove(board,marked,options){for(let r=0;r<SIZE;r++){let row=board.slice(r*SIZE,r*SIZE+SIZE);let count=row.filter(n=>marked.has(n)).length;if(count===SIZE-1){let missing=row.find(n=>!marked.has(n));if(options.includes(missing)) return missing;}}for(let c=0;c<SIZE;c++){let col=[];for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);let count=col.filter(n=>marked.has(n)).length;if(count===SIZE-1){let missing=col.find(n=>!marked.has(n));if(options.includes(missing)) return missing;}}return null;}
-function bestStrategicMove(board,marked,options){let best=options[0],bestScore=-1;for(let n of options){let score=0;for(let r=0;r<SIZE;r++){let row=board.slice(r*SIZE,r*SIZE+SIZE);if(row.includes(n)) score+=row.filter(x=>marked.has(x)).length;}for(let c=0;c<SIZE;c++){let col=[];for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);if(col.includes(n)) score+=col.filter(x=>marked.has(x)).length;}if(score>bestScore){best=n;bestScore=score;}}return best;}
-function processMark(n){mark("playerBoard",playerNums,playerMarked,n,false);mark("computerBoard",computerNums,computerMarked,n,true);let pLines=countLines(playerNums,playerMarked,"playerBoard");let cLines=countLines(computerNums,computerMarked,"computerBoard");updateLetters("playerLetters",pLines);updateLetters("computerLetters",cLines);if(pLines>=5) endGame("🎉 YOU WIN!"); else if(cLines>=5) endGame("🤖 COMPUTER WINS!");}
-function mark(boardId,nums,marked,n,hide){if(nums.includes(n)){marked.add(n);let cell=document.getElementById(boardId+"-"+n);cell.classList.add("marked");if(hide) cell.classList.add("revealed");}}
-function animateCall(n){document.querySelectorAll(".called").forEach(c=>c.classList.remove("called"));let cell=document.querySelector("[id$='-"+n+"']");if(cell) cell.classList.add("called");}
-function countLines(board,marked,boardId){let lines=0;for(let r=0;r<SIZE;r++){let cells=board.slice(r*SIZE,r*SIZE+SIZE);if(cells.every(n=>marked.has(n))){lines++;pulse(boardId,cells);}}for(let c=0;c<SIZE;c++){let cells=[];for(let r=0;r<SIZE;r++) cells.push(board[r*SIZE+c]);if(cells.every(n=>marked.has(n))){lines++;pulse(boardId,cells);}}return lines;}
-function pulse(boardId,cells){cells.forEach(n=>{let cell=document.getElementById(boardId+"-"+n);if(cell) cell.classList.add("lineWin");});}
-function updateLetters(id,lines){let box=document.getElementById(id).children;for(let i=0;i<lines&&i<5;i++) box[i].classList.add("done");}
-function status(t){document.getElementById("status").textContent=t;}
-function endGame(text){document.getElementById("popup").textContent=text;document.getElementById("popup").classList.add("show");document.querySelectorAll(".cell").forEach(c=>c.onclick=null);}
+  playerNums=shuffle([...nums]);
+  computerNums=shuffle([...nums]);
+
+  playerMarked=new Set();
+  computerMarked=new Set();
+  called=new Set();
+
+  turn="player";
+  status("Your Turn");
+  document.getElementById("popup").classList.remove("show");
+
+  drawBoard("playerBoard",playerNums,false);
+  drawBoard("computerBoard",computerNums,true);
+}
+
+function startCustom(){
+  customMode=true;
+  nextNumber=1;
+  playerNums=Array(25).fill(0);
+
+  drawBoard("playerBoard",playerNums,false);
+
+  document.getElementById("instruction").textContent=
+    "Click boxes one by one to assign numbers in order (1 → 25).";
+}
+
+function customSelect(cell){
+  if(nextNumber>25) return;
+
+  cell.querySelector(".number").textContent=nextNumber;
+  let index=[...cell.parentNode.children].indexOf(cell);
+  playerNums[index]=nextNumber;
+  nextNumber++;
+
+  if(nextNumber>25){
+    customMode=false;
+    document.getElementById("instruction").textContent=
+      "Custom numbers set! Start playing.";
+
+    // 🔥 FIX: redraw board with proper gameplay clicks
+    drawBoard("playerBoard",playerNums,false);
+  }
+}
+
+function playerCall(n){
+  if(turn!=="player"||called.has(n)) return;
+
+  called.add(n);
+  animateCall(n);
+  processMark(n);
+
+  turn="computer";
+  status("Computer thinking...");
+  setTimeout(computerCall,1500);
+}
+
+function computerCall(){
+  let move=smartPick() || nums.find(n=>!called.has(n));
+  called.add(move);
+  animateCall(move);
+  processMark(move);
+
+  turn="player";
+  status("Your Turn");
+}
+
+function smartPick(){
+  let remaining=nums.filter(n=>!called.has(n));
+  return (
+    bestLineMove(computerNums,computerMarked,remaining) ||
+    bestLineMove(playerNums,playerMarked,remaining) ||
+    bestStrategicMove(computerNums,computerMarked,remaining)
+  );
+}
+
+function bestLineMove(board,marked,options){
+  for(let r=0;r<SIZE;r++){
+    let row=board.slice(r*SIZE,r*SIZE+SIZE);
+    if(row.filter(n=>marked.has(n)).length===SIZE-1){
+      let m=row.find(n=>!marked.has(n));
+      if(options.includes(m)) return m;
+    }
+  }
+
+  for(let c=0;c<SIZE;c++){
+    let col=[];
+    for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);
+    if(col.filter(n=>marked.has(n)).length===SIZE-1){
+      let m=col.find(n=>!marked.has(n));
+      if(options.includes(m)) return m;
+    }
+  }
+  return null;
+}
+
+function bestStrategicMove(board,marked,options){
+  let best=options[0], bestScore=-1;
+
+  for(let n of options){
+    let score=0;
+    for(let r=0;r<SIZE;r++){
+      let row=board.slice(r*SIZE,r*SIZE+SIZE);
+      if(row.includes(n)) score+=row.filter(x=>marked.has(x)).length;
+    }
+    for(let c=0;c<SIZE;c++){
+      let col=[];
+      for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);
+      if(col.includes(n)) score+=col.filter(x=>marked.has(x)).length;
+    }
+    if(score>bestScore){
+      best=n;
+      bestScore=score;
+    }
+  }
+  return best;
+}
+
+function processMark(n){
+  mark("playerBoard",playerNums,playerMarked,n,false);
+  mark("computerBoard",computerNums,computerMarked,n,true);
+
+  let pLines=countLines(playerNums,playerMarked,"playerBoard");
+  let cLines=countLines(computerNums,computerMarked,"computerBoard");
+
+  updateLetters("playerLetters",pLines);
+  updateLetters("computerLetters",cLines);
+
+  if(pLines>=5) endGame("🎉 YOU WIN!");
+  else if(cLines>=5) endGame("🤖 COMPUTER WINS!");
+}
+
+function mark(boardId,nums,marked,n,reveal){
+  if(nums.includes(n)){
+    marked.add(n);
+    let cell=document.getElementById(boardId+"-"+n);
+    cell.classList.add("marked");
+    if(reveal) cell.classList.add("revealed");
+  }
+}
+
+function animateCall(n){
+  document.querySelectorAll(".called").forEach(c=>c.classList.remove("called"));
+  let cell=document.querySelector("[id$='-"+n+"']");
+  if(cell) cell.classList.add("called");
+}
+
+function countLines(board,marked,boardId){
+  let lines=0;
+
+  for(let r=0;r<SIZE;r++){
+    let row=board.slice(r*SIZE,r*SIZE+SIZE);
+    if(row.every(n=>marked.has(n))){
+      lines++;
+      glow(boardId,row);
+    }
+  }
+
+  for(let c=0;c<SIZE;c++){
+    let col=[];
+    for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);
+    if(col.every(n=>marked.has(n))){
+      lines++;
+      glow(boardId,col);
+    }
+  }
+  return lines;
+}
+
+function glow(boardId,cells){
+  cells.forEach(n=>{
+    let cell=document.getElementById(boardId+"-"+n);
+    if(cell) cell.classList.add("lineWin");
+  });
+}
+
+function updateLetters(id,lines){
+  let letters=document.getElementById(id).children;
+  for(let i=0;i<lines && i<5;i++){
+    letters[i].classList.add("done");
+  }
+}
+
+function status(t){
+  document.getElementById("status").textContent=t;
+}
+
+function endGame(text){
+  let p=document.getElementById("popup");
+  p.textContent=text;
+  p.classList.add("show");
+  document.querySelectorAll(".cell").forEach(c=>c.onclick=null);
+}
 </script>
-
-</body>
-</html> 
+  
+</body>  
+</html>
