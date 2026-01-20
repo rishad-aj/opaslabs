@@ -62,7 +62,6 @@
 }
 </script>
 
-
 <style>
   body { font-family: 'Caveat', cursive; background-color:#f5f1e6; margin:0; padding:15px; color:#3a3429; max-width:100%; overflow-x:hidden;}
   h1 {text-align:center;font-size:3.5rem;margin:10px 0 20px;color:#2c2416;text-shadow:2px 2px 3px rgba(0,0,0,0.1);letter-spacing:2px;font-weight:700;font-family:'Shadows Into Light',cursive;position:relative;}
@@ -105,7 +104,6 @@
 <div id="controls">
   <button onclick="resetBoard()">Random Reset</button>
   <button onclick="startCustom()">Custom Numbers</button>
-  <button onclick="toggleDifficulty()">Hard Mode: OFF</button>
 </div>
 
 <p id="instruction">Click boxes one by one to assign numbers in order (1 → 25) for custom numbers.</p>
@@ -130,8 +128,6 @@
 const SIZE=5; const letters=["B","I","N","G","O"]; let nums=Array.from({length:25},(_,i)=>i+1);
 let playerNums=[], computerNums=[]; let playerMarked=new Set(), computerMarked=new Set(), called=new Set(); let turn="player";
 let customMode=false, nextNumber=1;
-let hardMode=false; // Added difficulty toggle
-
 drawLetters("playerLetters"); drawLetters("computerLetters"); resetBoard();
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
@@ -152,397 +148,24 @@ function drawBoard(id, numsArr, hide){
   });
 }
 
-function resetBoard(){
-  customMode=false;
-  nextNumber=1;
-  playerNums=shuffle([...nums]);
-  computerNums=shuffle([...nums]);
-  playerMarked=new Set();
-  computerMarked=new Set();
-  called=new Set();
-  turn="player";
-  status("Your Turn");
-  document.getElementById("popup").classList.remove("show");
-  drawBoard("playerBoard",playerNums,false);
-  drawBoard("computerBoard",computerNums,false);
-}
+function resetBoard(){customMode=false;nextNumber=1;playerNums=shuffle([...nums]);computerNums=shuffle([...nums]);playerMarked=new Set();computerMarked=new Set();called=new Set();turn="player";status("Your Turn");document.getElementById("popup").classList.remove("show");drawBoard("playerBoard",playerNums,false);drawBoard("computerBoard",computerNums,false);}
+function startCustom(){customMode=true;nextNumber=1;playerNums=Array(25).fill(0);drawBoard("playerBoard",Array(25).fill(0), false);document.getElementById("instruction").textContent="Click boxes one by one to assign numbers in order (1→25).";}
+function customSelect(cell){if(nextNumber>25){customMode=false;return;}cell.querySelector("span.number").textContent=nextNumber;playerNums[Array.from(cell.parentNode.children).indexOf(cell)]=nextNumber;nextNumber++;if(nextNumber>25){customMode=false;document.getElementById("instruction").textContent="Custom numbers set! Now play.";}}
 
-function startCustom(){
-  customMode=true;
-  nextNumber=1;
-  playerNums=Array(25).fill(0);
-  drawBoard("playerBoard",Array(25).fill(0), false);
-  document.getElementById("instruction").textContent="Click boxes one by one to assign numbers in order (1→25).";
-}
-
-function customSelect(cell){
-  if(nextNumber>25){customMode=false;return;}
-  cell.querySelector("span.number").textContent=nextNumber;
-  playerNums[Array.from(cell.parentNode.children).indexOf(cell)]=nextNumber;
-  nextNumber++;
-  if(nextNumber>25){
-    customMode=false;
-    document.getElementById("instruction").textContent="Custom numbers set! Now play.";
-  }
-}
-
-function toggleDifficulty() {
-  hardMode = !hardMode;
-  document.querySelector("#controls button:nth-child(3)").textContent = 
-    hardMode ? "Hard Mode: ON" : "Hard Mode: OFF";
-  if (hardMode) {
-    document.querySelector("#controls button:nth-child(3)").style.backgroundColor = "#ffebee";
-  } else {
-    document.querySelector("#controls button:nth-child(3)").style.backgroundColor = "#f9f5eb";
-  }
-}
-
-function playerCall(n){
-  if(turn!=="player"||called.has(n)) return;
-  called.add(n);
-  animateCall(n);
-  processMark(n);
-  turn="computer";
-  status("Computer thinking...");
-  setTimeout(computerCall, hardMode ? 1000 : 1500);
-}
-
-function computerCall(){
-  let move;
-  if (hardMode) {
-    move = advancedSmartPick();
-  } else {
-    move = smartPick();
-  }
-  if(!move){move=nums.find(n=>!called.has(n));}
-  called.add(move);
-  animateCall(move);
-  processMark(move);
-  turn="player";
-  status("Your Turn");
-}
-
-// Enhanced AI for hard mode
-function advancedSmartPick(){
-  let remaining=nums.filter(n=>!called.has(n));
-  
-  // 1. Check for immediate win
-  let winMove = findWinningMove(computerNums, computerMarked, remaining);
-  if(winMove) return winMove;
-  
-  // 2. Check if player is about to win and block
-  let blockMove = findWinningMove(playerNums, playerMarked, remaining);
-  if(blockMove) return blockMove;
-  
-  // 3. Look for potential forks (multiple winning opportunities)
-  let forkMove = findForkMove(computerNums, computerMarked, remaining, playerNums, playerMarked);
-  if(forkMove) return forkMove;
-  
-  // 4. Block player's potential forks
-  let blockForkMove = findBlockForkMove(playerNums, playerMarked, remaining, computerNums, computerMarked);
-  if(blockForkMove) return blockForkMove;
-  
-  // 5. Strategic move with multiple scoring factors
-  return bestStrategicMoveAdvanced(remaining);
-}
-
-function findWinningMove(board, marked, options){
-  // Check rows
-  for(let r=0;r<SIZE;r++){
-    let row=board.slice(r*SIZE,r*SIZE+SIZE);
-    let markedInRow=row.filter(n=>marked.has(n)).length;
-    if(markedInRow===SIZE-1){
-      let missing=row.find(n=>!marked.has(n));
-      if(options.includes(missing)) return missing;
-    }
-  }
-  
-  // Check columns
-  for(let c=0;c<SIZE;c++){
-    let col=[];
-    for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);
-    let markedInCol=col.filter(n=>marked.has(n)).length;
-    if(markedInCol===SIZE-1){
-      let missing=col.find(n=>!marked.has(n));
-      if(options.includes(missing)) return missing;
-    }
-  }
-  
-  return null;
-}
-
-function findForkMove(aiBoard, aiMarked, options, playerBoard, playerMarked){
-  // Look for moves that create multiple potential winning lines
-  let bestMove = null;
-  let bestScore = -1;
-  
-  for(let n of options){
-    // Simulate marking this number
-    let simulatedMarked = new Set([...aiMarked, n]);
-    let winOpportunities = 0;
-    
-    // Count how many lines would be one away from winning
-    for(let r=0;r<SIZE;r++){
-      let row=aiBoard.slice(r*SIZE,r*SIZE+SIZE);
-      let markedCount=row.filter(num=>simulatedMarked.has(num)).length;
-      if(markedCount === SIZE-1) winOpportunities++;
-    }
-    
-    for(let c=0;c<SIZE;c++){
-      let col=[];
-      for(let r=0;r<SIZE;r++) col.push(aiBoard[r*SIZE+c]);
-      let markedCount=col.filter(num=>simulatedMarked.has(num)).length;
-      if(markedCount === SIZE-1) winOpportunities++;
-    }
-    
-    // Also check if this blocks player's potential
-    let playerSimulated = new Set([...playerMarked, n]);
-    let blocksPlayer = false;
-    for(let r=0;r<SIZE;r++){
-      let row=playerBoard.slice(r*SIZE,r*SIZE+SIZE);
-      if(row.filter(num=>playerSimulated.has(num)).length === SIZE-1) blocksPlayer = true;
-    }
-    
-    let score = winOpportunities * 2 + (blocksPlayer ? 1 : 0);
-    
-    if(score > bestScore){
-      bestScore = score;
-      bestMove = n;
-    }
-  }
-  
-  return bestMove;
-}
-
-function findBlockForkMove(playerBoard, playerMarked, options, aiBoard, aiMarked){
-  // Identify moves that prevent player from creating forks
-  let dangerousMoves = [];
-  
-  for(let n of options){
-    let simulatedMarked = new Set([...playerMarked, n]);
-    let winOpportunities = 0;
-    
-    for(let r=0;r<SIZE;r++){
-      let row=playerBoard.slice(r*SIZE,r*SIZE+SIZE);
-      if(row.filter(num=>simulatedMarked.has(num)).length === SIZE-1) winOpportunities++;
-    }
-    
-    for(let c=0;c<SIZE;c++){
-      let col=[];
-      for(let r=0;r<SIZE;r++) col.push(playerBoard[r*SIZE+c]);
-      if(col.filter(num=>simulatedMarked.has(num)).length === SIZE-1) winOpportunities++;
-    }
-    
-    if(winOpportunities >= 2){
-      dangerousMoves.push(n);
-    }
-  }
-  
-  if(dangerousMoves.length > 0){
-    // Prioritize blocking moves that also advance our position
-    return dangerousMoves[0];
-  }
-  
-  return null;
-}
-
-function bestStrategicMoveAdvanced(options){
-  // Advanced scoring system
-  let scores = {};
-  
-  // Center and corners are strategic positions
-  const centerNumbers = [13]; // Center of 5x5 grid
-  const cornerNumbers = [1, 5, 21, 25]; // Approximate corners
-  const edgeNumbers = [7, 8, 9, 12, 14, 17, 18, 19]; // Strategic edges
-  
-  for(let n of options){
-    let score = 0;
-    
-    // Position scoring
-    if(centerNumbers.includes(n)) score += 3;
-    if(cornerNumbers.includes(n)) score += 2;
-    if(edgeNumbers.includes(n)) score += 1;
-    
-    // Cluster scoring - prefer numbers that group with already marked numbers
-    for(let markedNum of computerMarked){
-      // Numbers close together are better
-      let diff = Math.abs(n - markedNum);
-      if(diff <= 3) score += 1;
-      if(diff <= 1) score += 2;
-    }
-    
-    // Disrupt player clusters
-    for(let markedNum of playerMarked){
-      let diff = Math.abs(n - markedNum);
-      if(diff <= 2) score += 1; // Interfere with player's patterns
-    }
-    
-    // Avoid helping player complete BINGO columns
-    let colIndex = Math.floor((n-1)/5);
-    let playerColCount = 0;
-    for(let i=colIndex*5+1; i<=colIndex*5+5; i++){
-      if(playerMarked.has(i)) playerColCount++;
-    }
-    if(playerColCount >= 3) score -= 2; // Don't give numbers in columns player is close to completing
-    
-    scores[n] = score;
-  }
-  
-  // Find best move
-  let best = options[0];
-  let bestScore = scores[best] || 0;
-  for(let n of options){
-    if((scores[n] || 0) > bestScore){
-      best = n;
-      bestScore = scores[n];
-    }
-  }
-  
-  return best;
-}
-
-// Original smart pick for normal mode (improved)
-function smartPick(){
-  let remaining=nums.filter(n=>!called.has(n));
-  
-  // 1. Win if possible
-  let win=findWinningMove(computerNums, computerMarked, remaining);
-  if(win) return win;
-  
-  // 2. Block player if they're about to win
-  let block=findWinningMove(playerNums, playerMarked, remaining);
-  if(block) return block;
-  
-  // 3. Strategic move focusing on our board
-  return bestStrategicMove(computerNums, computerMarked, remaining);
-}
-
-function bestStrategicMove(board, marked, options){
-  let best=options[0], bestScore=-1;
-  for(let n of options){
-    let score=0;
-    // Score based on how many marked cells are in same row/column
-    for(let r=0;r<SIZE;r++){
-      let row=board.slice(r*SIZE,r*SIZE+SIZE);
-      if(row.includes(n)){
-        score+=row.filter(x=>marked.has(x)).length * 2; // Weight rows higher
-      }
-    }
-    for(let c=0;c<SIZE;c++){
-      let col=[];
-      for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);
-      if(col.includes(n)){
-        score+=col.filter(x=>marked.has(x)).length;
-      }
-    }
-    
-    // Prefer center numbers (better strategic position)
-    if(n >= 11 && n <= 15) score += 1;
-    
-    if(score>bestScore){
-      best=n;
-      bestScore=score;
-    }
-  }
-  return best;
-}
-
-function processMark(n){
-  mark("playerBoard",playerNums,playerMarked,n,false);
-  mark("computerBoard",computerNums,computerMarked,n,true);
-  let pLines=countLines(playerNums,playerMarked,"playerBoard");
-  let cLines=countLines(computerNums,computerMarked,"computerBoard");
-  updateLetters("playerLetters",pLines);
-  updateLetters("computerLetters",cLines);
-  if(pLines>=5) endGame("🎉 YOU WIN!");
-  else if(cLines>=5) endGame("🤖 COMPUTER WINS!");
-}
-
-function mark(boardId,nums,marked,n,hide){
-  if(nums.includes(n)){
-    marked.add(n);
-    let cell=document.getElementById(boardId+"-"+n);
-    cell.classList.add("marked");
-    if(hide) cell.classList.add("revealed");
-  }
-}
-
-function animateCall(n){
-  document.querySelectorAll(".called").forEach(c=>c.classList.remove("called"));
-  let cell=document.querySelector("[id$='-"+n+"']");
-  if(cell) cell.classList.add("called");
-}
-
-function countLines(board,marked,boardId){
-  let lines=0;
-  
-  // Rows
-  for(let r=0;r<SIZE;r++){
-    let cells=board.slice(r*SIZE,r*SIZE+SIZE);
-    if(cells.every(n=>marked.has(n))){
-      lines++;
-      pulse(boardId,cells);
-    }
-  }
-  
-  // Columns
-  for(let c=0;c<SIZE;c++){
-    let cells=[];
-    for(let r=0;r<SIZE;r++) cells.push(board[r*SIZE+c]);
-    if(cells.every(n=>marked.has(n))){
-      lines++;
-      pulse(boardId,cells);
-    }
-  }
-  
-  // Diagonals (optional - makes game harder)
-  if(hardMode){
-    // Main diagonal
-    let diag1=[];
-    for(let i=0;i<SIZE;i++) diag1.push(board[i*SIZE+i]);
-    if(diag1.every(n=>marked.has(n))){
-      lines++;
-      pulse(boardId,diag1);
-    }
-    
-    // Anti-diagonal
-    let diag2=[];
-    for(let i=0;i<SIZE;i++) diag2.push(board[i*SIZE+(SIZE-1-i)]);
-    if(diag2.every(n=>marked.has(n))){
-      lines++;
-      pulse(boardId,diag2);
-    }
-  }
-  
-  return lines;
-}
-
-function pulse(boardId,cells){
-  cells.forEach(n=>{
-    let cell=document.getElementById(boardId+"-"+n);
-    if(cell) cell.classList.add("lineWin");
-  });
-}
-
-function updateLetters(id,lines){
-  let box=document.getElementById(id).children;
-  for(let i=0;i<5;i++){
-    if(i<lines) box[i].classList.add("done");
-    else box[i].classList.remove("done");
-  }
-}
-
-function status(t){
-  document.getElementById("status").textContent=t;
-}
-
-function endGame(text){
-  document.getElementById("popup").textContent=text;
-  document.getElementById("popup").classList.add("show");
-  document.querySelectorAll(".cell").forEach(c=>c.onclick=null);
-}
+function playerCall(n){if(turn!=="player"||called.has(n)) return;called.add(n);animateCall(n);processMark(n);turn="computer";status("Computer thinking...");setTimeout(computerCall,2000);}
+function computerCall(){let move=smartPick();if(!move){move=nums.find(n=>!called.has(n));}called.add(move);animateCall(move);processMark(move);turn="player";status("Your Turn");}
+function smartPick(){let remaining=nums.filter(n=>!called.has(n));let win=bestLineMove(computerNums,computerMarked,remaining);if(win) return win;let block=bestLineMove(playerNums,playerMarked,remaining);if(block) return block;return bestStrategicMove(computerNums,computerMarked,remaining);}
+function bestLineMove(board,marked,options){for(let r=0;r<SIZE;r++){let row=board.slice(r*SIZE,r*SIZE+SIZE);let count=row.filter(n=>marked.has(n)).length;if(count===SIZE-1){let missing=row.find(n=>!marked.has(n));if(options.includes(missing)) return missing;}}for(let c=0;c<SIZE;c++){let col=[];for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);let count=col.filter(n=>marked.has(n)).length;if(count===SIZE-1){let missing=col.find(n=>!marked.has(n));if(options.includes(missing)) return missing;}}return null;}
+function bestStrategicMove(board,marked,options){let best=options[0],bestScore=-1;for(let n of options){let score=0;for(let r=0;r<SIZE;r++){let row=board.slice(r*SIZE,r*SIZE+SIZE);if(row.includes(n)) score+=row.filter(x=>marked.has(x)).length;}for(let c=0;c<SIZE;c++){let col=[];for(let r=0;r<SIZE;r++) col.push(board[r*SIZE+c]);if(col.includes(n)) score+=col.filter(x=>marked.has(x)).length;}if(score>bestScore){best=n;bestScore=score;}}return best;}
+function processMark(n){mark("playerBoard",playerNums,playerMarked,n,false);mark("computerBoard",computerNums,computerMarked,n,true);let pLines=countLines(playerNums,playerMarked,"playerBoard");let cLines=countLines(computerNums,computerMarked,"computerBoard");updateLetters("playerLetters",pLines);updateLetters("computerLetters",cLines);if(pLines>=5) endGame("🎉 YOU WIN!"); else if(cLines>=5) endGame("🤖 COMPUTER WINS!");}
+function mark(boardId,nums,marked,n,hide){if(nums.includes(n)){marked.add(n);let cell=document.getElementById(boardId+"-"+n);cell.classList.add("marked");if(hide) cell.classList.add("revealed");}}
+function animateCall(n){document.querySelectorAll(".called").forEach(c=>c.classList.remove("called"));let cell=document.querySelector("[id$='-"+n+"']");if(cell) cell.classList.add("called");}
+function countLines(board,marked,boardId){let lines=0;for(let r=0;r<SIZE;r++){let cells=board.slice(r*SIZE,r*SIZE+SIZE);if(cells.every(n=>marked.has(n))){lines++;pulse(boardId,cells);}}for(let c=0;c<SIZE;c++){let cells=[];for(let r=0;r<SIZE;r++) cells.push(board[r*SIZE+c]);if(cells.every(n=>marked.has(n))){lines++;pulse(boardId,cells);}}return lines;}
+function pulse(boardId,cells){cells.forEach(n=>{let cell=document.getElementById(boardId+"-"+n);if(cell) cell.classList.add("lineWin");});}
+function updateLetters(id,lines){let box=document.getElementById(id).children;for(let i=0;i<lines&&i<5;i++) box[i].classList.add("done");}
+function status(t){document.getElementById("status").textContent=t;}
+function endGame(text){document.getElementById("popup").textContent=text;document.getElementById("popup").classList.add("show");document.querySelectorAll(".cell").forEach(c=>c.onclick=null);}
 </script>
 
 </body>
-</html>
-
+</html> 
