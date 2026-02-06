@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Updated Font stack */
             -webkit-tap-highlight-color: transparent;
         }
         
@@ -20,19 +20,19 @@
             --dark-header: #202c33;
             --dark-input: #2a3942;
             --dark-chat-bg: #0b141a;
-            --dark-received: #202c33;
-            --dark-sent: #005c4b;
+            --dark-received: #202c33; /* Friend's Dark Received */
+            --dark-sent: #005c4b;     /* Friend's Dark Sent */
             --dark-text: #e9edef;
-            --dark-secondary: #aebac1;
+            --dark-secondary: #8696a0; /* Updated secondary color */
             --dark-border: #2a3942;
             
             --light-bg: #e6e6e6;
             --light-header: #f0f2f5;
             --light-input: #ffffff;
-            --light-chat-bg: #e5ddd5;
+            --light-chat-bg: #efe7dd; /* Slightly warmer standard WA bg */
             --light-received: #ffffff;
-            --light-sent: #dcf8c6;
-            --light-text: #3b4a54;
+            --light-sent: #e6ffda;    /* Friend's Light Sent Color (Important Update) */
+            --light-text: #111b21;    /* Darker text for contrast */
             --light-secondary: #667781;
             --light-border: #d1d7db;
             
@@ -43,7 +43,6 @@
         body {
             background: var(--dark-bg);
             min-height: 100vh;
-            /* Use dynamic viewport height for mobile browsers */
             min-height: 100dvh; 
             padding: 20px;
             display: flex;
@@ -51,7 +50,7 @@
             align-items: center;
             transition: background 0.3s;
             position: relative;
-            overflow: hidden; /* Prevent body scroll, handle inside app */
+            overflow: hidden; 
         }
         
         body.light-mode {
@@ -191,9 +190,8 @@
             color: var(--whatsapp-green);
         }
         
-        /* New Mobile Settings Toggle */
         .settings-toggle {
-            display: none; /* Hidden on desktop */
+            display: none;
             background: none;
             border: none;
             color: var(--dark-text);
@@ -230,7 +228,6 @@
             border-right: 1px solid var(--light-border);
         }
         
-        /* Mobile Close Button for Settings */
         .close-settings-btn {
             display: none;
             margin-bottom: 15px;
@@ -359,7 +356,7 @@
         
         .chat-container {
             flex: 1;
-            padding: 15px;
+            padding: 15px 5%; /* Adjusted padding side like reference */
             background-color: var(--dark-chat-bg);
             background-blend-mode: overlay;
             background-size: cover;
@@ -367,9 +364,9 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 2px; /* Tighter gap like reference */
             position: relative;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            -webkit-overflow-scrolling: touch; 
         }
         
         .chat-container::before {
@@ -388,17 +385,19 @@
             background: rgba(255, 255, 255, 0.3);
         }
         
+        /* Message Styling Updated to Match Reference */
         .message {
-            max-width: 80%;
-            padding: 6px 10px 4px 10px;
-            border-radius: 8px;
+            max-width: 80%; /* Match reference width */
+            padding: 6px 7px 8px 9px; /* Exact padding from reference analysis */
+            border-radius: 10px; /* Reference radius */
             position: relative;
             animation: fadeIn 0.3s ease-out;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); /* Reference shadow */
             z-index: 1;
             font-size: 14.2px;
             line-height: 19px;
             word-wrap: break-word;
+            margin-bottom: 2px;
         }
         
         @keyframes fadeIn {
@@ -409,7 +408,7 @@
         .received {
             align-self: flex-start;
             background: var(--dark-received);
-            border-top-left-radius: 0;
+            border-top-left-radius: 0; /* Corner styling */
             color: var(--dark-text);
         }
         
@@ -421,16 +420,16 @@
         .sent {
             align-self: flex-end;
             background: var(--dark-sent);
-            border-top-right-radius: 0;
+            border-top-right-radius: 0; /* Corner styling */
             color: var(--dark-text);
         }
         
         .light-mode .sent {
-            background: var(--light-sent);
+            background: var(--light-sent); /* Using friend's #e6ffda */
             color: var(--light-text);
         }
         
-        /* Message tails */
+        /* Message tails - Optimized sizes */
         .received::before {
             content: "";
             position: absolute;
@@ -439,10 +438,10 @@
             width: 0;
             height: 0;
             border-top: 0px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-right: 8px solid var(--dark-received);
+            border-bottom: 12px solid transparent;
+            border-right: 12px solid var(--dark-received);
         }
-        .light-mode .received::before { border-right: 8px solid var(--light-received); }
+        .light-mode .received::before { border-right: 12px solid var(--light-received); }
         
         .sent::before {
             content: "";
@@ -452,36 +451,35 @@
             width: 0;
             height: 0;
             border-top: 0px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-left: 8px solid var(--dark-sent);
+            border-bottom: 12px solid transparent;
+            border-left: 12px solid var(--dark-sent);
         }
-        .light-mode .sent::before { border-left: 8px solid var(--light-sent); }
+        .light-mode .sent::before { border-left: 12px solid var(--light-sent); }
         
         .message-time {
             font-size: 11px;
-            color: var(--dark-secondary);
+            color: var(--dark-secondary); /* Updated secondary */
             text-align: right;
-            margin-top: 2px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
+            margin-top: 0; /* removed margin */
+            display: inline-flex; /* Inline with text if possible, usually flex for alignment */
+            align-items: flex-end;
             gap: 3px;
             float: right;
-            margin-left: 10px;
+            margin-left: 8px;
             position: relative;
             top: 4px;
+            line-height: 1;
         }
         
-        .light-mode .message-time { color: var(--light-secondary); }
-        .sent .message-time { color: #86bbd0; }
-        .light-mode .sent .message-time { color: #4d7e5c; }
+        .light-mode .message-time { color: rgba(0,0,0,0.45); } /* Friend's text opacity color */
         
-        /* Blue tick styling */
-        .double-tick { display: inline-block; width: 16px; height: 11px; margin-left: 2px; }
+        /* Ticks updated */
+        .double-tick { display: inline-block; width: 16px; height: 11px; }
         .double-tick svg { width: 100%; height: 100%; fill: var(--dark-secondary); }
-        .sent .double-tick svg { fill: #86bbd0; }
-        .light-mode .sent .double-tick svg { fill: #4d7e5c; }
-        .blue-tick .double-tick svg { fill: var(--blue-tick); }
+        .sent .double-tick svg { fill: #8696a0; }
+        .light-mode .sent .double-tick svg { fill: #53bdeb; } /* Blue tick standard in light mode often */
+        
+        .blue-tick .double-tick svg { fill: var(--blue-tick) !important; }
         
         /* Keyboard/Input section */
         .input-area {
@@ -626,7 +624,7 @@
             position: absolute; bottom: 70px; right: 10px; background: var(--dark-header);
             border-radius: 10px; padding: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             display: none; z-index: 100; width: 300px; height: 250px; overflow-y: auto;
-            max-width: 90vw; /* Prevent overflow on mobile */
+            max-width: 90vw;
         }
         .light-mode .emoji-picker { background: var(--light-header); }
         
@@ -654,12 +652,22 @@
         .attachment-item:nth-child(3) i { color: #f1c40f; }
         .attachment-item:nth-child(4) i { color: #3498db; }
         
+        /* Updated Message Options Interaction */
         .message-options {
             position: absolute; top: -10px; right: 10px; background: var(--dark-header);
-            border-radius: 20px; padding: 5px; display: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 10;
+            border-radius: 20px; padding: 5px; display: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+            z-index: 100 !important; /* Top Z-Index Fix */
         }
         .light-mode .message-options { background: var(--light-header); }
-        .message:hover .message-options { display: flex; gap: 5px; }
+        
+        /* Show logic: Hover on desktop OR class active for mobile */
+        .message:hover .message-options,
+        .message.focused-message .message-options { 
+            display: flex; 
+            gap: 5px; 
+            top: -35px; /* Lift it up clearly */
+            opacity: 1;
+        }
         
         .message-options i {
             font-size: 14px; padding: 5px; cursor: pointer; border-radius: 50%;
@@ -677,9 +685,11 @@
         .light-mode .reaction { background: var(--light-header); }
         .reaction.visible { display: flex; }
         
+        /* Reaction Options Z-Index Fix */
         .reaction-options {
-            position: absolute; bottom: -40px; right: 0; background: var(--dark-header);
-            border-radius: 20px; padding: 5px; display: none; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); z-index: 20;
+            position: absolute; bottom: -45px; right: 0; background: var(--dark-header);
+            border-radius: 20px; padding: 5px; display: none; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
+            z-index: 101 !important; /* Higher than message options */
         }
         .light-mode .reaction-options { background: var(--light-header); }
         .reaction-options.visible { display: flex; gap: 5px; }
@@ -767,11 +777,11 @@
             }
             
             .app-container {
-                height: 100dvh; /* Full screen on mobile */
+                height: 100dvh; 
                 max-height: none;
                 border-radius: 0;
                 box-shadow: none;
-                transform: none !important; /* Disable entry animation transform on mobile to fix layout */
+                transform: none !important;
             }
 
             .top-bar {
@@ -783,12 +793,11 @@
             }
 
             .settings-toggle {
-                display: block; /* Show settings button on mobile */
+                display: block; 
             }
 
-            /* Main Layout Change: Chat is Full Screen, Settings is a Drawer */
             .container {
-                flex-direction: row; /* Keep row, but layer them */
+                flex-direction: row; 
             }
 
             .generator-panel {
@@ -796,19 +805,19 @@
                 top: 0;
                 left: 0;
                 height: 100%;
-                width: 100%; /* Full width drawer */
+                width: 100%;
                 max-width: 320px;
-                transform: translateX(-100%); /* Hide off-screen left */
+                transform: translateX(-100%); 
                 box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-                z-index: 1000; /* High z-index to overlay chat */
+                z-index: 1000;
             }
 
             .generator-panel.active {
-                transform: translateX(0); /* Slide in */
+                transform: translateX(0); 
             }
 
             .close-settings-btn {
-                display: flex; /* Show close button inside drawer */
+                display: flex; 
             }
 
             .preview-panel {
@@ -817,32 +826,24 @@
             }
 
             /* Adjust Chat Elements for Touch */
-            .message-options {
-                display: flex; /* Always show options on mobile or handle via tap */
-                opacity: 0;
-                transition: opacity 0.2s;
-            }
             .message:active .message-options, 
             .message:focus-within .message-options {
-                opacity: 1;
-                top: -35px; /* Move up so finger doesn't cover */
+                /* Logic now handled by class toggle via JS */
             }
 
-            /* Fix Emoji/Attachment Position */
             .emoji-picker, .attachment-menu {
-                position: fixed; /* Fixed relative to viewport to avoid scroll issues */
-                bottom: 70px; /* Above input area */
+                position: fixed; 
+                bottom: 70px;
                 z-index: 1100;
             }
             .emoji-picker {
                 right: 50%;
-                transform: translateX(50%); /* Center on screen */
+                transform: translateX(50%);
                 width: 90%;
             }
 
-            /* Move Screenshot Button Up */
             .screenshot-btn {
-                bottom: 80px; /* Move above input area */
+                bottom: 80px; 
                 right: 20px;
                 width: 45px;
                 height: 45px;
@@ -856,7 +857,6 @@
             .header-icons { gap: 10px; }
         }
 
-        /* Small phones */
         @media (max-width: 400px) {
             .logo span { display: none; }
             .emoji-grid { grid-template-columns: repeat(6, 1fr); }
@@ -1102,7 +1102,6 @@ document.addEventListener('DOMContentLoaded', function () {
             loaderOverlay.classList.add('hidden');
             setTimeout(() => {
                 appContainer.classList.add('loaded');
-                // Don't auto-focus on mobile to prevent keyboard pop-up
                 if(window.innerWidth > 900) chatMessageInput.focus();
                 setTimeout(() => {
                     if (loaderOverlay.parentNode) loaderOverlay.style.display = 'none';
@@ -1141,6 +1140,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Scroll & Message Options
         chatContainer.addEventListener('scroll', trackScrollPosition);
         chatContainer.addEventListener('click', handleMessageOptions);
+        
+        // Global Click listener for resetting mobile focus on messages
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.message') && !e.target.closest('.message-options') && !e.target.closest('.reaction-options')) {
+                document.querySelectorAll('.message.focused-message').forEach(m => m.classList.remove('focused-message'));
+            }
+        });
+
         setupHoverReactions();
         document.addEventListener('keydown', handleKeyboardShortcuts);
 
@@ -1151,7 +1158,6 @@ document.addEventListener('DOMContentLoaded', function () {
         closeSettings.addEventListener('click', () => {
             generatorPanel.classList.remove('active');
         });
-        // Close settings when clicking outside (on the preview part) if settings are open
         document.addEventListener('click', (e) => {
             if (window.innerWidth <= 900 && 
                 generatorPanel.classList.contains('active') && 
@@ -1204,6 +1210,11 @@ document.addEventListener('DOMContentLoaded', function () {
             '<i class="fas fa-sun"></i> <span>Switch to Dark Mode</span>' :
             '<i class="fas fa-moon"></i> <span>Switch to Light Mode</span>';
         updateWallpaper();
+        
+        // Update existing sent messages colors for accurate switch
+        document.querySelectorAll('.message.sent').forEach(msg => {
+            // Colors logic handled by CSS variables, this is backup
+        });
     }
     
     function updateWallpaper() {
@@ -1255,7 +1266,6 @@ document.addEventListener('DOMContentLoaded', function () {
         newMessageInput.value = '';
         clearMention();
         if(window.innerWidth <= 900) {
-            // Auto close drawer on mobile after sending from settings
             showNotification('Message Added');
             generatorPanel.classList.remove('active');
         } else {
@@ -1311,17 +1321,32 @@ document.addEventListener('DOMContentLoaded', function () {
         const reactBtn = message.querySelector('.react-btn');
         const reactionOptions = message.querySelector('.reaction-options');
         
-        // Touch handling for mobile
+        // Touch handling for mobile - Toggle Focus on Click
         message.addEventListener('click', (e) => {
-            // If clicking the message body on mobile, toggle options
-            if(window.innerWidth <= 900 && !e.target.closest('.reaction-options') && !e.target.closest('.message-options')) {
-                // Logic handled by CSS :active/focus
+            // If clicking inside menu options, don't toggle
+            if(e.target.closest('.reaction-options') || e.target.closest('.message-options')) return;
+
+            // Remove focused class from all other messages
+            document.querySelectorAll('.message.focused-message').forEach(m => {
+                if(m !== message) m.classList.remove('focused-message');
+            });
+
+            // Toggle current message
+            if (message.classList.contains('focused-message')) {
+                message.classList.remove('focused-message');
+            } else {
+                message.classList.add('focused-message');
             }
         });
 
+        // Desktop Hover logic mostly handled by CSS, but keeping interaction specific logic here
         if (reactBtn && reactionOptions) {
             reactBtn.addEventListener('mouseenter', () => {
                 if (hoverTimeout) clearTimeout(hoverTimeout);
+                reactionOptions.style.display = 'flex'; reactionOptions.classList.add('visible');
+            });
+            reactBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent message click event
                 reactionOptions.style.display = 'flex'; reactionOptions.classList.add('visible');
             });
             reactBtn.addEventListener('mouseleave', () => {
@@ -1361,9 +1386,12 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('mention-preview').style.display = 'block';
             activeMention = { sender: sender, content: content, messageId: message.dataset.id };
             chatMessageInput.focus();
+            // Close menu on mobile after action
+            message.classList.remove('focused-message');
         }
         
         if (e.target.classList.contains('react-btn')) {
+            // Handled by hover setup, but ensuring click toggles logic
             e.stopPropagation();
             const options = message.querySelector('.reaction-options');
             const isVisible = options.style.display === 'flex';
@@ -1376,6 +1404,7 @@ document.addEventListener('DOMContentLoaded', function () {
             reaction.innerHTML = e.target.textContent + '<span class="remove-reaction">×</span>';
             reaction.classList.add('visible');
             message.querySelector('.reaction-options').style.display = 'none';
+            message.classList.remove('focused-message'); // Close menu
         }
         
         if (e.target.classList.contains('remove-reaction')) {
@@ -1400,9 +1429,9 @@ document.addEventListener('DOMContentLoaded', function () {
         clearChat();
         const messages = [
             { type: 'received', content: 'This looks exactly like WhatsApp!' },
-            { type: 'sent', content: "Yes, it's designed to be ultra-realistic." },
-            { type: 'received', content: 'Can I customize the background?' },
-            { type: 'sent', content: 'Yes! Check the settings panel.' }
+            { type: 'sent', content: "Yes, the colors are updated now." },
+            { type: 'received', content: 'The green matches the official app?' },
+            { type: 'sent', content: 'Yes! #e6ffda for light mode sent messages.' }
         ];
         messages.forEach(m => addMessage(m.content, m.type));
         showNotification('Sample loaded');
@@ -1415,6 +1444,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const originalDisplay = screenshotBtn.style.display;
         screenshotBtn.style.display = 'none';
         
+        // Hide menus before screenshot
+        document.querySelectorAll('.message.focused-message').forEach(m => m.classList.remove('focused-message'));
+        
         try {
             const chatPreview = document.getElementById('chat-preview');
             const clone = chatPreview.cloneNode(true);
@@ -1425,11 +1457,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const messages = clone.querySelectorAll('.message');
             messages.forEach(msg => {
                 if (msg.classList.contains('sent')) {
-                    msg.style.backgroundColor = body.classList.contains('light-mode') ? '#dcf8c6' : '#005c4b';
-                    msg.style.color = body.classList.contains('light-mode') ? '#3b4a54' : '#e9edef';
+                    msg.style.backgroundColor = body.classList.contains('light-mode') ? '#e6ffda' : '#005c4b';
+                    msg.style.color = body.classList.contains('light-mode') ? '#111b21' : '#e9edef';
                 } else {
                     msg.style.backgroundColor = body.classList.contains('light-mode') ? '#ffffff' : '#202c33';
-                    msg.style.color = body.classList.contains('light-mode') ? '#3b4a54' : '#e9edef';
+                    msg.style.color = body.classList.contains('light-mode') ? '#111b21' : '#e9edef';
                 }
             });
             
@@ -1437,10 +1469,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (chatContainerClone) {
                 const theme = chatThemeSelect.value;
                 const isLightMode = body.classList.contains('light-mode');
-                // Apply background manually for screenshot
-                if(theme === 'default') chatContainerClone.style.background = isLightMode ? '#e5ddd5' : '#0b141a'; 
+                if(theme === 'default') chatContainerClone.style.background = isLightMode ? '#efe7dd' : '#0b141a'; 
                 else if(theme === 'dark') chatContainerClone.style.background = '#0b141a';
-                // Note: Full bg image logic simplified for reliability in screenshot
             }
             
             clone.querySelectorAll('.message-options, .emoji-picker, .attachment-menu, .mention-preview').forEach(el => el.style.display = 'none');
