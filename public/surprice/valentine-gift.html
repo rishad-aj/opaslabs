@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will You Be My Valentine?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@300;400;700&family=Sacramento&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+           GLOBAL VARIABLES & RESET
+           ========================================= */
+:root {
+      --primary-pink: #ff69b4;       /* Hot Pink */
+            --dark-pink: #d63384;          /* Deep Pink */
+            --soft-pink: #ffe6eb;          /* Very pale pink */
+            --white-bg: #fff0f3;           /* Lavender Blush background */
+            --text-color: #880e4f;         /* Dark Red-Pink for text */
+            --glass-white: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --shadow-light: 0 8px 32px 0 rgba(255, 105, 180, 0.2);
+      --btn-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+      }
+
+      * {
+      box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            background-color: var(--white-bg);
+      font-family: 'Nunito', sans-serif;
+            color: var(--text-color);
+      /* Prevent selecting text so the game feels like an app */
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation; /* Improve touch responsiveness */
+        }
+
+        /* =========================================
+           BACKGROUND CANVAS (MATRIX HEARTS)
+      ========================================= */
+      #heartMatrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Opacity ensures the white background shines through */
+            opacity: 0.5;
+        }
+
+        /* =========================================
+           MAIN LAYOUT CONTAINER
+           ========================================= */
+        .main-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 50px;
+            overflow-y: auto; /* Allow vertical scroll if content is tall */
+        }
+
+        /* =========================================
+           HEADER & MUSIC PLAYER UI (Visual Only)
+      ========================================= */
+      .top-bar {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .music-player {
+            background: var(--glass-white);
+      padding: 10px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-light);
+      display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+            max-width: 90%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .play-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-pink);
+      border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            /* Makes it look like it's spinning like a record */
+            animation: spin 4s linear infinite;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+      }
+
+      .track-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .track-name {
+            font-weight: 700;
+            color: var(--dark-pink);
+      }
+
+      .track-artist {
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        /* =========================================
+           PHOTO GALLERY (POLAROID STYLE)
+      ========================================= */
+      .gallery {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 12px 12px 40px 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 140px;
+            text-align: center;
+            font-family: 'Sacramento', cursive;
+            font-size: 1.4rem;
+            color: #555;
+            cursor: pointer;
+            transition: transform 0.3s ease, z-index 0s;
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        /* Rotations for "messy" look */
+        .polaroid:nth-child(1) { transform: rotate(-5deg); }
+      .polaroid:nth-child(2) { transform: rotate(3deg) translateY(-10px); }
+      .polaroid:nth-child(3) { transform: rotate(-4deg); }
+
+      .polaroid:hover {
+            transform: scale(1.1) rotate(0deg);
+      z-index: 20;
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.3);
+      }
+
+      .placeholder-img {
+            width: 100%;
+            height: 110px;
+            background: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+      margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      /* =========================================
+           MAIN CARD & QUESTION
+           ========================================= */
+        .valentine-card {
+            background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 20px 50px rgba(214, 51, 132, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      max-width: 90%;
+            width: 650px;
+            position: relative;
+        }
+
+        .main-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            background: -webkit-linear-gradient(#ff69b4, #ff1493);
+      -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            filter: drop-shadow(2px 2px 0px rgba(255, 255, 255, 0.8));
+      }
+
+      .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+            color: var(--text-color);
+      min-height: 1.5em; /* Holds space for typing effect */
+            font-weight: 600;
+        }
+
+        /* =========================================
+           THE BUTTONS AREA
+           ========================================= */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+            /* Fixed height ensures buttons have space */
+            height: 80px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 16px 55px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease; /* Faster transition for the escape logic */
+            font-family: 'Nunito', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            z-index: 50; /* Ensure buttons are clickable */
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            /* Mobile-friendly touch target */
+            min-height: 60px;
+            white-space: nowrap;
+        }
+
+        /* YES BUTTON STYLING */
+        #yesBtn {
+            background: linear-gradient(45deg, #ff69b4, #ff8da1);
+      color: white;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.4);
+      }
+
+      #yesBtn:hover {
+            transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 15px 35px rgba(255, 105, 180, 0.6);
+      }
+
+      #yesBtn:active {
+            transform: scale(0.95);
+      }
+
+      /* NO BUTTON STYLING */
+        #noBtn {
+            background: white;
+            color: var(--text-color);
+      border: 2px solid #ffdae9;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      /* Important: position fixed is set via JS when moving */
+        }
+
+        /* =========================================
+           SUCCESS OVERLAY (HIDDEN INITIALLY)
+      ========================================= */
+      #celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 240, 245, 0.95); /* Very light pink overlay */
+            z-index: 999; /* Highest Z-index */
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        #celebration h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 7rem;
+            color: var(--dark-pink);
+      margin: 0;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      #celebration p {
+            font-size: 2.2rem;
+            color: var(--text-color);
+      margin-top: 10px;
+        }
+
+        .heart-emoji-large {
+            font-size: 5rem;
+            margin-top: 20px;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        /* Canvas for confetti needs to be on top of the celebration background */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           KEYFRAME ANIMATIONS
+           ========================================= */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        /* =========================================
+           MOBILE RESPONSIVE DESIGN
+           ========================================= */
+      @media (max-width: 768px) {
+      /* Mobile-specific adjustments */
+            .main-title {
+                font-size: 3.5rem;
+                line-height: 1.1;
+            }
+            .valentine-card {
+                padding: 30px 20px;
+                width: 95%;
+                margin-top: 10px;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 40px;
+            }
+            /* Button container adjustments for mobile */
+            .btn-container {
+                flex-direction: column;
+                height: auto;
+                gap: 20px;
+                padding: 10px 0;
+            }
+            /* Mobile-optimized button sizes - SMALLER as requested */
+            .btn {
+                width: auto; /* Allow auto width so they aren't huge blocks */
+                min-width: 120px;
+                padding: 12px 30px; /* Reduced padding */
+                font-size: 1.1rem; /* Smaller font */
+                min-height: 45px; /* Smaller height */
+                margin: 0 auto;
+                display: inline-block;
+            }
+            /* Gallery adjustments */
+            .gallery {
+                gap: 15px;
+                margin-top: 30px;
+                margin-bottom: 20px;
+            }
+            .polaroid {
+                width: 110px;
+                padding: 10px 10px 35px 10px;
+                font-size: 1.2rem;
+            }
+            .placeholder-img {
+                height: 90px;
+                font-size: 2rem;
+            }
+            /* Celebration overlay adjustments */
+            #celebration h2 {
+                font-size: 4.5rem;
+            }
+            #celebration p {
+                font-size: 1.8rem;
+            }
+            .heart-emoji-large {
+                font-size: 4rem;
+            }
+            /* Music player adjustments */
+            .music-player {
+                padding: 8px 20px;
+                font-size: 0.8rem;
+            }
+            .play-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+      .main-title {
+                font-size: 2.8rem;
+            }
+            /* Even smaller buttons for very small screens to ensure movement space */
+            .btn {
+                padding: 10px 25px;
+                font-size: 1rem;
+                min-height: 40px;
+            }
+            .valentine-card {
+                padding: 25px 15px;
+            }
+            .gallery {
+                gap: 10px;
+            }
+            .polaroid {
+                width: 100px;
+            }
+            #celebration h2 {
+                font-size: 3.5rem;
+            }
+            #celebration p {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+      .main-title {
+                font-size: 4rem;
+            }
+            .valentine-card {
+                width: 85%;
+                max-width: 600px;
+            }
+            .btn {
+                padding: 18px 45px;
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Prevent text selection on buttons */
+        .btn {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+/* Container to center the Uiverse loader */
+#loader-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #fff5f7;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+/* From Uiverse.io by alexruix */
+.loader {
+    width: 48px;
+    height: 48px;
+    margin: auto;
+    position: relative;
+}
+
+.loader:before {
+    content: '';
+    width: 48px;
+    height: 5px;
+    background: #f0808050;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    border-radius: 50%;
+    animation: shadow324 0.5s linear infinite;
+}
+
+.loader:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: #f08080;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+    animation: jump7456 0.5s linear infinite;
+}
+
+      @keyframes jump7456 {
+    15% { border-bottom-right-radius: 3px; }
+    25% { transform: translateY(9px) rotate(22.5deg); }
+50% {
+        transform: translateY(18px) scale(1, .9) rotate(45deg);
+        border-bottom-right-radius: 40px;
+    }
+    75% { transform: translateY(9px) rotate(67.5deg); }
+    100% { transform: translateY(0) rotate(90deg); }
+}
+
+@keyframes shadow324 {
+    0%, 100% { transform: scale(1, 1); }
+    50% { transform: scale(1.2, 1); }
+}
+    </style>
+  </head>
+  <body>
+    <div id="loader-overlay">
+      <div class="loader"></div>
+      <p style="margin-top: 50px; color: #f08080; font-family: sans-serif;">
+        Preparing your surprise...
+      </p>
+    </div>
+
+    <audio id="bgMusic" loop>
+      <source src="track.mp3" type="audio/mpeg">
+    </audio>
+
+
+    <canvas id="heartMatrix"></canvas>
+
+    <div class="main-wrapper">
+
+      <div class="top-bar">
+        <div class="music-player">
+          <div class="play-icon">
+            ♫
+          </div>
+          <div class="track-info">
+            <span class="track-name">Careless Whisper.mp3</span>
+            <span class="track-artist">George Michael</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery">
+        <div class="polaroid">
+          <div class="placeholder-img">
+            🧸
+          </div>
+          <p>
+            Cuddles
+          </p>
+        </div>
+        <div class="polaroid">
+          <div class="placeholder-img">
+            ✨
+          </div>
+          <p>
+            Memories
+          </p>
+        </div>
+        <div class="polaroid">
+          <div class="placeholder-img">
+            🍕
+          </div>
+          <p>
+            Dates
+          </p>
+        </div>
+      </div>
+
+      <div class="valentine-card">
+        <h1 class="main-title" id="mainHeading">Will you be my Valentine?</h1>
+
+        <div class="subtitle" id="typing-text">
+          <p id="mainMessage" class="description">
+            I have a very important question to ask you...
+          </p>
+        </div>
+
+        <div class="btn-container">
+          <button id="yesBtn" class="btn">YES, OF COURSE!</button>
+          <button id="noBtn" class="btn">No</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="celebration">
+      <canvas id="confetti-canvas"></canvas>
+      <h2>I Knew It!</h2>
+      <p>
+        See you on the 14th!
+      </p>
+      <div class="heart-emoji-large">
+        💖
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 1. Get the values from the link
+        const partnerName = urlParams.get('name');
+        const customMsg = urlParams.get('msg');
+
+        // 2. Target the specific IDs we just created
+        const heading = document.getElementById('mainHeading');
+        const message = document.getElementById('mainMessage');
+
+        // 3. Update the text ONLY if the data exists in the link
+        if (partnerName && heading) {
+          heading.textContent = `Will you be my Valentine, ${partnerName}?`;
+        }
+
+        if (customMsg && message) {
+          message.textContent = customMsg;
+        }
+      });
+
+      window.addEventListener('load',
+        () => {
+          const loaderOverlay = document.getElementById('loader-overlay');
+          const music = document.getElementById('bgMusic');
+
+          // 1. Pre-set the music to 3 seconds
+          music.currentTime = 3;
+
+          // 2. Timing the exit of the loader
+          setTimeout(() => {
+            loaderOverlay.style.opacity = '0'; // Start fade out
+
+            setTimeout(() => {
+              loaderOverlay.style.display = 'none'; // Remove from view
+
+              // Try to play music at 3s mark
+              music.play().catch(e => {
+                console.log("Waiting for user interaction to play audio...");
+              });
+            }, 500); // Wait for fade transition to finish
+          }, 2500); // Total time loader is visible (2.5 seconds)
+
+          // 3. Global click listener to bypass browser audio restrictions
+          document.body.addEventListener('click', () => {
+            if (music.paused) {
+              music.play();
+            }
+          },
+            {
+              once: true
+            });
+        });
+      /**
+      * =========================================================
+      * SECTION 1: TYPEWRITER EFFECT
+      * =========================================================
+      */
+      const textToType = "You mean everything to me... please say yes? 🌹";
+      const typeContainer = document.getElementById('typing-text');
+      let typeIndex = 0;
+
+      function typeWriter() {
+        if (typeIndex < textToType.length) {
+          typeContainer.innerHTML += textToType.charAt(typeIndex);
+          typeIndex++;
+          setTimeout(typeWriter, 45); // Typing speed in ms
+        }
+      }
+      setTimeout(typeWriter, 1000);
+
+      /**
+      * =========================================================
+      * SECTION 2: THE MATRIX HEART RAIN
+      * =========================================================
+      */
+      const canvas = document.getElementById('heartMatrix');
+      const ctx = canvas.getContext('2d');
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      const hearts = "❤♥♡";
+      const chars = hearts.split("");
+
+      const fontSize = 20;
+      const columns = width / fontSize;
+      const drops = [];
+
+      for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -100;
+      }
+
+      function drawMatrix() {
+        ctx.fillStyle = "rgba(255, 240, 243, 0.2)";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.font = fontSize + "px Arial";
+
+        for (let i = 0; i < drops.length; i++) {
+          const colors = ["#ff69b4",
+            "#ff1493",
+            "#ffb7c5",
+            "#e91e63"];
+          ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > height && Math.random() > 0.98) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      setInterval(drawMatrix, 50);
+
+      /**
+      * =========================================================
+      * SECTION 3: THE ESCAPING "NO" BUTTON (UPDATED)
+      * - Restricted to the .valentine-card (The "Box")
+      * =========================================================
+      */
+      const noBtn = document.getElementById('noBtn');
+      const yesBtn = document.getElementById('yesBtn');
+
+      function moveButton() {
+        // 1. Select the "Box" (The Card)
+        const card = document.querySelector('.valentine-card');
+        const btnContainer = document.querySelector('.btn-container');
+
+        // 2. CRITICAL: Allow the button to escape the small button row
+        // We set the container to static so the button becomes relative to the Card
+        btnContainer.style.position = 'static';
+
+        // 3. Get Dimensions
+        const btnWidth = noBtn.offsetWidth;
+        const btnHeight = noBtn.offsetHeight;
+
+        // Calculate available space inside the CARD
+        // We subtract button size and 20px padding so it doesn't touch the edges
+        const maxX = card.offsetWidth - btnWidth - 20;
+        const maxY = card.offsetHeight - btnHeight - 20;
+
+        // 4. Generate Random Coordinates
+        const randomX = Math.max(20, Math.random() * maxX);
+        const randomY = Math.max(20, Math.random() * maxY);
+
+        // 5. Apply New Position
+        // We use 'absolute' so it moves relative to the card, not the screen
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
+
+        // Ensure it floats above text
+        noBtn.style.zIndex = '50';
+
+        // Add rotation
+        const randomRot = (Math.random() * 40) - 20;
+        noBtn.style.transform = `rotate(${randomRot}deg)`;
+      }
+
+      // DESKTOP: Move when mouse gets close
+      noBtn.addEventListener('mouseenter', moveButton);
+      noBtn.addEventListener('mouseover', moveButton);
+
+      // MOBILE: Move on touch
+      noBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        moveButton();
+      });
+
+      // Prevent clicking
+      noBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        moveButton();
+      });
+
+      /**
+      * =========================================================
+      * SECTION 4: CUSTOM CONFETTI ENGINE
+      * =========================================================
+      */
+      const celebrationDiv = document.getElementById('celebration');
+      const cCanvas = document.getElementById('confetti-canvas');
+      const cCtx = cCanvas.getContext('2d');
+      let confettiParticles = [];
+
+      // Yes Button Interaction
+      yesBtn.addEventListener('click', () => {
+        celebrationDiv.style.display = 'flex';
+        startConfetti();
+      });
+
+      yesBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        celebrationDiv.style.display = 'flex';
+        startConfetti();
+      });
+
+      function startConfetti() {
+        cCanvas.width = window.innerWidth;
+        cCanvas.height = window.innerHeight;
+
+        const particleCount = window.innerWidth <= 768 ? 200: 300;
+
+        for (let i = 0; i < particleCount; i++) {
+          confettiParticles.push(new Particle());
+        }
+        animateConfetti();
+      }
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * cCanvas.width;
+          this.y = Math.random() * cCanvas.height - cCanvas.height;
+          const baseSize = window.innerWidth <= 768 ? 8: 12;
+          this.size = Math.random() * baseSize + 8;
+          this.speedY = Math.random() * 3 + 2;
+          this.speedX = Math.random() * 2 - 1;
+          const colors = ['#ff69b4',
+            '#ff1493',
+            '#ffd700',
+            '#ffffff',
+            '#ffb7c5'];
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.rotation = Math.random() * 360;
+          this.rotationSpeed = Math.random() * 10 - 5;
+        }
+
+        update() {
+          this.y += this.speedY;
+          this.x += this.speedX;
+          this.rotation += this.rotationSpeed;
+
+          if (this.y > cCanvas.height) {
+            this.y = -20;
+            this.x = Math.random() * cCanvas.width;
+          }
+        }
+
+        draw() {
+          cCtx.save();
+          cCtx.translate(this.x, this.y);
+          cCtx.rotate(this.rotation * Math.PI / 180);
+          cCtx.fillStyle = this.color;
+          cCtx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+          cCtx.restore();
+        }
+      }
+
+      function animateConfetti() {
+        cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+        confettiParticles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animateConfetti);
+      }
+
+      /**
+      * =========================================================
+      * SECTION 5: MOUSE TRAIL EFFECT
+      * =========================================================
+      */
+      document.addEventListener('mousemove', function(e) {
+        const throttleFactor = window.innerWidth <= 768 ? 0.92: 0.85;
+        if (Math.random() > throttleFactor) {
+          createHeartTrail(e.clientX, e.clientY);
+        }
+      });
+
+      function createHeartTrail(x,
+        y) {
+        const heart = document.createElement('div');
+        heart.innerHTML = '❤';
+        heart.style.position = 'fixed';
+        heart.style.left = x + 'px';
+        heart.style.top = y + 'px';
+        heart.style.color = '#ff69b4';
+        heart.style.fontSize = window.innerWidth <= 768 ? '16px': '18px';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '9999';
+        heart.style.transition = 'all 1s ease-out';
+        heart.style.opacity = '1';
+
+        document.body.appendChild(heart);
+
+        requestAnimationFrame(() => {
+          heart.style.transform = 'translateY(-40px) scale(1.5)';
+          heart.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+          heart.remove();
+        },
+          1000);
+      }
+
+      // Mobile Enhancement: Orientation Change Reset
+      window.addEventListener('orientationchange',
+        function() {
+          setTimeout(() => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            cCanvas.width = window.innerWidth;
+            cCanvas.height = window.innerHeight;
+          }, 100);
+        });
+
+    </script>
+  </body>
+</html>
