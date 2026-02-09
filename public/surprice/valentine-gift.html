@@ -534,15 +534,28 @@
     0%, 100% { transform: scale(1, 1); }
     50% { transform: scale(1.2, 1); }
 }
+
+#revealBtn {
+  margin-top: 20px;
+  animation: popIn 0.5s ease-out, heartbeat 1.5s infinite;
+  background: linear-gradient(45deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  box-shadow: 0 10px 20px rgba(255, 20, 147, 0.3);
+  display: none; /* Controlled by JS */
+}
+
+#loader-overlay {
+  transition: opacity 0.8s ease-in-out;
+}
     </style>
   </head>
   <body>
-    <div id="loader-overlay">
-      <div class="loader"></div>
-      <p style="margin-top: 50px; color: #f08080; font-family: sans-serif;">
-        Preparing your surprise...
-      </p>
-    </div>
+<div id="loader-overlay">
+  <div class="loader"></div>
+  <p id="loader-status">Preparing your surprise...</p>
+  <button id="revealBtn" style="display: none;" class="btn">Open My Heart ❤️</button>
+</div>
 
     <audio id="bgMusic" loop>
       <source src="track.mp3" type="audio/mpeg">
@@ -597,7 +610,7 @@
 
         <div class="subtitle" id="typing-text">
           <p id="mainMessage" class="description">
-            I have a very important question to ask you...
+            Life is a dream with you
           </p>
         </div>
 
@@ -641,38 +654,38 @@
         }
       });
 
-      window.addEventListener('load',
-        () => {
-          const loaderOverlay = document.getElementById('loader-overlay');
-          const music = document.getElementById('bgMusic');
+window.addEventListener('load', () => {
+  const loaderOverlay = document.getElementById('loader-overlay');
+  const loaderCircle = document.querySelector('.loader');
+  const loaderStatus = document.getElementById('loader-status');
+  const revealBtn = document.getElementById('revealBtn');
+  const music = document.getElementById('bgMusic');
 
-          // 1. Pre-set the music to 3 seconds
-          music.currentTime = 3;
+  // 1. Wait 2.5 seconds to "load"
+  setTimeout(() => {
+    // Hide the loader circle and old text
+    loaderCircle.style.display = 'none';
+    loaderStatus.style.display = 'none';
 
-          // 2. Timing the exit of the loader
-          setTimeout(() => {
-            loaderOverlay.style.opacity = '0'; // Start fade out
+    // Show the "Open" button
+    revealBtn.style.display = 'block';
 
-            setTimeout(() => {
-              loaderOverlay.style.display = 'none'; // Remove from view
+    // 2. When they click the button, start everything
+    revealBtn.addEventListener('click', () => {
+      // Start music
+      music.play().catch(e => console.log("Playback error:", e));
 
-              // Try to play music at 3s mark
-              music.play().catch(e => {
-                console.log("Waiting for user interaction to play audio...");
-              });
-            }, 500); // Wait for fade transition to finish
-          }, 2500); // Total time loader is visible (2.5 seconds)
+      // Fade out the whole overlay
+      loaderOverlay.style.opacity = '0';
 
-          // 3. Global click listener to bypass browser audio restrictions
-          document.body.addEventListener('click', () => {
-            if (music.paused) {
-              music.play();
-            }
-          },
-            {
-              once: true
-            });
-        });
+      setTimeout(() => {
+        loaderOverlay.style.display = 'none';
+        // Start typing effect only after the page is revealed
+        if (typeof typeWriter === "function") typeWriter();
+      }, 800);
+    });
+  }, 2500);
+});
       /**
       * =========================================================
       * SECTION 1: TYPEWRITER EFFECT
@@ -689,7 +702,6 @@
           setTimeout(typeWriter, 45); // Typing speed in ms
         }
       }
-      setTimeout(typeWriter, 1000);
 
       /**
       * =========================================================
