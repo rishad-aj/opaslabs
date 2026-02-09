@@ -641,38 +641,34 @@
         }
       });
 
-      window.addEventListener('load',
-        () => {
-          const loaderOverlay = document.getElementById('loader-overlay');
-          const music = document.getElementById('bgMusic');
+ window.addEventListener('load', () => {
+    const loader = document.getElementById('loader');
+    const music = document.getElementById('bgMusic');
 
-          // 1. Pre-set the music to 3 seconds
-          music.currentTime = 3;
+    // 1. Set the starting point to 3 seconds
+    music.currentTime = 3;
 
-          // 2. Timing the exit of the loader
-          setTimeout(() => {
-            loaderOverlay.style.opacity = '0'; // Start fade out
-
-            setTimeout(() => {
-              loaderOverlay.style.display = 'none'; // Remove from view
-
-              // Try to play music at 3s mark
-              music.play().catch(e => {
-                console.log("Waiting for user interaction to play audio...");
-              });
-            }, 500); // Wait for fade transition to finish
-          }, 2500); // Total time loader is visible (2.5 seconds)
-
-          // 3. Global click listener to bypass browser audio restrictions
-          document.body.addEventListener('click', () => {
-            if (music.paused) {
-              music.play();
-            }
-          },
-            {
-              once: true
+    // 2. Hide loader and start music
+    setTimeout(() => {
+        loader.style.opacity = '0';
+        
+        setTimeout(() => {
+            loader.style.display = 'none';
+            
+            // Try to play automatically
+            music.play().catch(error => {
+                console.log("Autoplay blocked. Music will start on first click.");
             });
-        });
+        }, 500);
+    }, 1500); // How long the loader stays visible
+
+    // 3. Fallback: If browser blocks autoplay, play on first interaction
+    document.body.addEventListener('click', () => {
+        if (music.paused) {
+            music.play();
+        }
+    }, { once: true });
+});
       /**
       * =========================================================
       * SECTION 1: TYPEWRITER EFFECT
