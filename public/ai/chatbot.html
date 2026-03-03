@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Opas Labs AI | Premium</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #05070a;
+            --panel-glass: rgba(13, 17, 23, 0.8);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --user-gradient: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+            height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 280px;
+            background: var(--panel-glass);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
+
+        .history-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .dev-tag {
+            margin-top: auto;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .dev-tag span { color: var(--accent); font-weight: 600; }
+
+        /* --- Main View --- */
+        .main-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            width: 100%;
+        }
+
+        .mobile-header {
+            display: none;
+            padding: 16px;
+            background: var(--panel-glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- Welcome Hero --- */
+        .welcome-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .welcome-container.hidden {
+            display: none;
+        }
+
+        .welcome-title {
+            font-size: clamp(24px, 5vw, 42px);
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(18px, 3vw, 28px);
+            color: var(--text-dim);
+            margin-bottom: 40px;
+        }
+
+        .chips-container {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .chip {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* --- Chat Scroller --- */
+        .chat-scroller {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: none; /* Hidden until chat starts */
+            flex-direction: column;
+            gap: 24px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-scroller.active {
+            display: flex;
+        }
+
+        /* --- Messages --- */
+        .msg-row {
+            display: flex;
+            gap: 14px;
+            max-width: 850px;
+            width: 100%;
+            margin: 0 auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-row.user { justify-content: flex-end; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .bot .avatar { background: rgba(56, 189, 248, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+        .user .avatar { display: none; }
+
+        .bubble {
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 85%;
+        }
+
+        .bot .bubble {
+            background: var(--panel-glass);
+            border: 1px solid var(--border);
+            border-top-left-radius: 4px;
+        }
+
+        .user .bubble {
+            background: var(--user-gradient);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        /* Code Blocks */
+        .code-wrapper {
+            position: relative;
+            margin: 12px 0;
+            background: #0d1117;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .code-wrapper .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .bubble pre {
+            margin: 0;
+            padding: 40px 14px 14px 14px;
+            overflow-x: auto;
+            background: transparent;
+        }
+
+        .bubble code { 
+            font-family: 'Fira Code', monospace !important; 
+            font-size: 13px; 
+        }
+
+        /* --- Input Dock --- */
+        .input-dock {
+            padding: 20px;
+            background: linear-gradient(transparent, var(--bg-dark) 50%);
+        }
+
+        .input-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #161b22;
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: flex-end;
+            transition: all 0.3s ease;
+        }
+
+        .input-container:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px;
+            font-size: 16px;
+            max-height: 200px;
+            resize: none;
+            outline: none;
+        }
+
+        .send-action {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .mobile-header { display: flex; }
+            .welcome-title { font-size: 28px; }
+            .welcome-subtitle { font-size: 20px; }
+        }
+
+        .typing { display: flex; gap: 4px; padding: 10px; }
+        .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; }
+        @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><i class="ph-fill ph-sparkle"></i> Opas Labs AI</div>
+        <div class="history-label">Session</div>
+        <button onclick="location.reload()" style="background:transparent; border:1px solid var(--border); color:white; padding:10px; border-radius:8px; cursor:pointer; width: 100%;">
+            <i class="ph ph-plus"></i> New Conversation
+        </button>
+        <div class="dev-tag">Developed by<br><span>Muhammed Rishad AJ</span></div>
+    </aside>
+
+    <main class="main-view">
+        <header class="mobile-header">
+            <div style="font-weight: 700; color: var(--accent);">Opas Labs AI</div>
+            <i class="ph ph-arrows-clockwise" onclick="location.reload()"></i>
+        </header>
+
+        <div class="welcome-container" id="welcomeHero">
+            <h1 class="welcome-title">Hi buddy</h1>
+            <h2 class="welcome-subtitle">Where should we start?</h2>
+            
+            <div class="chips-container">
+                <div class="chip" onclick="quickSend('Generate an image of a futuristic city')">
+                    <i class="ph ph-palette"></i> Create image
+                </div>
+                <div class="chip" onclick="quickSend('Latest update on cricket scores')">
+                    <i class="ph ph-baseball"></i> Explore cricket
+                </div>
+                <div class="chip" onclick="quickSend('Compose a lo-fi hip hop track')">
+                    <i class="ph ph-music-notes"></i> Create music
+                </div>
+                <div class="chip" onclick="quickSend('Write a professional email for a job application')">
+                    <i class="ph ph-pencil-line"></i> Write anything
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-scroller" id="chatBox"></div>
+
+        <div class="input-dock">
+            <div class="input-container">
+                <textarea id="userInput" rows="1" placeholder="Ask Opas Labs AI..." oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"></textarea>
+                <button class="send-action" id="sendBtn" onclick="handleSend()">
+                    <i class="ph-fill ph-paper-plane-right"></i>
+                </button>
+            </div>
+            <div style="font-size: 10px; text-align: center; color: var(--text-dim); margin-top: 8px;">
+                Opas Labs AI can make mistakes. Check important info.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_KEY = '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';
+        const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+        let messages = [{ role: "system", content: "You are Opas Labs AI, developed by Muhammed Rishad AJ. You are friendly, modern, and use Gen Z slang. Use markdown." }];
+        let chatStarted = false;
+
+        function quickSend(text) {
+            document.getElementById('userInput').value = text;
+            handleSend();
+        }
+
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Transition UI
+            if (!chatStarted) {
+                document.getElementById('welcomeHero').classList.add('hidden');
+                document.getElementById('chatBox').classList.add('active');
+                chatStarted = true;
+            }
+
+            appendMessage(text, 'user');
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            messages.push({ role: "user", content: text });
+            
+            showTyping();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: "openai/gpt-3.5-turbo", messages: messages })
+                });
+
+                const data = await response.json();
+                removeTyping();
+
+                if (data.choices && data.choices[0]) {
+                    const aiMsg = data.choices[0].message.content;
+                    appendMessage(aiMsg, 'bot');
+                    messages.push({ role: "assistant", content: aiMsg });
+                }
+            } catch (err) {
+                removeTyping();
+                appendMessage("Snag in the connection. Try again?", 'bot');
+            }
+        }
+
+        function appendMessage(text, side) {
+            const row = document.createElement('div');
+            row.className = `msg-row ${side}`;
+            const content = side === 'bot' ? DOMPurify.sanitize(marked.parse(text)) : text;
+            
+            row.innerHTML = `
+                <div class="avatar"><i class="ph-fill ph-${side === 'bot' ? 'robot' : 'user'}"></i></div>
+                <div class="bubble">${content}</div>
+            `;
+            
+            if (side === 'bot') {
+                row.querySelectorAll('pre').forEach(pre => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'code-wrapper';
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = 'Copy';
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(pre.innerText);
+                        copyBtn.innerText = 'Copied!';
+                        setTimeout(() => copyBtn.innerText = 'Copy', 2000);
+                    };
+                    pre.parentNode.insertBefore(wrapper, pre);
+                    wrapper.appendChild(copyBtn);
+                    wrapper.appendChild(pre);
+                });
+            }
+            chatBox.appendChild(row);
+            chatBox.scrollTo(0, chatBox.scrollHeight);
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            div.className = 'msg-row bot';
+            div.innerHTML = `<div class="avatar"><i class="ph-fill ph-robot"></i></div><div class="bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+            chatBox.appendChild(div);
+            chatBox.scrollTo(0, chatBox.scrollHeight);
+        }
+
+        function removeTyping() {
+            const el = document.getElementById('typing-indicator');
+            if (el) el.remove();
+        }
+
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 768) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    </script>
+</body>
+</html>
