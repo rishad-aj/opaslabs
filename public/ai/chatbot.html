@@ -38,7 +38,6 @@
       background-image:
       radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
       radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
-      /* ADD THESE TWO LINES */
       height: 100vh;
       height: 100dvh;
       color: var(--text-main);
@@ -187,7 +186,6 @@
       position: relative;
       width: 100%;
       min-height: 0;
-      /* allow children to shrink */
     }
 
     .mobile-header {
@@ -293,7 +291,6 @@
       gap: 24px;
       scroll-behavior: smooth;
       min-height: 0;
-      /* allow shrinking */
     }
     .chat-scroller.active {
       display: flex;
@@ -352,7 +349,6 @@
       border-radius: 18px;
       font-size: 15px;
       line-height: 1.6;
-      /* ADD THESE TO FIX LONG TEXT OVERFLOW */
       overflow-wrap: break-word;
       word-break: break-word;
     }
@@ -361,6 +357,11 @@
       background: var(--panel-glass);
       border: 1px solid var(--border);
       border-top-left-radius: 4px;
+    }
+    .bot .bubble img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 8px;
     }
     .user .bubble {
       background: var(--user-gradient);
@@ -492,7 +493,6 @@
 
     /* --- Input Dock with Thinking Toggle --- */
     .input-dock {
-      /* UPDATE THE PADDING LIKE THIS */
       padding: 20px;
       padding-bottom: calc(20px + env(safe-area-inset-bottom));
       background: linear-gradient(transparent, var(--bg-dark) 50%);
@@ -562,11 +562,9 @@
       top: 4px;
       right: 4px;
       background: rgba(0,0,0,0.7);
-      /* Slightly darker for better contrast */
       color: white;
       border: none;
       border-radius: 50%;
-      /* MAKE IT BIGGER */
       width: 28px;
       height: 28px;
       font-size: 14px;
@@ -718,7 +716,6 @@
       <i class="ph ph-plus"></i> New conversation
     </button>
 
-    <!-- History list will be populated here -->
     <div id="historyList" class="history-list"></div>
 
     <div class="dev-tag">
@@ -745,7 +742,7 @@
       <h2 class="welcome-subtitle">Where should we start?</h2>
       <div class="suggestion-chips">
         <button onclick="fillInput('What can you do?')">What can you do?</button>
-        <button onclick="fillInput('Help me debug some code')">Debug Code</button>
+        <button onclick="fillInput('/imagine a futuristic city skyline at night')">Generate Image</button>
         <button onclick="fillInput('Explain quantum computing simply')">Explain complex topic</button>
       </div>
     </div>
@@ -753,9 +750,12 @@
     <div class="chat-scroller" id="chatBox"></div>
 
     <div class="input-dock">
-      <div class="thinking-row">
+      <div class="thinking-row" style="gap: 10px;">
         <button id="thinkingToggle" class="thinking-btn" onclick="toggleThinkingMode()">
           <i class="ph ph-brain"></i> Thinking <span id="thinkingCount"></span>
+        </button>
+        <button id="imageGenBtn" class="thinking-btn" onclick="prepareImageGen()">
+          <i class="ph ph-magic-wand"></i> Generate Image
         </button>
       </div>
       <div class="preview-area" id="previewArea">
@@ -769,7 +769,7 @@
         <button class="attach-btn" id="attachBtn" onclick="document.getElementById('imageInput').click()" title="Attach Image">
           <i class="ph ph-image"></i>
         </button>
-        <textarea id="userInput" rows="1" placeholder="Ask Opas Labs AI..." oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"></textarea>
+        <textarea id="userInput" rows="1" placeholder="Ask Opas Labs AI or type /imagine..." oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"></textarea>
         <button class="send-action" id="sendBtn" onclick="handleSend()">
           <i class="ph-fill ph-paper-plane-right"></i>
         </button>
@@ -790,7 +790,6 @@
       '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', // Backup 4
       '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', // Backup 5
       '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', // Backup 6
-
       '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', // API 1
       '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', // API 2
       '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', // API 3
@@ -801,7 +800,6 @@
       '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', // API 8
       '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', // API 9 (user not found)
       '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', // API 10
-
       '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', // API 11
       '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', // API 12
       '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', // API 13
@@ -816,7 +814,7 @@
 
     const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-    // STRICT System Prompt – always identifies as Opas Labs AI
+    // STRICT System Prompt
     const STRICT_SYSTEM_PROMPT = `
     You are Opas Labs AI, an advanced and helpful AI assistant developed entirely by Muhammed Rishad AJ.
     You must ALWAYS identify yourself as Opas Labs AI an advanced and helpful AI assistant developed by Muhammed Rishad AJ.
@@ -827,16 +825,14 @@
     Only give this special response when the user specifically asks for a comparison or personal opinion between Messi and Ronaldo. For all other questions, answer normally.
     `;
 
-    // Model constants (internal use only)
-    const MODEL_TRINITY = 'arcee-ai/trinity-large-preview:free'; // unlimited, no vision
-    const MODEL_NEMOTRON = 'nvidia/nemotron-nano-12b-v2-vl:free'; // vision, limited by thinking uses
+    // Model constants
+    const MODEL_TRINITY = 'arcee-ai/trinity-large-preview:free';
+    const MODEL_NEMOTRON = 'nvidia/nemotron-nano-12b-v2-vl:free';
 
-    // ----- Thinking usage: daily + permanent cheat bonus -----
-    let thinkingUsedToday = 0; // resets daily
-    let totalCheatsUsed = 0; // permanent, each gives +5
+    let thinkingUsedToday = 0;
+    let totalCheatsUsed = 0;
     let thinkingDate = '';
 
-    // UI state
     let thinkingMode = false;
     let messages = [];
     let chatStarted = false;
@@ -844,15 +840,11 @@
     let rawContentMap = new Map();
     let msgCounter = 0;
 
-    // Chat history management
     let conversations = [];
     let currentConversationId = null;
 
-    // ----- Load/Save thinking data (daily + permanent cheats) -----
     function loadThinkingUsage() {
       const today = new Date().toDateString();
-
-      // Load daily used
       const dailyStored = localStorage.getItem('opas_thinking_daily');
       if (dailyStored) {
         try {
@@ -878,7 +870,6 @@
         }));
       }
 
-      // Load total cheats (permanent)
       const cheatsStored = localStorage.getItem('opas_cheats_total');
       if (cheatsStored) {
         try {
@@ -890,7 +881,6 @@
         totalCheatsUsed = 0;
         localStorage.setItem('opas_cheats_total', '0');
       }
-
       updateThinkingButton();
     }
 
@@ -911,9 +901,8 @@
       updateThinkingButton();
     }
 
-    // Cheat: adds 5 permanently, no daily limit
     function addCheatBonus() {
-      totalCheatsUsed += 1; // each cheat gives +5 total allowance
+      totalCheatsUsed += 1;
       saveCheatsTotal();
       updateThinkingButton();
       return true;
@@ -953,7 +942,6 @@
       updateThinkingButton();
     }
 
-    // ----- Chat History Management -----
     function loadConversations() {
       const stored = localStorage.getItem('opas_conversations');
       if (stored) {
@@ -967,10 +955,12 @@
       }
       renderHistoryList();
     }
+
     function saveConversations() {
       localStorage.setItem('opas_conversations', JSON.stringify(conversations));
       renderHistoryList();
     }
+
     function renderHistoryList() {
       const list = document.getElementById('historyList');
       if (!list) return;
@@ -1002,6 +992,7 @@
         list.appendChild(div);
       });
     }
+
     function generateConversationTitle(messages) {
       for (let m of messages) {
         if (m.role === 'user') {
@@ -1015,6 +1006,7 @@
       }
       return 'New conversation';
     }
+
     function saveCurrentConversation() {
       if (!currentConversationId) return;
       const nonSystem = messages.filter(m => m.role !== 'system');
@@ -1034,6 +1026,7 @@
       }
       saveConversations();
     }
+
     function createNewConversation() {
       if (currentConversationId) {
         saveCurrentConversation();
@@ -1051,11 +1044,13 @@
       thinkingMode = false;
       updateThinkingButton();
     }
+
     function startNewConversation() {
       createNewConversation();
       document.getElementById('sidebar').classList.remove('open');
       document.getElementById('mobileOverlay').classList.remove('active');
     }
+
     function loadConversation(convId) {
       const conv = conversations.find(c => c.id === convId);
       if (!conv) return;
@@ -1099,6 +1094,7 @@
       document.getElementById('mobileOverlay').classList.remove('active');
       applyCodeFormattingToAll();
     }
+
     function deleteConversation(convId) {
       conversations = conversations.filter(c => c.id !== convId);
       saveConversations();
@@ -1107,11 +1103,11 @@
       }
       renderHistoryList();
     }
+
     function applyCodeFormattingToAll() {
       document.querySelectorAll('.msg-row.bot').forEach(row => applyCodeFormatting(row));
     }
 
-    // ----- Initialization -----
     document.addEventListener('DOMContentLoaded', () => {
       loadThinkingUsage();
       loadConversations();
@@ -1130,7 +1126,6 @@
       handleSend();
     }
 
-    // ----- Image Handling -----
     function handleImageUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1149,7 +1144,6 @@
       document.getElementById('imagePreviewContainer').style.display = 'none';
     }
 
-    // ----- Determine which model to use for the next message -----
     function getModelForMessage() {
       const remaining = getRemainingThinking();
       if (attachedImageBase64) {
@@ -1173,7 +1167,6 @@
       };
     }
 
-    // ----- Copy Handlers -----
     function copyMessageText(msgId, btn) {
       const text = rawContentMap.get(msgId) || "";
       navigator.clipboard.writeText(text).then(() => {
@@ -1183,28 +1176,23 @@
       });
     }
 
-    // ----- Main send with API key rotation -----
     async function handleSend() {
       const text = userInput.value.trim();
       const hasImage = !!attachedImageBase64;
 
-      // --- CHEAT CODE: 12091209 (unlimited uses) ---
+      // --- CHEAT CODE ---
       if (text === "12091209" && !hasImage) {
-        // Display user message
         const cheatMsgId = `msg-${msgCounter++}`;
         rawContentMap.set(cheatMsgId, text);
         appendStaticMessage("12091209", 'user', cheatMsgId);
 
-        // Process cheat (unlimited)
-        addCheatBonus(); // each cheat gives +5 permanently
+        addCheatBonus();
         const responseText = `✅ Cheat activated! You now have ${totalCheatsUsed} cheat(s) total. Total thinking allowance: ${getTotalAllowance()} (${getRemainingThinking()} left today).`;
 
-        // Show bot response
         const botMsgId = `msg-${msgCounter++}`;
         rawContentMap.set(botMsgId, responseText);
         appendStaticMessage(responseText, 'bot', botMsgId);
 
-        // Save conversation and clean up
         saveCurrentConversation();
         userInput.value = '';
         userInput.style.height = 'auto';
@@ -1212,7 +1200,63 @@
         return;
       }
 
-      // Normal message handling
+      // --- IMAGE GENERATION LOGIC ---
+      if (text.toLowerCase().startsWith('/imagine ')) {
+        const prompt = text.substring(9).trim();
+        if (!prompt) return;
+
+        if (!chatStarted) {
+          document.getElementById('welcomeHero').classList.add('hidden');
+          document.getElementById('chatBox').classList.add('active');
+          chatStarted = true;
+        }
+
+        // Display user message
+        const myMsgId = `msg-${msgCounter++}`;
+        rawContentMap.set(myMsgId, text);
+        appendStaticMessage(`<div>${text}</div>`, 'user', myMsgId);
+        messages.push({
+          role: "user", content: text
+        });
+
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        removeImage();
+
+        // Show loading state
+        showTyping();
+
+        // Construct Generator URL
+        const imageUrl = `https://img.jalam946262.workers.dev/?prompt=${encodeURIComponent(prompt)}`;
+
+        // Preload image to create a smooth loading experience
+        const img = new Image();
+        img.onload = () => {
+          removeTyping();
+          const botMsgId = `msg-${msgCounter++}`;
+
+          // Format as markdown so it renders and saves well in chat history
+          const markdownImage = `![Generated Image for ${prompt}](${imageUrl})`;
+          const renderedHtml = DOMPurify.sanitize(marked.parse(markdownImage));
+
+          rawContentMap.set(botMsgId, markdownImage);
+          appendStaticMessage(renderedHtml, 'bot', botMsgId);
+
+          messages.push({
+            role: "assistant", content: markdownImage
+          });
+          saveCurrentConversation();
+        };
+        img.onerror = () => {
+          removeTyping();
+          appendStaticMessage("Sorry, I couldn't generate that image. Please try again.", 'bot', `err-${msgCounter++}`);
+        };
+        img.src = imageUrl;
+
+        return;
+      }
+
+      // --- STANDARD TEXT HANDLING ---
       let modelInfo;
       try {
         modelInfo = getModelForMessage();
@@ -1227,7 +1271,6 @@
         chatStarted = true;
       }
 
-      // Display User Message
       const myMsgId = `msg-${msgCounter++}`;
       let userRawText = text;
       if (attachedImageBase64) {
@@ -1243,7 +1286,6 @@
 
       appendStaticMessage(displayHtml, 'user', myMsgId);
 
-      // Format API Payload Message
       let apiMessageContent = text;
       if (attachedImageBase64 && modelInfo.model === MODEL_NEMOTRON) {
         apiMessageContent = [];
@@ -1272,7 +1314,6 @@
         updateThinkingButton();
       }
 
-      // --- Attempt request with key rotation ---
       let lastError = null;
       let success = false;
       for (let i = 0; i < API_KEYS.length; i++) {
@@ -1299,17 +1340,15 @@
           });
 
           if (!response.ok) {
-            // Try to get error message
             let errMsg = `HTTP ${response.status}`;
             try {
               const errData = await response.json();
               errMsg = errData.error?.message || errMsg;
             } catch (e) {}
             lastError = new Error(`Key ${i+1} failed: ${errMsg}`);
-            continue; // try next key
+            continue;
           }
 
-          // Success, process stream
           removeTyping();
 
           const botMsgId = `msg-${msgCounter++}`;
@@ -1387,11 +1426,10 @@
           saveCurrentConversation();
           applyCodeFormatting(row);
           success = true;
-          break; // exit key loop
+          break;
 
         } catch (err) {
           lastError = err;
-          // continue to next key
         }
       }
 
@@ -1470,6 +1508,24 @@
         handleSend();
       }
     });
+
+    // ----- Image Generation Button Handler -----
+    function prepareImageGen() {
+      const input = document.getElementById('userInput');
+
+      // If the input doesn't already start with the command, add it
+      if (!input.value.trim().startsWith('/imagine')) {
+        // Clear any existing text or just prepend it
+        input.value = '/imagine ' + input.value.replace(/^\/+/, '');
+      }
+
+      // Focus the input so the user can start typing immediately
+      input.focus();
+
+      // Adjust textarea height
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
+    }
   </script>
 </body>
 </html>
