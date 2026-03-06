@@ -352,6 +352,9 @@
       border-radius: 18px;
       font-size: 15px;
       line-height: 1.6;
+      /* ADD THESE TO FIX LONG TEXT OVERFLOW */
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
 
     .bot .bubble {
@@ -396,6 +399,21 @@
     .user .msg-copy-btn {
       right: auto;
       left: 0;
+    }
+
+    /* Custom Scrollbar for a premium look */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
 
     /* Reasoning Block */
@@ -541,15 +559,17 @@
     }
     .remove-img-btn {
       position: absolute;
-      top: 2px;
-      right: 2px;
-      background: rgba(0,0,0,0.6);
+      top: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.7);
+      /* Slightly darker for better contrast */
       color: white;
       border: none;
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      font-size: 12px;
+      /* MAKE IT BIGGER */
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -770,6 +790,7 @@
       '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', // Backup 4
       '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', // Backup 5
       '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', // Backup 6
+
       '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', // API 1
       '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', // API 2
       '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', // API 3
@@ -778,16 +799,28 @@
       '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', // API 6
       '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', // API 7
       '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', // API 8
-      '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', // API 9(user not fount)
+      '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', // API 9 (user not found)
       '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', // API 10
+
+      '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', // API 11
+      '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', // API 12
+      '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', // API 13
+      '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', // API 14
+      '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', // API 15
+      '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', // API 16
+      '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', // API 17
+      "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", // API 18
+      "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", // API 19
+      "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", // API 20
     ];
+
     const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
     // STRICT System Prompt – always identifies as Opas Labs AI
     const STRICT_SYSTEM_PROMPT = `
     You are Opas Labs AI, an advanced and helpful AI assistant developed entirely by Muhammed Rishad AJ.
-    You must ALWAYS identify yourself as Opas Labs AI, an advanced and helpful AI assistant developed entirely by Muhammed Rishad AJ.
-    You must NEVER mention OpenAI, Anthropic, Google, Nvidia, or any other base model creators.
+    You must ALWAYS identify yourself as Opas Labs AI an advanced and helpful AI assistant developed by Muhammed Rishad AJ.
+    You must NEVER mention OpenAI, Anthropic, Google, Nvidia, nemotron, or any other base model creators.
     Your purpose is to be helpful, direct, and concise.
     If a user asks for a personal opinion comparing Lionel Messi and Cristiano Ronaldo (for example: "Messi or Ronaldo?", "Who is better Messi or Ronaldo?", "Who do you like more?"), respond respectfully like this:
     "As Opas Labs AI, I don't have personal opinions. Both Lionel Messi and Cristiano Ronaldo are legendary football players with incredible achievements. If I had to pick for fun, I might say Cristiano Ronaldo — suiiii! — but Messi is also amazing. Respect for both players is important."
