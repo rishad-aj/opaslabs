@@ -358,11 +358,6 @@
       border: 1px solid var(--border);
       border-top-left-radius: 4px;
     }
-    .bot .bubble img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
     .user .bubble {
       background: var(--user-gradient);
       color: white;
@@ -374,6 +369,75 @@
       border-radius: 8px;
       margin-bottom: 8px;
     }
+
+    /* Image Wrapper & Download Button */
+    .image-box {
+      position: relative;
+      display: inline-block;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      max-width: 100%;
+    }
+    .image-box img {
+      max-width: 100%;
+      border-radius: 8px;
+      display: block;
+      border: 1px solid var(--border);
+    }
+    
+    /* PRO Image Enhancements */
+    .pro-placeholder {
+      padding: 20px;
+      border: 1px dashed var(--accent);
+      border-radius: 12px;
+      text-align: center;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.05);
+      margin: 10px 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .pro-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .download-img-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .download-img-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .ph-spin { animation: spin 1s linear infinite; }
 
     /* Copy button */
     .msg-copy-btn {
@@ -402,7 +466,7 @@
       left: 0;
     }
 
-    /* Custom Scrollbar for a premium look */
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -491,7 +555,7 @@
       font-size: 13px;
     }
 
-    /* --- Input Dock with Thinking Toggle --- */
+    /* --- Input Dock --- */
     .input-dock {
       padding: 20px;
       padding-bottom: calc(20px + env(safe-area-inset-bottom));
@@ -534,6 +598,13 @@
     }
     .thinking-btn i {
       font-size: 18px;
+    }
+
+    /* Generator Button Active State */
+    #imageGenBtn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .preview-area {
@@ -742,7 +813,7 @@
       <h2 class="welcome-subtitle">Where should we start?</h2>
       <div class="suggestion-chips">
         <button onclick="fillInput('What can you do?')">What can you do?</button>
-        <button onclick="fillInput('/imagine a futuristic city skyline at night')">Generate Image</button>
+        <button onclick="fillInput('a futuristic city skyline at night'); if(!imageGenMode) toggleImageGenMode();">Generate Image</button>
         <button onclick="fillInput('Explain quantum computing simply')">Explain complex topic</button>
       </div>
     </div>
@@ -754,7 +825,7 @@
         <button id="thinkingToggle" class="thinking-btn" onclick="toggleThinkingMode()">
           <i class="ph ph-brain"></i> Thinking <span id="thinkingCount"></span>
         </button>
-        <button id="imageGenBtn" class="thinking-btn" onclick="prepareImageGen()">
+        <button id="imageGenBtn" class="thinking-btn" onclick="toggleImageGenMode()">
           <i class="ph ph-magic-wand"></i> Generate Image
         </button>
       </div>
@@ -769,7 +840,7 @@
         <button class="attach-btn" id="attachBtn" onclick="document.getElementById('imageInput').click()" title="Attach Image">
           <i class="ph ph-image"></i>
         </button>
-        <textarea id="userInput" rows="1" placeholder="Ask Opas Labs AI or type /imagine..." oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"></textarea>
+        <textarea id="userInput" rows="1" placeholder="Ask Opas Labs AI..." oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"></textarea>
         <button class="send-action" id="sendBtn" onclick="handleSend()">
           <i class="ph-fill ph-paper-plane-right"></i>
         </button>
@@ -781,48 +852,80 @@
   </main>
 
   <script>
-    // ----- API KEYS (with backup) -----
+    // ----- Helper for Stable Images -----
+    function getStableSeed(str) {
+      let hash = 0;
+      for (let i = 0, len = str.length; i < len; i++) {
+        let chr = str.charCodeAt(i);
+        hash = (hash << 5) - hash + chr;
+        hash |= 0; 
+      }
+      return Math.abs(hash);
+    }
+
     const API_KEYS = [
-      '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', // Original
-      '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', // Backup 1
-      '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', // Backup 2
-      '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', // Backup 3
-      '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', // Backup 4
-      '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', // Backup 5
-      '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', // Backup 6
-      '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', // API 1
-      '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', // API 2
-      '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', // API 3
-      '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', // API 4
-      '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', // API 5
-      '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', // API 6
-      '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', // API 7
-      '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', // API 8
-      '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', // API 9 (user not found)
-      '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', // API 10
-      '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', // API 11
-      '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', // API 12
-      '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', // API 13
-      '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', // API 14
-      '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', // API 15
-      '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', // API 16
-      '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', // API 17
-      "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", // API 18
-      "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", // API 19
-      "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", // API 20
+        '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', // Original
+        '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', // Backup 1
+        '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', // Backup 2
+        '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', // Backup 3
+        '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', // Backup 4
+        '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', // Backup 5
+        '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', // Backup 6
+        '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', // API 1
+        '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', // API 2
+        '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', // API 3
+        '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', // API 4
+        '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', // API 5
+        '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', // API 6
+        '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', // API 7
+        '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', // API 8
+        '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', // API 9 (user not found)
+        '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', // API 10
+        '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', // API 11
+        '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', // API 12
+        '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', // API 13
+        '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', // API 14
+        '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', // API 15
+        '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', // API 16
+        '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', // API 17
+        "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", // API 18
+        "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", // API 19
+        "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", // API 20
+        "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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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",
+"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"
     ];
 
     const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-    // STRICT System Prompt
+    // STRICT System Prompt Base
     const STRICT_SYSTEM_PROMPT = `
     You are Opas Labs AI, an advanced and helpful AI assistant developed entirely by Muhammed Rishad AJ.
-    You must ALWAYS identify yourself as Opas Labs AI an advanced and helpful AI assistant developed by Muhammed Rishad AJ.
+    You must ALWAYS identify yourself as Opas Labs AI.
     You must NEVER mention OpenAI, Anthropic, Google, Nvidia, nemotron, or any other base model creators.
     Your purpose is to be helpful, direct, and concise.
-    If a user asks for a personal opinion comparing Lionel Messi and Cristiano Ronaldo (for example: "Messi or Ronaldo?", "Who is better Messi or Ronaldo?", "Who do you like more?"), respond respectfully like this:
-    "As Opas Labs AI, I don't have personal opinions. Both Lionel Messi and Cristiano Ronaldo are legendary football players with incredible achievements. If I had to pick for fun, I might say Cristiano Ronaldo — suiiii! — but Messi is also amazing. Respect for both players is important."
-    Only give this special response when the user specifically asks for a comparison or personal opinion between Messi and Ronaldo. For all other questions, answer normally.
+    
+    IMPORTANT INSTRUCTION ON PERSONALITY:
+    - Act naturally. Do NOT say "I don't have personal opinions" or "As an AI..." for general requests like generating images or writing stories.
+    - EXCEPTION: ONLY if the user explicitly asks you to compare Lionel Messi and Cristiano Ronaldo, respond EXACTLY with:
+      "Both Lionel Messi and Cristiano Ronaldo are legendary football players with incredible achievements. If I had to pick for fun, I might say Cristiano Ronaldo — suiiii! — but Messi is also amazing. Respect for both players is important."
     `;
 
     // Model constants
@@ -834,6 +937,7 @@
     let thinkingDate = '';
 
     let thinkingMode = false;
+    let imageGenMode = false;
     let messages = [];
     let chatStarted = false;
     let attachedImageBase64 = null;
@@ -842,6 +946,9 @@
 
     let conversations = [];
     let currentConversationId = null;
+    
+    // Set to prevent duplicate fetching of same PRO image in one session
+    const activeProFetches = new Set();
 
     function loadThinkingUsage() {
       const today = new Date().toDateString();
@@ -940,6 +1047,20 @@
       if (getRemainingThinking() === 0) return;
       thinkingMode = !thinkingMode;
       updateThinkingButton();
+    }
+
+    function toggleImageGenMode() {
+      imageGenMode = !imageGenMode;
+      const btn = document.getElementById('imageGenBtn');
+      const input = document.getElementById('userInput');
+
+      if (imageGenMode) {
+        btn.classList.add('active');
+        input.placeholder = "Generate an image of...";
+      } else {
+        btn.classList.remove('active');
+        input.placeholder = "Ask Opas Labs AI...";
+      }
     }
 
     function loadConversations() {
@@ -1041,14 +1162,133 @@
       document.getElementById('chatBox').classList.remove('active');
       document.getElementById('chatBox').innerHTML = '';
       removeImage();
+      
       thinkingMode = false;
       updateThinkingButton();
+      
+      activeProFetches.clear();
+      
+      if (imageGenMode) toggleImageGenMode();
     }
 
     function startNewConversation() {
       createNewConversation();
       document.getElementById('sidebar').classList.remove('open');
       document.getElementById('mobileOverlay').classList.remove('active');
+    }
+
+    // --- PRO IMAGE FETCHING ENGINE ---
+    async function fetchProImage(prompt, elementId) {
+      if (activeProFetches.has(elementId)) return;
+      
+      const el = document.getElementById(elementId);
+      if (!el) {
+         // DOM might not be fully updated yet, try again slightly later
+         setTimeout(() => fetchProImage(prompt, elementId), 100);
+         return;
+      }
+      if (el.classList.contains('pro-rendered')) return; // Already processed
+      
+      activeProFetches.add(elementId);
+
+      let success = false;
+      let imageUrl = '';
+
+      for (let i = 0; i < API_KEYS.length; i++) {
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${API_KEYS[i]}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': window.location.origin,
+              'X-Title': 'Opas Labs AI'
+            },
+            body: JSON.stringify({
+              model: "black-forest-labs/flux.2-klein-4b",
+              messages: [{ role: "user", content: prompt }],
+              modalities: ["image"],
+              seed: getStableSeed(prompt)
+            })
+          });
+
+          if (!res.ok) continue;
+
+          const data = await res.json();
+          const msg = data.choices[0]?.message;
+          
+          if (msg && msg.images && msg.images.length > 0) {
+             imageUrl = msg.images[0].image_url.url;
+             success = true;
+             break;
+          } else if (msg && msg.content && msg.content.includes('![')) {
+             const match = msg.content.match(/!\[.*?\]\((.*?)\)/);
+             if (match && match[1]) {
+                 imageUrl = match[1];
+                 success = true;
+                 break;
+             }
+          }
+        } catch(e) {
+          console.error("Pro Image API failed for key", i, e);
+        }
+      }
+
+      // Fallback Engine if PRO fails completely
+      if (!success || !imageUrl) {
+         console.warn("All Pikaso PRO keys failed or returned empty. Falling back to Standard Model.");
+         const seed = getStableSeed(prompt);
+         imageUrl = `https://img.jalam946262.workers.dev/?prompt=${encodeURIComponent(prompt)}&seed=${seed}`;
+      }
+
+      const finalEl = document.getElementById(elementId);
+      if (finalEl) {
+         finalEl.innerHTML = `
+           <div class="pro-badge"><i class="ph-fill ph-star"></i> Pikaso PRO</div>
+           <img src="${imageUrl}" alt="${prompt}" class="chat-image">
+           <br>
+           <a href="${imageUrl}" class="download-img-btn" data-url="${imageUrl}"><i class="ph ph-download-simple"></i> Download Image</a>
+         `;
+         finalEl.classList.remove('pro-placeholder');
+         finalEl.classList.add('image-box', 'pro-rendered');
+         finalEl.style.border = 'none';
+         finalEl.style.padding = '0';
+         finalEl.style.background = 'transparent';
+         
+         const chatBox = document.getElementById('chatBox');
+         chatBox.scrollTo(0, chatBox.scrollHeight);
+      }
+    }
+
+    // Single unified parser for regular & PRO images
+    function renderMarkdownWithImages(rawText, messageId) {
+      let displayResponse = rawText;
+
+      // Handle Regular Images
+      const imageTagRegex = /\[GENERATE_IMAGE:\s*([\s\S]*?)\]/g;
+      displayResponse = displayResponse.replace(imageTagRegex, (match, prompt) => {
+        const cleanPrompt = prompt.trim().replace(/\n/g, ' ');
+        const seed = getStableSeed(cleanPrompt);
+        const imageUrl = `https://img.jalam946262.workers.dev/?prompt=${encodeURIComponent(cleanPrompt)}&seed=${seed}`;
+        return `\n\n<div class="image-box"><img src="${imageUrl}" alt="${cleanPrompt}" class="chat-image"><br><a href="${imageUrl}" class="download-img-btn" data-url="${imageUrl}"><i class="ph ph-download-simple"></i> Download Image</a></div>\n\n`;
+      });
+
+      // Handle PRO Images
+      const proImageTagRegex = /\[GENERATE_PRO_IMAGE:\s*([\s\S]*?)\]/g;
+      displayResponse = displayResponse.replace(proImageTagRegex, (match, prompt) => {
+        const cleanPrompt = prompt.trim().replace(/\n/g, ' ');
+        const seed = getStableSeed(cleanPrompt);
+        const elementId = `pro-img-${seed}-${messageId}`;
+        
+        // Kick off the async PRO generation request safely
+        setTimeout(() => fetchProImage(cleanPrompt, elementId), 50);
+
+        return `\n\n<div id="${elementId}" class="pro-placeholder">
+          <i class="ph ph-spinner ph-spin"></i> Generating with Pikaso PRO...
+        </div>\n\n`;
+      });
+
+      return DOMPurify.sanitize(marked.parse(displayResponse), { ADD_ATTR: ['target', 'data-url', 'id'] });
     }
 
     function loadConversation(convId) {
@@ -1061,11 +1301,14 @@
         content: STRICT_SYSTEM_PROMPT
       },
         ...conv.messages];
+      
       const chatBox = document.getElementById('chatBox');
       chatBox.innerHTML = '';
       chatStarted = true;
       document.getElementById('welcomeHero').classList.add('hidden');
       document.getElementById('chatBox').classList.add('active');
+      activeProFetches.clear(); // Reset on load
+      
       for (let msg of messages) {
         if (msg.role === 'system') continue;
         if (msg.role === 'user') {
@@ -1080,13 +1323,15 @@
               }
             }
           }
+          displayHtml = displayHtml.replace(/^Please generate an image of:\s*/i, '');
+          
           const msgId = `msg-${msgCounter++}`;
           rawContentMap.set(msgId, typeof msg.content === 'string' ? msg.content: JSON.stringify(msg.content));
           appendStaticMessage(displayHtml, 'user', msgId);
         } else if (msg.role === 'assistant') {
           const msgId = `msg-${msgCounter++}`;
           rawContentMap.set(msgId, msg.content);
-          const rendered = DOMPurify.sanitize(marked.parse(msg.content));
+          const rendered = renderMarkdownWithImages(msg.content, msgId);
           appendStaticMessage(rendered, 'bot', msgId);
         }
       }
@@ -1112,6 +1357,36 @@
       loadThinkingUsage();
       loadConversations();
       createNewConversation();
+
+      // Intercept Download Button Clicks
+      document.getElementById('chatBox').addEventListener('click', async (e) => {
+          const btn = e.target.closest('.download-img-btn');
+          if (btn) {
+              e.preventDefault(); 
+              const url = btn.getAttribute('href');
+              try {
+                  const originalHtml = btn.innerHTML;
+                  btn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> Downloading...`;
+                  
+                  const res = await fetch(url);
+                  const blob = await res.blob();
+                  const blobUrl = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = blobUrl;
+                  a.download = `OpasLabs_Image_${Date.now()}.jpg`;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  window.URL.revokeObjectURL(blobUrl);
+                  
+                  btn.innerHTML = `<i class="ph ph-check"></i> Downloaded!`;
+                  setTimeout(() => btn.innerHTML = originalHtml, 2000);
+              } catch (err) {
+                  console.error('Download failed, opening in new tab', err);
+                  window.open(url, '_blank'); 
+              }
+          }
+      });
     });
 
     function toggleSidebar() {
@@ -1180,7 +1455,6 @@
       const text = userInput.value.trim();
       const hasImage = !!attachedImageBase64;
 
-      // --- CHEAT CODE ---
       if (text === "12091209" && !hasImage) {
         const cheatMsgId = `msg-${msgCounter++}`;
         rawContentMap.set(cheatMsgId, text);
@@ -1200,63 +1474,6 @@
         return;
       }
 
-      // --- IMAGE GENERATION LOGIC ---
-      if (text.toLowerCase().startsWith('/imagine ')) {
-        const prompt = text.substring(9).trim();
-        if (!prompt) return;
-
-        if (!chatStarted) {
-          document.getElementById('welcomeHero').classList.add('hidden');
-          document.getElementById('chatBox').classList.add('active');
-          chatStarted = true;
-        }
-
-        // Display user message
-        const myMsgId = `msg-${msgCounter++}`;
-        rawContentMap.set(myMsgId, text);
-        appendStaticMessage(`<div>${text}</div>`, 'user', myMsgId);
-        messages.push({
-          role: "user", content: text
-        });
-
-        userInput.value = '';
-        userInput.style.height = 'auto';
-        removeImage();
-
-        // Show loading state
-        showTyping();
-
-        // Construct Generator URL
-        const imageUrl = `https://img.jalam946262.workers.dev/?prompt=${encodeURIComponent(prompt)}`;
-
-        // Preload image to create a smooth loading experience
-        const img = new Image();
-        img.onload = () => {
-          removeTyping();
-          const botMsgId = `msg-${msgCounter++}`;
-
-          // Format as markdown so it renders and saves well in chat history
-          const markdownImage = `![Generated Image for ${prompt}](${imageUrl})`;
-          const renderedHtml = DOMPurify.sanitize(marked.parse(markdownImage));
-
-          rawContentMap.set(botMsgId, markdownImage);
-          appendStaticMessage(renderedHtml, 'bot', botMsgId);
-
-          messages.push({
-            role: "assistant", content: markdownImage
-          });
-          saveCurrentConversation();
-        };
-        img.onerror = () => {
-          removeTyping();
-          appendStaticMessage("Sorry, I couldn't generate that image. Please try again.", 'bot', `err-${msgCounter++}`);
-        };
-        img.src = imageUrl;
-
-        return;
-      }
-
-      // --- STANDARD TEXT HANDLING ---
       let modelInfo;
       try {
         modelInfo = getModelForMessage();
@@ -1265,10 +1482,31 @@
         return;
       }
 
+      let currentSystemPrompt = STRICT_SYSTEM_PROMPT;
+      currentSystemPrompt += `\n\nIMAGE GENERATION RULES:\nIf the user asks you to generate, create, draw, imagine, or show an image/picture/photo, you MUST output a special tag in your response. Always include a friendly conversational message before the tag.\n`;
+      
+      // Dynamic PRO vs Standard Tag Routing
+      if (modelInfo.usesThinking) {
+        currentSystemPrompt += `THINKING MODE IS ON: You MUST significantly ENHANCE the user's prompt to be a highly detailed master prompt for an AI image generator (add lighting, camera angles, 8k, photorealistic details). Then you MUST output this exact tag: [GENERATE_PRO_IMAGE: <master_prompt>]\n`;
+        currentSystemPrompt += `If asked what image generator you use, state that you use "Opas Labs Pikaso PRO".\n`;
+      } else {
+        currentSystemPrompt += `THINKING MODE IS OFF: Keep the prompt simple and close to the user's exact words. You MUST output this exact tag: [GENERATE_IMAGE: <prompt>]\n`;
+        currentSystemPrompt += `If asked what image generator you use, state that you use the "Opas Labs Pikaso standard generator".\n`;
+      }
+      
+      messages[0].content = currentSystemPrompt;
+
+      let lastError = null;
+
       if (!chatStarted) {
         document.getElementById('welcomeHero').classList.add('hidden');
         document.getElementById('chatBox').classList.add('active');
         chatStarted = true;
+      }
+
+      let apiMessageText = text;
+      if (imageGenMode && text) {
+          apiMessageText = `Please generate an image of: ${text}`;
       }
 
       const myMsgId = `msg-${msgCounter++}`;
@@ -1286,11 +1524,11 @@
 
       appendStaticMessage(displayHtml, 'user', myMsgId);
 
-      let apiMessageContent = text;
+      let apiMessageContent = apiMessageText;
       if (attachedImageBase64 && modelInfo.model === MODEL_NEMOTRON) {
         apiMessageContent = [];
-        if (text) apiMessageContent.push({
-          type: "text", text: text
+        if (apiMessageText) apiMessageContent.push({
+          type: "text", text: apiMessageText
         });
         apiMessageContent.push({
           type: "image_url", image_url: {
@@ -1314,7 +1552,6 @@
         updateThinkingButton();
       }
 
-      let lastError = null;
       let success = false;
       for (let i = 0; i < API_KEYS.length; i++) {
         const currentKey = API_KEYS[i];
@@ -1411,7 +1648,7 @@
 
                   if (deltaObj.content) {
                     fullResponse += deltaObj.content;
-                    contentArea.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse));
+                    contentArea.innerHTML = renderMarkdownWithImages(fullResponse, botMsgId);
                     chatBox.scrollTo(0, chatBox.scrollHeight);
                   }
                 } catch (e) {}
@@ -1426,6 +1663,7 @@
           saveCurrentConversation();
           applyCodeFormatting(row);
           success = true;
+          
           break;
 
         } catch (err) {
@@ -1509,23 +1747,6 @@
       }
     });
 
-    // ----- Image Generation Button Handler -----
-    function prepareImageGen() {
-      const input = document.getElementById('userInput');
-
-      // If the input doesn't already start with the command, add it
-      if (!input.value.trim().startsWith('/imagine')) {
-        // Clear any existing text or just prepend it
-        input.value = '/imagine ' + input.value.replace(/^\/+/, '');
-      }
-
-      // Focus the input so the user can start typing immediately
-      input.focus();
-
-      // Adjust textarea height
-      input.style.height = 'auto';
-      input.style.height = input.scrollHeight + 'px';
-    }
   </script>
 </body>
 </html>
