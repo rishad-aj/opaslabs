@@ -1096,24 +1096,6 @@
     // --- Web Speech API Logic ---
     let speechRecognition;
     let isVoiceActive = false;
-    let wasVoiceInput = false;
-
-    function speakText(text) {
-      if (!window.speechSynthesis) return;
-      
-      window.speechSynthesis.cancel();
-
-      let cleanText = text.replace(/\[GENERATE_PRO_IMAGE:.*?\]/g, '');
-      cleanText = cleanText.replace(/\[GENERATE_IMAGE:.*?\]/g, '');
-      cleanText = cleanText.replace(/[*_#`~]/g, ''); 
-
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'en-US';
-      utterance.rate = 1.0; 
-      utterance.pitch = 1.0;
-      
-      window.speechSynthesis.speak(utterance);
-    }
 
     function initVoice() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1152,7 +1134,6 @@
         if (final) {
           document.getElementById('voiceStatus').innerText = final;
           stopVoiceChat();
-          wasVoiceInput = true; 
           fillInput(final); // Automatically submit to chat
         }
       };
@@ -1688,11 +1669,6 @@ async function startVoiceChat() {
     }
 
     async function handleSend() {
-      const shouldSpeakResponse = wasVoiceInput;
-      wasVoiceInput = false; 
-
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-
       const text = userInput.value.trim();
       const hasImage = !!attachedImageBase64;
 
@@ -1896,10 +1872,6 @@ async function startVoiceChat() {
           saveCurrentConversation();
           applyCodeFormatting(row);
           success = true;
-
-          if (shouldSpeakResponse) {
-            speakText(fullResponse);
-          }
 
           break;
 
