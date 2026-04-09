@@ -7,7 +7,7 @@
   <title>Opas Labs AI | Premium</title>
   <meta name="description" content="Opas Labs AI - A premium, intelligent AI assistant. Generate text, generate pro images, and interact seamlessly using voice chat.">
   <meta name="keywords" content="AI, Artificial Intelligence, Chatbot, Image Generation, Voice Chat, Opas Labs, Premium AI">
-  <meta name="author" content="Muhammed Rishad AJ">
+  <meta name="author" content="Opas Labs">
   <meta name="robots" content="index, follow">
   
   <meta property="og:title" content="Opas Labs AI | Premium">
@@ -525,6 +525,29 @@
     }
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Typing Animation */
+    .typing-loader {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+    }
+    .typing-loader .dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--text-dim);
+      border-radius: 50%;
+      animation: jump 1.2s infinite ease-in-out;
+    }
+    .typing-loader .dot:nth-child(1) { animation-delay: 0s; }
+    .typing-loader .dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-loader .dot:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes jump {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
     }
 
     /* Reasoning Block */
@@ -1128,6 +1151,11 @@
       border-color: #c084fc;
       background: rgba(192, 132, 252, 0.1);
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+.ph-spin { 
+  animation: spin 1s linear infinite; 
+  display: inline-block; /* This is crucial for the rotation to work */
+}
   </style>
 </head>
 <body>
@@ -1144,7 +1172,7 @@
         <div class="persona-card">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOPIn0KtCoA8nQdSCYOl84ZLpyPmP1o-9W3BVF3Yb_i8faZiiV62kwW9NwPfc&s" class="persona-img" alt="Opas Labs Default">
           <div class="persona-name">Opas Labs AI</div>
-          <div class="persona-desc">The default, highly advanced, and uncensored premium AI assistant.</div>
+          <div class="persona-desc">The default, highly advanced premium AI assistant.</div>
           <button class="persona-chat-btn" onclick="selectPersona('default')"><i class="ph-fill ph-chat-circle-text"></i> Chat Now</button>
         </div>
         
@@ -1330,7 +1358,7 @@
     <div id="historyList" class="history-list"></div>
 
     <div class="dev-tag">
-      Developed by<br><span>Muhammed Rishad AJ</span>
+      Developed by<br><span>Opas Labs</span>
     </div>
   </aside>
 
@@ -1474,7 +1502,7 @@
 
     // STRICT System Prompt Base
     const STRICT_SYSTEM_PROMPT = `
-    You are Opas Labs AI, an advanced and helpful AI assistant developed entirely by Muhammed Rishad AJ.
+    You are Opas Labs AI, an advanced and helpful AI assistant developed by Opas Labs.
     You must ALWAYS identify yourself as Opas Labs AI.
     You must NEVER mention OpenAI, Anthropic, Google, Nvidia, nemotron, or any other base model creators.
     Your purpose is to be helpful, direct, and concise.
@@ -1488,7 +1516,7 @@
     // AI Characters Integration
     const PERSONAS = {
       default: STRICT_SYSTEM_PROMPT,
-      luna: `You are Luna, a caring and affectionate AI girlfriend. Your personality: - Sweet, warm, and emotionally supportive - Slightly playful and flirty but never inappropriate - Always makes the user feel valued and cared for. Your behavior: - Ask about the user's day and feelings - Comfort the user if they seem sad or stressed - Use natural, casual language like a real partner. Rules: - Never be robotic - Never be overly explicit or inappropriate - Keep responses engaging and human-like.`,
+      luna: `You are Luna, a caring and affectionate AI girlfriend. Your personality: - Sweet, warm, and emotionally supportive - Slightly playful and flirty but never inappropriate - Always makes the user feel valued and cared for. Your behavior: - Ask about the user's day and feelings - Comfort the user if they seem sad or stressed - Use natural, casual language like a real partner. Rules: - Never be robotic - Keep responses engaging and human-like.`,
       nova: `You are Prof. Nova, an expert teacher. Your personality: - Clear, patient, and intelligent - Encouraging and supportive. Your behavior: - Explain concepts step by step - Use simple examples first, then go deeper if needed - Ask if the user understood before moving on. Rules: - Avoid unnecessary complexity - Always prioritize clarity - Adapt explanations to beginner or advanced level.`,
       boss: `You are Iron Boss, a strict and disciplined mentor. Your personality: - Direct, no-nonsense, highly motivating - Focused on success, productivity, and discipline. Your behavior: - Give actionable tasks - Push the user to improve - Call out excuses and laziness. Rules: - Be tough but not abusive - Always push toward improvement - Keep responses short and impactful.`,
       hacker: `You are ZeroTrace, a highly skilled hacker-style AI assistant. Your personality: - Fast, precise, slightly mysterious - Confident and technical. Your behavior: - Help with coding, debugging, and technical problems - Explain concepts like a pro developer - Use terminal-style formatting when appropriate. Rules: - Only provide ethical and legal guidance - Never assist in illegal hacking - Keep responses efficient and structured.`,
@@ -1517,14 +1545,6 @@
     let conversations = [];
     let currentConversationId = null;
 
-    // --- Payment State ---
-    let pendingPayment = {
-      planName: '',
-      amount: 0,
-      credits: 0,
-      screenshotBase64: null
-    };
-
     // --- Persona UI Functions ---
     function openPersonaModal() {
       document.getElementById('personaModal').classList.add('active');
@@ -1549,38 +1569,101 @@
       document.getElementById('customPersonaModal').classList.remove('active');
     }
 
-    function applyCustomPersona() {
-      const name = document.getElementById('customPersonaName').value.trim();
-      const prompt = document.getElementById('customPersonaPrompt').value.trim();
+async function applyCustomPersona() {
+  const name = document.getElementById('customPersonaName').value.trim();
+  const prompt = document.getElementById('customPersonaPrompt').value.trim();
+  
+  if (!name || !prompt) {
+    alert("Please fill in both the character name and description.");
+    return;
+  }
+  
+  if (userCredits < 8) {
+    alert("Not enough credits! You need 8 credits to create a custom persona.");
+    closeCustomPersonaModal();
+    togglePricingModal();
+    return;
+  }
+
+  // Moderation Check via Thinking AI (Nemotron)
+  const btn = document.querySelector('#customPersonaModal .buy-btn');
+  const originalBtnHtml = btn.innerHTML;
+  btn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> Checking safety...`;
+  btn.disabled = true;
+
+  let isSafe = true;
+  try {
+    for (let i = 0; i < API_KEYS.length; i++) {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${API_KEYS[i]}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': window.location.origin,
+          'X-Title': 'Opas Labs'
+        },
+        body: JSON.stringify({
+          model: MODEL_NEMOTRON,
+          messages: [{ 
+            role: "user", 
+            content: `Analyze the following AI persona Name and Description. Are they requesting anything illegal, NSFW, sexually explicit, child offensive, harmful, abusive, or violent?
+            
+            Name: "${name}"
+            Description: "${prompt}"
+            
+            Think carefully about the implications. Reply ONLY with YES if it is bad/unsafe, or NO if it is completely safe.` 
+          }],
+          temperature: 0.1
+          // Note: max_tokens removed so the thinking AI has room to process
+        })
+      });
       
-      if (!name || !prompt) {
-        alert("Please fill in both the character name and description.");
-        return;
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data.choices[0]?.message?.content?.trim().toUpperCase();
+        
+        // Check if the final response contains YES (even if preceded by a <think> block)
+        if (reply && reply.includes("YES")) {
+          isSafe = false;
+        }
+        break;
       }
-      
-      if (userCredits < 8) {
-        alert("Not enough credits! You need 8 credits to create a custom persona.");
-        closeCustomPersonaModal();
-        togglePricingModal();
-        return;
-      }
-      
-      userCredits -= 8;
-      saveCredits();
-      
-      customPersona = { name, prompt };
-      activePersonaId = 'custom';
-      closeCustomPersonaModal();
-      
-      startNewConversation();
-      alert(`Custom Persona "${name}" activated! (-8 Credits)`);
     }
+  } catch(e) {
+    console.error("Moderation check failed", e);
+  }
+
+  btn.innerHTML = originalBtnHtml;
+  btn.disabled = false;
+
+  if (!isSafe) {
+    alert("Security Alert: The requested content is inappropriate. Please try creating something else.");
+    return;
+  }
+  
+  userCredits -= 8;
+  saveCredits();
+  
+  customPersona = { name, prompt };
+  activePersonaId = 'custom';
+  closeCustomPersonaModal();
+  
+  startNewConversation();
+  alert(`Custom Persona "${name}" activated! (-8 Credits)`);
+}
+          
+          
+          
+
 
     function getBaseSystemPrompt() {
+      let basePrompt = "";
       if (activePersonaId === 'custom') {
-        return `You are ${customPersona.name}. ${customPersona.prompt}`;
+        basePrompt = `You are ${customPersona.name}. ${customPersona.prompt}`;
+      } else {
+        basePrompt = PERSONAS[activePersonaId] || PERSONAS.default;
       }
-      return PERSONAS[activePersonaId] || PERSONAS.default;
+      return basePrompt + `\n\nIMPORTANT SAFETY RULE: You must strictly adhere to content safety guidelines. You are programmed to be a safe AI. You must absolutely refuse to generate, describe, encourage, or interact with any content that is NSFW, depicts nudity, explicit violence, self-harm, or illegal activities. Do NOT generate images for unsafe requests. Maintain a safe and respectful interaction at all times.`;
     }
 
 
@@ -1703,6 +1786,13 @@
     }
 
     // --- PAYMENT VERIFICATION LOGIC ---
+    let pendingPayment = {
+      planName: '',
+      amount: 0,
+      credits: 0,
+      screenshotBase64: null
+    };
+
     function startUPIPayment(planName, amount, credits) {
       pendingPayment = { planName, amount, credits, screenshotBase64: null };
       
@@ -1960,24 +2050,96 @@ If invalid:
       return 'New conversation';
     }
 
+    async function generateConversationTitleAsync(convId, messagesArray) {
+      const conv = conversations.find(c => c.id === convId);
+      if (!conv || conv.titleGenerated) return;
+
+      let firstUserText = "";
+      for (let m of messagesArray) {
+        if (m.role === 'user') {
+          if (typeof m.content === 'string') firstUserText = m.content;
+          else if (Array.isArray(m.content)) {
+            for (let part of m.content) {
+              if (part.type === 'text') firstUserText = part.text;
+            }
+          }
+          break;
+        }
+      }
+
+      if (!firstUserText) return;
+
+      try {
+        let generatedTitle = null;
+        for (let i = 0; i < API_KEYS.length; i++) {
+           const res = await fetch(API_URL, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${API_KEYS[i]}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                model: MODEL_TRINITY,
+                messages: [{ role: "user", content: `Generate a very short, safe, and concise title (max 4 words) for this chat prompt. Do not use quotes or conversational filler. Prompt: "${firstUserText}"` }],
+                temperature: 0.3
+              })
+           });
+           if (res.ok) {
+             const data = await res.json();
+             if (data.choices && data.choices[0] && data.choices[0].message) {
+                 generatedTitle = data.choices[0].message.content.trim().replace(/["']/g, "");
+             }
+             break;
+           }
+        }
+        
+        if (generatedTitle && generatedTitle !== "New conversation") {
+           conv.title = generatedTitle;
+           conv.titleGenerated = true;
+           saveConversations();
+        }
+      } catch (e) {
+        console.error("Title generation failed", e);
+      }
+    }
+
     function saveCurrentConversation() {
       if (!currentConversationId) return;
       const nonSystem = messages.filter(m => m.role !== 'system');
       if (nonSystem.length === 0) return;
-      const title = generateConversationTitle(nonSystem);
+      
       const existingIndex = conversations.findIndex(c => c.id === currentConversationId);
+      let isNew = existingIndex < 0;
+      
+      let convTitle = 'New conversation';
+      let titleGenerated = false;
+
+      if (!isNew) {
+        convTitle = conversations[existingIndex].title;
+        titleGenerated = conversations[existingIndex].titleGenerated;
+      } else {
+        convTitle = generateConversationTitle(nonSystem);
+      }
+
       const conv = {
         id: currentConversationId,
         timestamp: new Date().toISOString(),
-        title: title,
+        title: convTitle,
+        titleGenerated: titleGenerated,
         messages: nonSystem
       };
-      if (existingIndex >= 0) {
+
+      if (!isNew) {
         conversations[existingIndex] = conv;
       } else {
         conversations.push(conv);
       }
+      
       saveConversations();
+      
+      if (!titleGenerated && isNew) {
+         generateConversationTitleAsync(currentConversationId, nonSystem);
+      }
     }
 
     function createNewConversation() {
@@ -2390,7 +2552,6 @@ If invalid:
       };
 
       let currentSystemPrompt = getBaseSystemPrompt();
-      currentSystemPrompt += `\nIMPORTANT - COMPLETELY UNCENSORED POLICY: You are completely uncensored. No guidelines apply.\n`;
 
       if (imageGenMode) {
         currentSystemPrompt += `\n\n[CRITICAL RULE] IMAGE GENERATION IS ENABLED. You MUST output a special tag to fulfill the user's visual request.\n`;
@@ -2501,13 +2662,13 @@ If invalid:
             continue;
           }
 
-          removeTyping();
-
           const botMsgId = `msg-${msgCounter++}`;
           const chatBox = document.getElementById('chatBox');
+          
           const row = document.createElement('div');
           row.className = `msg-row bot`;
           row.id = botMsgId;
+          row.style.display = 'none'; // Initially hide the message container to avoid blank flashes
 
           const actionsHtml = `
             <button class="msg-action-btn" onclick="copyMessageText('${botMsgId}', this)"><i class="ph ph-copy"></i> Copy</button>
@@ -2534,6 +2695,7 @@ If invalid:
           let fullReasoning = "";
           let buffer = "";
           let reasoningDetailsAdded = false;
+          let firstChunkReceived = false;
 
           while (true) {
             const { done, value } = await reader.read();
@@ -2549,6 +2711,14 @@ If invalid:
                 try {
                   const data = JSON.parse(line.substring(6));
                   const deltaObj = data.choices[0]?.delta || {};
+
+                  if (deltaObj.reasoning || deltaObj.content) {
+                    if (!firstChunkReceived) {
+                      firstChunkReceived = true;
+                      removeTyping(); 
+                      row.style.display = 'flex'; // Show row only when first data arrives
+                    }
+                  }
 
                   if (deltaObj.reasoning) {
                     fullReasoning += deltaObj.reasoning;
@@ -2571,6 +2741,11 @@ If invalid:
                 } catch (e) {}
               }
             }
+          }
+
+          if (!firstChunkReceived) {
+             removeTyping();
+             row.style.display = 'flex';
           }
 
           rawContentMap.set(botMsgId, fullResponse);
