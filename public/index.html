@@ -3,8 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opas Labs | Security Research Tools</title>
+  <title>Opas Labs | Security Tools, AI &amp; Games — Free Online Projects</title>
+  <meta name="description" content="Free online projects by Opas Labs — security tools, QR & barcode generators, WhatsApp chat generator, AI chatbot, browser games and more. No downloads, no signups.">
+  <meta name="keywords" content="opas labs, security tools, qr code generator, barcode generator, whatsapp chat generator, ai chatbot, online games, bingo, bouncy bird, flag challenge, phishing simulator, ethical hacking tools">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Opas Labs">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Opas Labs">
+  <meta property="og:title" content="Opas Labs | Security Tools, AI &amp; Games — Free Online Projects">
+  <meta property="og:description" content="Free online projects by Opas Labs — security tools, QR & barcode generators, WhatsApp chat generator, AI chatbot, browser games and more.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Opas Labs Projects",
+    "description": "Free online projects by Opas Labs — security tools, AI assistants, utilities and browser games.",
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Secure QR Generator", "url": "/qrcode/qr-generator.html" },
+        { "@type": "ListItem", "position": 2, "name": "WhatsApp Chat Generator", "url": "/wachat/whatsapp-chat.html" },
+        { "@type": "ListItem", "position": 3, "name": "Opas AI Chatbot", "url": "/ai/ai-chatbot.html" },
+        { "@type": "ListItem", "position": 4, "name": "Barcode Generator", "url": "/barcode/barcode.html" },
+        { "@type": "ListItem", "position": 5, "name": "Phishing Simulator", "url": "/phishing/phishing.html" },
+        { "@type": "ListItem", "position": 6, "name": "Phishing Link Generator", "url": "/phishing/phishing-link-generater.html" },
+        { "@type": "ListItem", "position": 7, "name": "1v1 Bingo Game", "url": "/games/1v1bingo.html" },
+        { "@type": "ListItem", "position": 8, "name": "Bouncy Bird", "url": "/games/bouncy-bird.html" },
+        { "@type": "ListItem", "position": 9, "name": "World Flag Challenge", "url": "/games/flag-challenge.html" },
+        { "@type": "ListItem", "position": 10, "name": "Valentine Gift", "url": "/surprice/valentine-gift.html" },
+        { "@type": "ListItem", "position": 11, "name": "Valentine Link Builder", "url": "/surprice/builder.html" }
+      ]
+    }
+  }
+  </script>
   <style>
     :root {
       --primary: #6a11cb;
@@ -24,6 +56,10 @@
       padding: 0;
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    html {
+      overflow-x: hidden;
     }
     
     body {
@@ -60,6 +96,7 @@
     
     .logo h1 {
       font-size: 1.8rem;
+      color: var(--accent);
       background: linear-gradient(90deg, var(--accent), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -149,6 +186,7 @@
     .hero h2 {
       font-size: 3.2rem;
       margin-bottom: 1.5rem;
+      color: var(--accent);
       background: linear-gradient(90deg, var(--accent), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -180,6 +218,9 @@
       gap: 10px;
       transition: var(--transition);
       box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
     }
     
     .btn-primary {
@@ -198,21 +239,27 @@
       box-shadow: 0 10px 25px rgba(37, 117, 252, 0.5);
     }
     
-    /* Tools Section */
-    .tools-section {
+    .btn-sm {
+      padding: 0.5rem 1.1rem;
+      font-size: 0.85rem;
+    }
+    
+    /* Projects Gallery */
+    .projects-section {
       padding: 4rem 5%;
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 0 auto;
     }
     
     .section-header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
     }
     
     .section-header h2 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: var(--accent);
       background: linear-gradient(90deg, var(--accent), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -224,100 +271,177 @@
       margin: 0 auto;
     }
     
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2.5rem;
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-bottom: 3rem;
     }
     
-    .tool-card {
+    .filter-btn {
+      padding: 0.6rem 1.4rem;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .filter-btn.active {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.35);
+    }
+    
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    
+    .project-card {
       background: rgba(12, 16, 33, 0.8);
       border-radius: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 2rem;
+      overflow: hidden;
       transition: var(--transition);
       position: relative;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       height: 100%;
     }
     
-    .tool-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      transform: translateY(-100%);
-      transition: var(--transition);
-    }
-    
-    .tool-card:hover::before {
-      transform: translateY(0);
-    }
-    
-    .tool-card:hover {
+    .project-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      border-color: rgba(0, 242, 254, 0.3);
     }
     
-    .tool-icon {
-      width: 70px;
-      height: 70px;
-      background: rgba(0, 242, 254, 0.1);
-      border-radius: 50%;
+    .project-card.hidden-card {
+      display: none;
+    }
+    
+    .project-cover {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: rgba(0, 242, 254, 0.05);
+    }
+    
+    .project-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    
+    .project-card:hover .project-cover img {
+      transform: scale(1.08);
+    }
+    
+    .project-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(7, 10, 21, 0.85));
+      pointer-events: none;
+    }
+    
+    .cover-icon {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: var(--accent);
+      font-size: 4rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
     
-    .tool-card h3 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
+    .cover-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
     }
     
-    .tool-card p {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 1.5rem;
+    .cover-gradient-alt {
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+    }
+    
+    .cover-gradient-dark {
+      background: linear-gradient(135deg, #1a1f3a, var(--primary));
+    }
+    
+    .cover-gradient-warm {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    }
+    
+    .cover-gradient-cool {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+    }
+    
+    .cover-gradient-deep {
+      background: linear-gradient(135deg, #141e30, #243b55);
+    }
+    
+    .cover-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      backdrop-filter: blur(4px);
+    }
+    
+    .badge-new {
+      background: rgba(76, 175, 80, 0.9);
+      color: white;
+    }
+    
+    .badge-restricted {
+      background: rgba(244, 67, 54, 0.9);
+      color: white;
+    }
+    
+    .project-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
       flex-grow: 1;
     }
     
-    .tool-features {
-      margin: 1.5rem 0;
-      padding-left: 1.5rem;
-    }
-    
-    .tool-features li {
-      margin-bottom: 0.8rem;
-      position: relative;
-      list-style-type: none;
-    }
-    
-    .tool-features li::before {
-      content: '✓';
-      position: absolute;
-      left: -1.5rem;
-      color: var(--accent);
-    }
-    
-    .card-footer {
+    .project-tags {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
     }
     
-    .tool-tag {
-      padding: 0.3rem 0.8rem;
+    .project-tag {
+      padding: 0.2rem 0.7rem;
       border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
     
     .tag-security {
@@ -325,14 +449,59 @@
       color: var(--success);
     }
     
-    .tag-testing {
+    .tag-ai {
+      background: rgba(0, 242, 254, 0.15);
+      color: var(--accent);
+    }
+    
+    .tag-utility {
+      background: rgba(37, 117, 252, 0.2);
+      color: #7fb3ff;
+    }
+    
+    .tag-game {
       background: rgba(255, 152, 0, 0.2);
       color: var(--warning);
+    }
+    
+    .tag-fun {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff8e8e;
     }
     
     .tag-private {
       background: rgba(244, 67, 54, 0.2);
       color: var(--danger);
+    }
+    
+    .project-body h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.6rem;
+    }
+    
+    .project-body h3 a {
+      color: inherit;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .project-body h3 a:hover {
+      color: var(--accent);
+    }
+    
+    .project-body p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      flex-grow: 1;
+    }
+    
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
     
     /* Testimonials */
@@ -507,7 +676,7 @@
         font-size: 2rem;
       }
       
-      .tools-grid {
+      .projects-grid {
         grid-template-columns: 1fr;
       }
       
@@ -571,107 +740,250 @@
     
     <nav id="mainNav">
       <ul>
-        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="#tools"><i class="fas fa-tools"></i> Tools</a></li>
-        <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
+        <li><a href="#top"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#projects"><i class="fas fa-th-large"></i> Projects</a></li>
+        <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
         <li><a href="https://t.me/mohdrishad"><i class="fab fa-telegram"></i> Contact</a></li>
       </ul>
     </nav>
   </header>
   
-  <section class="hero">
-    <h2 class="fade-in">Advanced Security Tools by Opas Labs</h2>
-    <p class="fade-in delay-1">Professional-grade security utilities for ethical hackers and penetration testers. Our tools help identify vulnerabilities while maintaining strict ethical guidelines.</p>
+  <section class="hero" id="top">
+    <h2 class="fade-in">Security tools, AI assistants &amp; games — free, right in your browser</h2>
+    <p class="fade-in delay-1">Opas Labs builds professional-grade security utilities for ethical researchers, plus practical tools and fun games. Every project runs in your browser — no downloads, no signups.</p>
     
     <div class="cta-buttons fade-in delay-2">
-      <a href="/qrcode/qr-generator.htmll" class="btn btn-primary">
+      <a href="/qrcode/qr-generator.html" class="btn btn-primary">
         <i class="fas fa-qrcode"></i> QR Generator
       </a>
-      <a href="phishing-simulator.html" class="btn btn-secondary">
+      <a href="/phishing/phishing.html" class="btn btn-secondary">
         <i class="fas fa-shield-alt"></i> Phishing Simulator
       </a>
     </div>
   </section>
   
-  <section class="tools-section" id="tools">
+  <section class="projects-section" id="projects">
     <div class="section-header fade-in">
-      <h2>Our Security Tools</h2>
-      <p>Specialized utilities designed for professional security assessments</p>
+      <h2>Our Projects</h2>
+      <p>Security tools, AI assistants, utilities and games — all free to use</p>
     </div>
     
-    <div class="tools-grid">
-  <!-- QR Code Tool -->
-  <div class="tool-card fade-in">
-    <div class="tool-icon">
-      <i class="fas fa-qrcode"></i>
+    <div class="filter-bar fade-in" role="group" aria-label="Filter projects by category">
+      <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-btn" data-filter="security" aria-pressed="false">Security</button>
+      <button class="filter-btn" data-filter="ai" aria-pressed="false">AI</button>
+      <button class="filter-btn" data-filter="utility" aria-pressed="false">Utilities</button>
+      <button class="filter-btn" data-filter="game" aria-pressed="false">Games</button>
+      <button class="filter-btn" data-filter="fun" aria-pressed="false">Fun</button>
     </div>
-    <h3>Secure QR Generator</h3>
-    <p>Create and analyze QR codes with built-in security validation. Ensure all generated QR codes point to legitimate destinations with HTTPS verification.</p>
     
-    <ul class="tool-features">
-      <li>URL validation and security checks</li>
-      <li>Customizable design options</li>
-      <li>No data logging</li>
-      <li>High-resolution export</li>
-      <li>Malicious link detection</li>
-    </ul>
-    
-    <div class="card-footer">
-      <a href="/qrcode/qr-generator.html" class="btn btn-primary">Access Tool</a>
-      <span class="tool-tag tag-security">Public</span>
+    <div class="projects-grid" id="projectsGrid">
+      <!-- Secure QR Generator -->
+      <div class="project-card fade-in" data-category="security">
+        <a class="project-cover" href="/qrcode/qr-generator.html" aria-label="Open Secure QR Generator">
+          <div class="cover-icon cover-gradient-dark"><i class="fas fa-qrcode"></i></div>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-security">Security</span>
+            <span class="project-tag tag-utility">Utility</span>
+          </div>
+          <h3><a href="/qrcode/qr-generator.html">Secure QR Generator</a></h3>
+          <p>Fast, customizable QR codes with built-in HTTPS validation and malicious-link detection.</p>
+          <div class="card-footer">
+            <a href="/qrcode/qr-generator.html" class="btn btn-primary btn-sm">Access Tool</a>
+            <span class="project-tag tag-security">Public</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- WhatsApp Chat Generator -->
+      <div class="project-card fade-in" data-category="utility">
+        <a class="project-cover" href="/wachat/whatsapp-chat.html" aria-label="Open WhatsApp Chat Generator">
+          <img src="/wachat/preview.png" alt="WhatsApp Chat Generator preview" loading="lazy">
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-utility">Utility</span>
+          </div>
+          <h3><a href="/wachat/whatsapp-chat.html">WhatsApp Chat Generator</a></h3>
+          <p>Create realistic WhatsApp conversations — custom messages, reactions, themes and PNG export.</p>
+          <div class="card-footer">
+            <a href="/wachat/whatsapp-chat.html" class="btn btn-primary btn-sm">Access Tool</a>
+            <span class="project-tag tag-utility">Public</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- AI Chatbot -->
+      <div class="project-card fade-in" data-category="ai">
+        <a class="project-cover" href="/ai/ai-chatbot.html" aria-label="Open Opas AI Chatbot">
+          <img src="/ai/preview.png" alt="Opas AI Chatbot preview" loading="lazy">
+          <span class="cover-badge badge-new">New</span>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-ai">AI</span>
+          </div>
+          <h3><a href="/ai/ai-chatbot.html">Opas AI Chatbot</a></h3>
+          <p>Multimodal AI assistant with thinking mode, image generation and voice input.</p>
+          <div class="card-footer">
+            <a href="/ai/ai-chatbot.html" class="btn btn-primary btn-sm">Access Tool</a>
+            <span class="project-tag tag-ai">Public</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Barcode Generator -->
+      <div class="project-card fade-in" data-category="utility">
+        <a class="project-cover" href="/barcode/barcode.html" aria-label="Open Barcode Generator">
+          <div class="cover-icon cover-gradient-cool"><i class="fas fa-barcode"></i></div>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-utility">Utility</span>
+          </div>
+          <h3><a href="/barcode/barcode.html">Barcode Generator</a></h3>
+          <p>Create CODE128, EAN-13 and UPC-A barcodes with PNG or SVG export.</p>
+          <div class="card-footer">
+            <a href="/barcode/barcode.html" class="btn btn-primary btn-sm">Access Tool</a>
+            <span class="project-tag tag-utility">Public</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Phishing Simulator -->
+      <div class="project-card fade-in" data-category="security">
+        <a class="project-cover" href="/phishing/phishing.html" aria-label="Open Phishing Simulator">
+          <div class="cover-icon cover-gradient"><i class="fas fa-fish"></i></div>
+          <span class="cover-badge badge-restricted">Restricted</span>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-security">Security</span>
+            <span class="project-tag tag-private">Authorized use only</span>
+          </div>
+          <h3><a href="/phishing/phishing.html">Phishing Simulator</a></h3>
+          <p>Realistic phishing simulation for security-awareness training. For authorized professionals only.</p>
+          <div class="card-footer">
+            <a href="/phishing/phishing.html" class="btn btn-primary btn-sm">Access Tool</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Phishing Link Generator -->
+      <div class="project-card fade-in" data-category="security">
+        <a class="project-cover" href="/phishing/phishing-link-generater.html" aria-label="Open Phishing Link Generator">
+          <div class="cover-icon cover-gradient-deep"><i class="fas fa-link"></i></div>
+          <span class="cover-badge badge-restricted">Restricted</span>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-security">Security</span>
+            <span class="project-tag tag-private">Authorized use only</span>
+          </div>
+          <h3><a href="/phishing/phishing-link-generater.html">Phishing Link Generator</a></h3>
+          <p>Generate controlled phishing links for authorized security testing and awareness training.</p>
+          <div class="card-footer">
+            <a href="/phishing/phishing-link-generater.html" class="btn btn-primary btn-sm">Access Tool</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 1v1 Bingo -->
+      <div class="project-card fade-in" data-category="game">
+        <a class="project-cover" href="/games/1v1bingo.html" aria-label="Open 1v1 Bingo">
+          <img src="/games/bingo-preview.png" alt="1v1 Bingo game preview" loading="lazy">
+          <span class="cover-badge badge-new">New</span>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-game">Game</span>
+          </div>
+          <h3><a href="/games/1v1bingo.html">1v1 Bingo</a></h3>
+          <p>Human vs AI bingo — custom numbers, smart AI and hard mode. Mobile friendly.</p>
+          <div class="card-footer">
+            <a href="/games/1v1bingo.html" class="btn btn-primary btn-sm">Play Now</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bouncy Bird -->
+      <div class="project-card fade-in" data-category="game">
+        <a class="project-cover" href="/games/bouncy-bird.html" aria-label="Open Bouncy Bird">
+          <img src="/games/bb-preview.png" alt="Bouncy Bird game preview" loading="lazy">
+          <span class="cover-badge badge-new">New</span>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-game">Game</span>
+          </div>
+          <h3><a href="/games/bouncy-bird.html">Bouncy Bird</a></h3>
+          <p>Fast-paced arcade action — tap to fly and beat your high score.</p>
+          <div class="card-footer">
+            <a href="/games/bouncy-bird.html" class="btn btn-primary btn-sm">Play Now</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- World Flag Challenge -->
+      <div class="project-card fade-in" data-category="game">
+        <a class="project-cover" href="/games/flag-challenge.html" aria-label="Open World Flag Challenge">
+          <img src="/games/wfc-preview.png" alt="World Flag Challenge preview" loading="lazy">
+          <span class="cover-badge badge-new">New</span>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-game">Game</span>
+          </div>
+          <h3><a href="/games/flag-challenge.html">World Flag Challenge</a></h3>
+          <p>Test your geography — 197 flags, region filters, hints and streaks.</p>
+          <div class="card-footer">
+            <a href="/games/flag-challenge.html" class="btn btn-primary btn-sm">Play Now</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Valentine Gift -->
+      <div class="project-card fade-in" data-category="fun">
+        <a class="project-cover" href="/surprice/valentine-gift.html" aria-label="Open Valentine Gift">
+          <img src="/surprice/preview.png" alt="Valentine Gift preview" loading="lazy">
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-fun">Fun</span>
+          </div>
+          <h3><a href="/surprice/valentine-gift.html">Valentine Gift</a></h3>
+          <p>The viral "Will you be my Valentine?" proposal page — complete with music.</p>
+          <div class="card-footer">
+            <a href="/surprice/valentine-gift.html" class="btn btn-primary btn-sm">Open</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Valentine Link Builder -->
+      <div class="project-card fade-in" data-category="fun">
+        <a class="project-cover" href="/surprice/builder.html" aria-label="Open Valentine Link Builder">
+          <div class="cover-icon cover-gradient-warm"><i class="fas fa-wand-magic-sparkles"></i></div>
+        </a>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag tag-fun">Fun</span>
+          </div>
+          <h3><a href="/surprice/builder.html">Valentine Link Builder</a></h3>
+          <p>Personalize your own valentine gift link — names, photos and music.</p>
+          <div class="card-footer">
+            <a href="/surprice/builder.html" class="btn btn-primary btn-sm">Open</a>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- WhatsApp Chat Generator Tool Card -->
-  <div class="tool-card fade-in">
-    <div class="tool-icon">
-      <i class="fab fa-whatsapp"></i>
-    </div>
-    <h3>WhatsApp Chat Generator</h3>
-    <p>Create realistic WhatsApp conversations with custom messages, reactions, and visual styles. Perfect for demonstrations, tutorials, and UI mockups.</p>
-    
-    <ul class="tool-features">
-      <li>Real-time chat preview with dark/light modes</li>
-      <li>Custom profile pictures and contact info</li>
-      <li>Message reactions and reply threads</li>
-      <li>Export as PNG screenshot</li>
-      <li>Mobile-responsive design</li>
-    </ul>
-    
-    <div class="card-footer">
-      <a href="/wachat/whatsapp-chat.html" class="btn btn-primary">Access Tool</a>
-      <span class="tool-tag tag-security">Public</span>
-    </div>
-  </div>
-
-  <!-- Phishing Simulator Tool Card -->
-  <div class="tool-card fade-in delay-1">
-    <div class="tool-icon">
-      <i class="fas fa-fish"></i>
-    </div>
-    <h3>Phishing Simulator</h3>
-    <p>Advanced phishing simulation tool for security awareness training. (For authorized security professionals only)</p>
-    
-    <ul class="tool-features">
-      <li>Accurate browser, hardware, and network fingerprinting</li>
-      <li>IP-based location insights with GPS approximation</li>
-      <li>Ethical data collection with built-in misuse prevention</li>
-      <li>Battery and performance metrics for environment testing</li>
-      <li>Clear disclaimers ensuring transparency and responsible use</li>
-    </ul>
-    
-    <div class="card-footer">
-      <a href="phishing-simulator.html" class="btn btn-primary">Access Tool</a>
-      <span class="tool-tag tag-private">Restricted</span>
-    </div>
-  </div>
-</div>
   </section>
   
-  <section class="testimonials">
+  <section class="testimonials" id="about">
     <div class="section-header fade-in">
-      <h2>Trusted by Security Professionals</h2>
-      <p>What security experts say about our tools</p>
+      <h2>What people say</h2>
+      <p>Feedback from users of our tools</p>
     </div>
     
     <div class="testimonial-grid">
@@ -741,26 +1053,27 @@
     <div class="footer-grid">
       <div class="footer-column">
         <h3>Opas Labs</h3>
-        <p>Developing advanced security tools for ethical research and vulnerability prevention.</p>
+        <p>Developing security tools, AI assistants and fun projects for ethical research and learning.</p>
       </div>
       
       <div class="footer-column">
-        <h3>Resources</h3>
+        <h3>Projects</h3>
         <ul class="footer-links">
-          <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
-          <li><a href="#"><i class="fas fa-blog"></i> Security Blog</a></li>
-          <li><a href="#"><i class="fas fa-file-alt"></i> Whitepapers</a></li>
-          <li><a href="#"><i class="fas fa-video"></i> Tutorials</a></li>
+          <li><a href="/qrcode/qr-generator.html"><i class="fas fa-qrcode"></i> QR Generator</a></li>
+          <li><a href="/wachat/whatsapp-chat.html"><i class="fab fa-whatsapp"></i> WhatsApp Chat Generator</a></li>
+          <li><a href="/ai/ai-chatbot.html"><i class="fas fa-robot"></i> AI Chatbot</a></li>
+          <li><a href="/barcode/barcode.html"><i class="fas fa-barcode"></i> Barcode Generator</a></li>
+          <li><a href="/games/1v1bingo.html"><i class="fas fa-dice"></i> 1v1 Bingo</a></li>
         </ul>
       </div>
       
       <div class="footer-column">
         <h3>Legal</h3>
         <ul class="footer-links">
-          <li><a href="qr-privacy-policy.html"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-          <li><a href="qr-terms-and-condition.html"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
-          <li><a href="#"><i class="fas fa-balance-scale"></i> Compliance</a></li>
-          <li><a href="#"><i class="fas fa-gavel"></i> Ethical Guidelines</a></li>
+          <li><a href="/privacy-policy.html"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
+          <li><a href="/terms-and-condition.html"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+          <li><a href="#projects"><i class="fas fa-balance-scale"></i> Compliance</a></li>
+          <li><a href="#about"><i class="fas fa-gavel"></i> Ethical Guidelines</a></li>
         </ul>
       </div>
       
@@ -770,7 +1083,7 @@
           <li><a href="mailto:muhammedrishadaj@yahoo.com"><i class="fas fa-envelope"></i> Email</a></li>
           <li><a href="https://t.me/mohdrishad"><i class="fab fa-telegram"></i> Telegram</a></li>
           <li><a href="https://instagram.com/rishhaad___"><i class="fab fa-instagram"></i> Instagram</a></li>
-          <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+          <li><a href="https://github.com/rishad-aj/opaslabs"><i class="fab fa-github"></i> GitHub</a></li>
         </ul>
       </div>
     </div>
@@ -918,11 +1231,40 @@
       observer.observe(el);
     });
     
-    // Private tool alert
-    document.querySelectorAll('.tag-private').forEach(tag => {
-      tag.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('This tool requires authorization. Please contact us for access.');
+    // Fallback: reveal elements already inside the viewport
+    // (covers browsers/embeds where IntersectionObserver may not fire on load)
+    function revealInViewport() {
+      document.querySelectorAll('.fade-in:not(.animated)').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('animated');
+        }
+      });
+    }
+    revealInViewport();
+    window.addEventListener('scroll', revealInViewport, { passive: true });
+    
+    // Gallery category filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+        
+        const filter = btn.dataset.filter;
+        projectCards.forEach(card => {
+          const show = filter === 'all' || card.dataset.category === filter;
+          card.classList.toggle('hidden-card', !show);
+          if (show && !card.classList.contains('animated')) {
+            card.classList.add('animated');
+          }
+        });
       });
     });
   </script>
