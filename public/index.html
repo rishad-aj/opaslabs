@@ -12,6 +12,9 @@
   <meta property="og:site_name" content="Opas Labs">
   <meta property="og:title" content="Opas Labs | Security Tools, AI &amp; Games — Free Online Projects">
   <meta property="og:description" content="Free online projects by Opas Labs — security tools, QR & barcode generators, WhatsApp chat generator, AI chatbot, browser games and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script type="application/ld+json">
   {
@@ -39,706 +42,851 @@
   </script>
   <style>
     :root {
-      --primary: #6a11cb;
-      --secondary: #2575fc;
-      --accent: #00f2fe;
-      --dark: #0c1021;
-      --darker: #070a15;
-      --light: #f5f9ff;
-      --success: #4caf50;
-      --warning: #ff9800;
-      --danger: #f44336;
-      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --acid: #76ff32;
+      --black: #000000;
+      --cream: #f5f5f0;
+      --white: #ffffff;
+      --yellow: #ffd60a;
+      --cyan: #00c2ff;
+      --pink: #ff4d9d;
+      --orange: #ff7a00;
+      --border: 3px solid var(--black);
+      --shadow: 7px 7px 0 var(--black);
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      border-radius: 0 !important;
     }
-    
+
     html {
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
-    
+
     body {
-      background: linear-gradient(135deg, var(--darker), var(--dark));
-      color: var(--light);
+      font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+      background: repeating-linear-gradient(45deg, var(--acid) 0 90px, var(--white) 90px 180px);
+      color: var(--black);
       min-height: 100vh;
       overflow-x: hidden;
-      line-height: 1.6;
+      line-height: 1.5;
     }
-    
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.3;
+
+    .display {
+      font-family: 'Archivo Black', 'Arial Black', sans-serif;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
     }
-    
-    /* Header & Navigation */
+
+    /* ============ HEADER ============ */
     header {
-      padding: 1.5rem 5%;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: var(--black);
+      border-bottom: 4px solid var(--acid);
+      padding: 0.9rem 4%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(12, 16, 33, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
-    .logo h1 {
-      font-size: 1.8rem;
-      color: var(--accent);
-      background: linear-gradient(90deg, var(--accent), var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+
+    .logo {
+      display: inline-block;
+      background: var(--acid);
+      color: var(--black);
+      border: var(--border);
+      box-shadow: 4px 4px 0 var(--white);
+      padding: 0.45rem 1rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.35rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      transform: rotate(-1.5deg);
+      transition: transform 0.15s;
     }
-    
-    /* Hamburger Menu */
-    .hamburger {
-      cursor: pointer;
-      z-index: 1001;
-      display: none;
+
+    .logo:hover {
+      transform: rotate(-1.5deg) translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--white);
     }
-    
-    .hamburger input {
-      display: none;
-    }
-    
-    .hamburger svg {
-      height: 2.5em;
-      transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .line {
-      fill: none;
-      stroke: white;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 3;
-      transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
-                  stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .line-top-bottom {
-      stroke-dasharray: 12 63;
-    }
-    
-    .hamburger input:checked + svg {
-      transform: rotate(-45deg);
-    }
-    
-    .hamburger input:checked + svg .line-top-bottom {
-      stroke-dasharray: 20 300;
-      stroke-dashoffset: -32.42;
-    }
-    
+
     nav ul {
       display: flex;
-      gap: 2rem;
+      gap: 0.9rem;
       list-style: none;
     }
-    
+
     nav a {
-      color: rgba(255, 255, 255, 0.8);
+      display: inline-block;
+      background: var(--cream);
+      color: var(--black);
+      border: var(--border);
+      box-shadow: 3px 3px 0 var(--acid);
       text-decoration: none;
-      font-weight: 500;
-      transition: var(--transition);
-      position: relative;
-      padding: 0.5rem 0;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 1.1rem;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
     }
-    
+
     nav a:hover {
-      color: var(--accent);
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 var(--acid);
+      background: var(--acid);
     }
-    
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent);
-      transition: var(--transition);
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      background: var(--cream);
+      border: var(--border);
+      box-shadow: 3px 3px 0 var(--acid);
+      padding: 0.5rem 1rem;
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      z-index: 300;
     }
-    
-    nav a:hover::after {
-      width: 100%;
+
+    /* ============ MOBILE OVERLAY NAV ============ */
+    .mobile-nav {
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.4rem;
+      transform: translateY(-100%);
+      transition: transform 0.25s ease;
     }
-    
-    /* Hero Section */
+
+    .mobile-nav.open {
+      transform: translateY(0);
+    }
+
+    .mobile-nav a {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2rem;
+      text-transform: uppercase;
+      color: var(--acid);
+      text-decoration: none;
+      border-bottom: 4px solid var(--acid);
+      padding-bottom: 0.3rem;
+    }
+
+    .mobile-nav a:hover {
+      color: var(--white);
+      border-color: var(--white);
+    }
+
+    /* ============ MARQUEE ============ */
+    .marquee {
+      background: var(--black);
+      color: var(--acid);
+      border-bottom: var(--border);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 0.65rem 0;
+    }
+
+    .marquee-track {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 24s linear infinite;
+    }
+
+    .marquee-track span {
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      padding: 0 1.5rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ============ HERO ============ */
     .hero {
-      padding: 6rem 5% 4rem;
-      text-align: center;
-      max-width: 900px;
+      position: relative;
+      padding: 6rem 4% 5rem;
+      max-width: 1280px;
       margin: 0 auto;
     }
-    
-    .hero h2 {
-      font-size: 3.2rem;
-      margin-bottom: 1.5rem;
-      color: var(--accent);
-      background: linear-gradient(90deg, var(--accent), var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+
+    .deco-square {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      background: var(--black);
+      z-index: 1;
     }
-    
-    .hero p {
-      font-size: 1.2rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 2rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+
+    .deco-square.sq-1 { top: 4rem; right: 12%; transform: rotate(14deg); }
+    .deco-square.sq-2 { bottom: 1.2rem; left: 55%; width: 90px; height: 90px; transform: rotate(-18deg); background: var(--acid); border: var(--border); }
+    .deco-plus {
+      position: absolute;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 4.5rem;
+      z-index: 1;
+      user-select: none;
+      line-height: 1;
     }
-    
+    .deco-plus.p-1 { top: 1.8rem; left: 2%; transform: rotate(8deg); color: var(--black); text-shadow: 4px 4px 0 var(--acid); }
+    .deco-plus.p-2 { bottom: 6rem; right: 5%; transform: rotate(-12deg); font-size: 3.2rem; color: var(--black); text-shadow: 4px 4px 0 var(--acid); }
+    .deco-star {
+      position: absolute;
+      font-size: 3.4rem;
+      color: var(--yellow);
+      text-shadow: 3px 3px 0 var(--black);
+      z-index: 1;
+      user-select: none;
+      line-height: 1;
+    }
+    .deco-star.st-1 { top: 1.5rem; right: 27%; transform: rotate(-10deg); }
+    .deco-star.st-2 { bottom: 9rem; left: 30%; transform: rotate(14deg); font-size: 2.2rem; }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.8rem;
+    }
+
+    .hero-title {
+      display: inline-block;
+      background: var(--acid);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 1.8rem 2.2rem;
+      transform: rotate(-0.6deg);
+      max-width: 980px;
+    }
+
+    .hero-title h1 {
+      font-family: 'Archivo Black', sans-serif;
+      font-weight: 400;
+      text-transform: uppercase;
+      font-size: clamp(2.1rem, 6.5vw, 4.6rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--black);
+    }
+
+    .hero-title h1 .hl {
+      background: var(--black);
+      color: var(--acid);
+      padding: 0 0.35rem;
+      display: inline-block;
+      transform: rotate(0.6deg);
+    }
+
+    .hero-sub {
+      display: inline-block;
+      background: var(--cream);
+      border: var(--border);
+      box-shadow: 5px 5px 0 var(--black);
+      padding: 1rem 1.4rem;
+      max-width: 620px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      transform: rotate(0.4deg);
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .stat-chip {
+      background: var(--black);
+      color: var(--acid);
+      border: 3px solid var(--black);
+      box-shadow: 3px 3px 0 var(--white);
+      padding: 0.35rem 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+
     .cta-buttons {
       display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 2rem;
+      flex-wrap: wrap;
+      gap: 1.2rem;
     }
-    
+
     .btn {
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: bold;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      transition: var(--transition);
-      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
-      border: none;
+      gap: 0.7rem;
+      border: var(--border);
+      box-shadow: 5px 5px 0 var(--black);
+      padding: 1rem 1.7rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      text-decoration: none;
       cursor: pointer;
-      font-size: 1rem;
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-    
-    .btn-primary {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-    }
-    
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-    }
-    
+
     .btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(37, 117, 252, 0.5);
+      transform: translate(-3px, -3px);
+      box-shadow: 8px 8px 0 var(--black);
     }
-    
-    .btn-sm {
-      padding: 0.5rem 1.1rem;
-      font-size: 0.85rem;
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--black);
     }
-    
-    /* Projects Gallery */
-    .projects-section {
-      padding: 4rem 5%;
+
+    .btn-black { background: var(--black); color: var(--acid); }
+    .btn-cream { background: var(--cream); color: var(--black); }
+    .btn-acid  { background: var(--acid); color: var(--black); }
+    .btn-sm { padding: 0.55rem 1.1rem; font-size: 0.78rem; box-shadow: 4px 4px 0 var(--black); }
+
+    .hero-stamp {
+      position: absolute;
+      right: 6%;
+      top: 55%;
+      transform: rotate(-8deg);
+      z-index: 2;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      text-transform: uppercase;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--black);
+      opacity: 0.22;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ============ SECTIONS ============ */
+    .solid-section {
+      position: relative;
+      z-index: 1;
+      background: var(--cream);
+      border-top: var(--border);
+      border-bottom: var(--border);
+      box-shadow: 0 0 0 3px var(--cream), 0 0 0 6px var(--black);
+    }
+
+    .black-section {
+      position: relative;
+      z-index: 1;
+      background: var(--black);
+      color: var(--cream);
+      border-top: var(--border);
+      border-bottom: var(--border);
+    }
+
+    .section-inner {
       max-width: 1300px;
       margin: 0 auto;
+      padding: 4.5rem 4%;
     }
-    
-    .section-header {
-      text-align: center;
-      margin-bottom: 2.5rem;
+
+    .section-head {
+      margin-bottom: 2.8rem;
     }
-    
-    .section-header h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-      background: linear-gradient(90deg, var(--accent), var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+
+    .section-label {
+      display: inline-block;
+      background: var(--black);
+      color: var(--acid);
+      border: var(--border);
+      box-shadow: 3px 3px 0 var(--acid);
+      padding: 0.3rem 0.9rem;
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.2rem;
     }
-    
-    .section-header p {
-      color: rgba(255, 255, 255, 0.7);
-      max-width: 700px;
-      margin: 0 auto;
+
+    .black-section .section-label {
+      background: var(--acid);
+      color: var(--black);
+      box-shadow: 3px 3px 0 var(--white);
     }
-    
-    /* Filter bar */
+
+    .section-title {
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+
+    .section-title .outline {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--black);
+    }
+
+    .black-section .section-title .outline {
+      -webkit-text-stroke: 2px var(--acid);
+    }
+
+    .section-sub {
+      margin-top: 1rem;
+      max-width: 640px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.95rem;
+    }
+
+    /* ============ FILTER BAR ============ */
     .filter-bar {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 0.8rem;
       margin-bottom: 3rem;
     }
-    
+
     .filter-btn {
-      padding: 0.6rem 1.4rem;
-      border-radius: 30px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 600;
-      font-size: 0.9rem;
+      background: var(--white);
+      border: var(--border);
+      box-shadow: 4px 4px 0 var(--black);
+      padding: 0.6rem 1.3rem;
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-    
+
     .filter-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: translateY(-2px);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--black);
     }
-    
+
     .filter-btn.active {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 5px 15px rgba(37, 117, 252, 0.35);
+      background: var(--black);
+      color: var(--acid);
+      box-shadow: 4px 4px 0 var(--acid);
     }
-    
+
+    /* ============ PROJECT GRID ============ */
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 2.2rem;
     }
-    
+
     .project-card {
-      background: rgba(12, 16, 33, 0.8);
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      overflow: hidden;
-      transition: var(--transition);
       position: relative;
+      background: var(--cream);
+      border: var(--border);
+      box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
       height: 100%;
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-    
+
     .project-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-      border-color: rgba(0, 242, 254, 0.3);
+      transform: translate(-4px, -4px);
+      box-shadow: 11px 11px 0 var(--black);
     }
-    
+
     .project-card.hidden-card {
       display: none;
     }
-    
+
     .project-cover {
       position: relative;
       display: block;
       width: 100%;
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 16 / 9.5;
       overflow: hidden;
-      background: rgba(0, 242, 254, 0.05);
+      background: var(--acid);
+      border-bottom: var(--border);
+      text-decoration: none;
     }
-    
+
     .project-cover img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.6s ease;
+      filter: grayscale(1) contrast(1.08);
+      transition: filter 0.25s, transform 0.25s;
     }
-    
+
     .project-card:hover .project-cover img {
-      transform: scale(1.08);
+      filter: grayscale(0) contrast(1);
+      transform: scale(1.04);
     }
-    
-    .project-cover::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 60%, rgba(7, 10, 21, 0.85));
-      pointer-events: none;
-    }
-    
+
     .cover-icon {
       width: 100%;
       height: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 4rem;
-      color: rgba(255, 255, 255, 0.9);
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      gap: 0.4rem;
+      font-size: 3.6rem;
+      text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
-    
-    .cover-gradient {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+
+    .cover-icon small {
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
     }
-    
-    .cover-gradient-alt {
-      background: linear-gradient(135deg, var(--secondary), var(--accent));
+
+    .cover-acid   { background: var(--acid); color: var(--black); }
+    .cover-black  { background: var(--black); color: var(--acid); }
+    .cover-cream  { background: var(--cream); color: var(--black); }
+    .cover-yellow { background: var(--yellow); color: var(--black); }
+    .cover-cyan   { background: var(--cyan); color: var(--black); }
+    .cover-pink   { background: var(--pink); color: var(--black); }
+
+    .cover-num {
+      position: absolute;
+      top: 0.4rem;
+      left: 0.6rem;
+      z-index: 2;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--black);
+      text-shadow: 2.5px 2.5px 0 var(--white);
     }
-    
-    .cover-gradient-dark {
-      background: linear-gradient(135deg, #1a1f3a, var(--primary));
+
+    .cover-num.on-image {
+      color: var(--white);
+      text-shadow: 3px 3px 0 var(--black);
     }
-    
-    .cover-gradient-warm {
-      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-    }
-    
-    .cover-gradient-cool {
-      background: linear-gradient(135deg, #00b09b, #96c93d);
-    }
-    
-    .cover-gradient-deep {
-      background: linear-gradient(135deg, #141e30, #243b55);
-    }
-    
+
     .cover-badge {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 0.6rem;
+      right: 0.6rem;
       z-index: 2;
-      padding: 0.25rem 0.7rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      border: 2.5px solid var(--black);
+      padding: 0.2rem 0.6rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.68rem;
       text-transform: uppercase;
-      backdrop-filter: blur(4px);
+      letter-spacing: 0.08em;
+      transform: rotate(2deg);
     }
-    
-    .badge-new {
-      background: rgba(76, 175, 80, 0.9);
-      color: white;
-    }
-    
-    .badge-restricted {
-      background: rgba(244, 67, 54, 0.9);
-      color: white;
-    }
-    
+
+    .badge-new { background: var(--acid); color: var(--black); }
+    .badge-restricted { background: var(--black); color: var(--acid); }
+
     .project-body {
-      padding: 1.5rem;
+      padding: 1.4rem 1.4rem 1.5rem;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
     }
-    
+
     .project-tags {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.9rem;
       flex-wrap: wrap;
     }
-    
+
     .project-tag {
-      padding: 0.2rem 0.7rem;
-      border-radius: 20px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      display: inline-block;
+      border: 2px solid var(--black);
+      padding: 0.12rem 0.5rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.62rem;
       text-transform: uppercase;
+      letter-spacing: 0.09em;
+      background: var(--white);
     }
-    
-    .tag-security {
-      background: rgba(76, 175, 80, 0.2);
-      color: var(--success);
-    }
-    
-    .tag-ai {
-      background: rgba(0, 242, 254, 0.15);
-      color: var(--accent);
-    }
-    
-    .tag-utility {
-      background: rgba(37, 117, 252, 0.2);
-      color: #7fb3ff;
-    }
-    
-    .tag-game {
-      background: rgba(255, 152, 0, 0.2);
-      color: var(--warning);
-    }
-    
-    .tag-fun {
-      background: rgba(255, 107, 107, 0.2);
-      color: #ff8e8e;
-    }
-    
-    .tag-private {
-      background: rgba(244, 67, 54, 0.2);
-      color: var(--danger);
-    }
-    
+
+    .tag-security { background: var(--acid); }
+    .tag-ai { background: var(--yellow); }
+    .tag-utility { background: var(--cyan); }
+    .tag-game { background: var(--pink); }
+    .tag-fun { background: var(--orange); }
+    .tag-private { background: var(--black); color: var(--acid); }
+
     .project-body h3 {
-      font-size: 1.4rem;
-      margin-bottom: 0.6rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-weight: 400;
+      text-transform: uppercase;
+      font-size: 1.35rem;
+      line-height: 1.15;
+      margin-bottom: 0.7rem;
     }
-    
+
     .project-body h3 a {
       color: inherit;
       text-decoration: none;
-      transition: var(--transition);
+      box-shadow: inset 0 -5px 0 var(--acid);
+      transition: background 0.15s;
     }
-    
+
     .project-body h3 a:hover {
-      color: var(--accent);
+      background: var(--acid);
     }
-    
+
     .project-body p {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.95rem;
-      margin-bottom: 1.2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1.3rem;
       flex-grow: 1;
     }
-    
+
     .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 1rem;
+      gap: 0.9rem;
       flex-wrap: wrap;
     }
-    
-    /* Testimonials */
-    .testimonials {
-      padding: 5rem 5%;
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    
+
+    /* ============ TESTIMONIALS ============ */
     .testimonial-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
       gap: 2rem;
-      margin-top: 3rem;
+      margin-top: 2.5rem;
     }
-    
+
     .testimonial-card {
-      background: rgba(12, 16, 33, 0.8);
-      border-radius: 15px;
-      padding: 2rem;
-      text-align: left;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--cream);
+      color: var(--black);
+      border: var(--border);
+      box-shadow: 6px 6px 0 var(--acid);
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transform: rotate(-0.3deg);
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-    
+
+    .testimonial-card:nth-child(2) { transform: rotate(0.4deg); }
+    .testimonial-card:nth-child(3) { transform: rotate(-0.5deg); }
+
+    .testimonial-card:hover {
+      transform: rotate(0deg) translate(-3px, -3px);
+      box-shadow: 9px 9px 0 var(--acid);
+    }
+
     .testimonial-header {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 0.9rem;
     }
-    
+
     .testimonial-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      width: 52px;
+      height: 52px;
+      background: var(--black);
+      color: var(--acid);
+      border: var(--border);
+      box-shadow: 3px 3px 0 var(--acid);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
+      flex-shrink: 0;
     }
-    
+
+    .testimonial-header h4 {
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+    }
+
+    .testimonial-header p {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #555;
+    }
+
     .testimonial-rating {
-      color: #ffc107;
-      margin: 1rem 0;
+      color: var(--black);
+      letter-spacing: 0.15em;
+      font-size: 0.85rem;
     }
-    
+
     .testimonial-text {
-      font-style: italic;
-      color: rgba(255, 255, 255, 0.8);
-      position: relative;
+      font-weight: 600;
+      font-size: 0.92rem;
+      border-left: 6px solid var(--acid);
+      padding-left: 0.9rem;
     }
-    
-    .testimonial-text::before {
-      content: '"';
-      font-size: 3rem;
-      position: absolute;
-      top: -1.5rem;
-      left: -1rem;
-      color: rgba(0, 242, 254, 0.2);
-    }
-    
-    /* Footer */
+
+    /* ============ FOOTER ============ */
     footer {
-      background: rgba(7, 10, 21, 0.9);
-      padding: 3rem 5% 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--black);
+      color: var(--cream);
+      border-top: 6px solid var(--acid);
+      position: relative;
+      z-index: 1;
     }
-    
+
     .footer-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 2.5rem;
+      max-width: 1300px;
       margin: 0 auto;
+      padding: 3.5rem 4% 2.5rem;
     }
-    
+
     .footer-column h3 {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      color: var(--accent);
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      color: var(--acid);
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      display: inline-block;
+      border-bottom: 3px solid var(--acid);
+      padding-bottom: 0.25rem;
     }
-    
+
+    .footer-column p {
+      font-size: 0.9rem;
+      color: rgba(245, 245, 240, 0.75);
+      max-width: 300px;
+    }
+
     .footer-links {
       list-style: none;
     }
-    
+
     .footer-links li {
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.7rem;
     }
-    
+
     .footer-links a {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--cream);
       text-decoration: none;
-      transition: var(--transition);
-      display: block;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: color 0.12s, padding-left 0.12s;
     }
-    
+
+    .footer-links a::before {
+      content: '→ ';
+      color: var(--acid);
+      font-weight: 700;
+    }
+
     .footer-links a:hover {
-      color: var(--accent);
-      transform: translateX(5px);
+      color: var(--acid);
+      padding-left: 5px;
     }
-    
+
     .copyright {
       text-align: center;
-      padding-top: 2rem;
-      margin-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.5);
+      border-top: 3px solid var(--acid);
+      padding: 1.5rem 4%;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(245, 245, 240, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
     }
-    
-    /* Responsive */
-    @media (max-width: 992px) {
-      nav ul {
-        gap: 1.5rem;
-      }
-      
-      .hero h2 {
-        font-size: 2.8rem;
-      }
+
+    .copyright .big {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      color: var(--acid);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
-    
-    @media (max-width: 768px) {
-      .hamburger {
-        display: block;
-      }
-      
-      nav {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 70%;
-        height: 100vh;
-        background: rgba(12, 16, 33, 0.98);
-        backdrop-filter: blur(10px);
-        flex-direction: column;
-        padding: 2rem;
-        transition: var(--transition);
-        z-index: 1000;
-      }
-      
-      nav.active {
-        right: 0;
-      }
-      
-      nav ul {
-        flex-direction: column;
-        margin-top: 4rem;
-      }
-      
-      .hero {
-        padding: 4rem 5% 3rem;
-      }
-      
-      .hero h2 {
-        font-size: 2.3rem;
-      }
-      
-      .cta-buttons {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .btn {
-        justify-content: center;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .hero h2 {
-        font-size: 2rem;
-      }
-      
-      .projects-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .section-header h2 {
-        font-size: 2rem;
-      }
-      
-      nav {
-        width: 80%;
-      }
-    }
-    
-    /* Animations */
-    @keyframes fadeInUp {
+
+    /* ============ ANIMATIONS ============ */
+    @keyframes stampIn {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(26px) rotate(1deg);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) rotate(0);
       }
     }
-    
+
     .fade-in {
       opacity: 0;
     }
-    
+
     .fade-in.animated {
-      animation: fadeInUp 0.8s ease forwards;
+      animation: stampIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
     }
-    
-    .delay-1 {
-      animation-delay: 0.2s;
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      nav ul {
+        display: none;
+      }
+      .hamburger {
+        display: block;
+      }
+      .hero {
+        padding-top: 4.5rem;
+      }
+      .hero-stamp {
+        display: none;
+      }
+      .deco-square.sq-1 { right: 4%; width: 90px; height: 90px; }
     }
-    
-    .delay-2 {
-      animation-delay: 0.4s;
-    }
-    
-    .delay-3 {
-      animation-delay: 0.6s;
+
+    @media (max-width: 560px) {
+      .hero-title {
+        padding: 1.3rem 1.4rem;
+        box-shadow: 5px 5px 0 var(--black);
+      }
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+      .project-card {
+        box-shadow: 5px 5px 0 var(--black);
+      }
+      .section-inner {
+        padding: 3.2rem 5%;
+      }
+      .deco-star, .deco-plus { display: none; }
     }
   </style>
 </head>
-<body>
-  <canvas id="particles" class="particles"></canvas>
-  
+<body id="top">
+
   <header>
-    <div class="logo">
-      <h1>Opas Labs</h1>
-    </div>
-    
-    <label class="hamburger">
-      <input type="checkbox" id="menuToggle">
-      <svg viewBox="0 0 32 32">
-        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
-        <path class="line" d="M7 16 27 16"></path>
-      </svg>
-    </label>
-    
-    <nav id="mainNav">
+    <a class="logo" href="#top">OPAS LABS</a>
+
+    <nav>
       <ul>
         <li><a href="#top"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="#projects"><i class="fas fa-th-large"></i> Projects</a></li>
@@ -746,316 +894,346 @@
         <li><a href="https://t.me/mohdrishad"><i class="fab fa-telegram"></i> Contact</a></li>
       </ul>
     </nav>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">Menu ☰</button>
   </header>
-  
-  <section class="hero" id="top">
-    <h2 class="fade-in">Security tools, AI assistants &amp; games — free, right in your browser</h2>
-    <p class="fade-in delay-1">Opas Labs builds professional-grade security utilities for ethical researchers, plus practical tools and fun games. Every project runs in your browser — no downloads, no signups.</p>
-    
-    <div class="cta-buttons fade-in delay-2">
-      <a href="/qrcode/qr-generator.html" class="btn btn-primary">
-        <i class="fas fa-qrcode"></i> QR Generator
-      </a>
-      <a href="/phishing/phishing.html" class="btn btn-secondary">
-        <i class="fas fa-shield-alt"></i> Phishing Simulator
-      </a>
+
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#top">Home</a>
+    <a href="#projects">Projects</a>
+    <a href="#about">About</a>
+    <a href="https://t.me/mohdrishad">Contact</a>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Security Tools ✦</span><span>AI Assistants ✦</span><span>Browser Games ✦</span><span>Free Forever ✦</span><span>No Signups ✦</span><span>No Downloads ✦</span><span>Opas Labs ✦</span><span>Ethical Research Only ✦</span>
+      <span>Security Tools ✦</span><span>AI Assistants ✦</span><span>Browser Games ✦</span><span>Free Forever ✦</span><span>No Signups ✦</span><span>No Downloads ✦</span><span>Opas Labs ✦</span><span>Ethical Research Only ✦</span>
     </div>
-  </section>
-  
-  <section class="projects-section" id="projects">
-    <div class="section-header fade-in">
-      <h2>Our Projects</h2>
-      <p>Security tools, AI assistants, utilities and games — all free to use</p>
-    </div>
-    
-    <div class="filter-bar fade-in" role="group" aria-label="Filter projects by category">
-      <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
-      <button class="filter-btn" data-filter="security" aria-pressed="false">Security</button>
-      <button class="filter-btn" data-filter="ai" aria-pressed="false">AI</button>
-      <button class="filter-btn" data-filter="utility" aria-pressed="false">Utilities</button>
-      <button class="filter-btn" data-filter="game" aria-pressed="false">Games</button>
-      <button class="filter-btn" data-filter="fun" aria-pressed="false">Fun</button>
-    </div>
-    
-    <div class="projects-grid" id="projectsGrid">
-      <!-- Secure QR Generator -->
-      <div class="project-card fade-in" data-category="security">
-        <a class="project-cover" href="/qrcode/qr-generator.html" aria-label="Open Secure QR Generator">
-          <div class="cover-icon cover-gradient-dark"><i class="fas fa-qrcode"></i></div>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-security">Security</span>
-            <span class="project-tag tag-utility">Utility</span>
-          </div>
-          <h3><a href="/qrcode/qr-generator.html">Secure QR Generator</a></h3>
-          <p>Fast, customizable QR codes with built-in HTTPS validation and malicious-link detection.</p>
-          <div class="card-footer">
-            <a href="/qrcode/qr-generator.html" class="btn btn-primary btn-sm">Access Tool</a>
-            <span class="project-tag tag-security">Public</span>
-          </div>
-        </div>
+  </div>
+
+  <section class="hero">
+    <div class="deco-square sq-1"></div>
+    <div class="deco-square sq-2"></div>
+    <div class="deco-plus p-1">+</div>
+    <div class="deco-plus p-2">+</div>
+    <div class="deco-star st-1">✦</div>
+    <div class="deco-star st-2">✦</div>
+
+    <div class="hero-stamp" aria-hidden="true">OPAS LABS</div>
+
+    <div class="hero-inner">
+      <div class="hero-title">
+        <h1>Security tools, <span class="hl">AI assistants</span> &amp; games — free, right in your browser</h1>
       </div>
-      
-      <!-- WhatsApp Chat Generator -->
-      <div class="project-card fade-in" data-category="utility">
-        <a class="project-cover" href="/wachat/whatsapp-chat.html" aria-label="Open WhatsApp Chat Generator">
-          <img src="/wachat/preview.png" alt="WhatsApp Chat Generator preview" loading="lazy">
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-utility">Utility</span>
-          </div>
-          <h3><a href="/wachat/whatsapp-chat.html">WhatsApp Chat Generator</a></h3>
-          <p>Create realistic WhatsApp conversations — custom messages, reactions, themes and PNG export.</p>
-          <div class="card-footer">
-            <a href="/wachat/whatsapp-chat.html" class="btn btn-primary btn-sm">Access Tool</a>
-            <span class="project-tag tag-utility">Public</span>
-          </div>
-        </div>
+
+      <div class="hero-sub">
+        Opas Labs builds professional-grade security utilities for ethical researchers, plus practical tools and fun games. Every project runs in your browser — no downloads, no signups.
       </div>
-      
-      <!-- AI Chatbot -->
-      <div class="project-card fade-in" data-category="ai">
-        <a class="project-cover" href="/ai/ai-chatbot.html" aria-label="Open Opas AI Chatbot">
-          <img src="/ai/preview.png" alt="Opas AI Chatbot preview" loading="lazy">
-          <span class="cover-badge badge-new">New</span>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-ai">AI</span>
-          </div>
-          <h3><a href="/ai/ai-chatbot.html">Opas AI Chatbot</a></h3>
-          <p>Multimodal AI assistant with thinking mode, image generation and voice input.</p>
-          <div class="card-footer">
-            <a href="/ai/ai-chatbot.html" class="btn btn-primary btn-sm">Access Tool</a>
-            <span class="project-tag tag-ai">Public</span>
-          </div>
-        </div>
+
+      <div class="hero-stats">
+        <span class="stat-chip">11 Projects</span>
+        <span class="stat-chip">100% Free</span>
+        <span class="stat-chip">0 Signups</span>
+        <span class="stat-chip">Ethical Use Only</span>
       </div>
-      
-      <!-- Barcode Generator -->
-      <div class="project-card fade-in" data-category="utility">
-        <a class="project-cover" href="/barcode/barcode.html" aria-label="Open Barcode Generator">
-          <div class="cover-icon cover-gradient-cool"><i class="fas fa-barcode"></i></div>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-utility">Utility</span>
-          </div>
-          <h3><a href="/barcode/barcode.html">Barcode Generator</a></h3>
-          <p>Create CODE128, EAN-13 and UPC-A barcodes with PNG or SVG export.</p>
-          <div class="card-footer">
-            <a href="/barcode/barcode.html" class="btn btn-primary btn-sm">Access Tool</a>
-            <span class="project-tag tag-utility">Public</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Phishing Simulator -->
-      <div class="project-card fade-in" data-category="security">
-        <a class="project-cover" href="/phishing/phishing.html" aria-label="Open Phishing Simulator">
-          <div class="cover-icon cover-gradient"><i class="fas fa-fish"></i></div>
-          <span class="cover-badge badge-restricted">Restricted</span>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-security">Security</span>
-            <span class="project-tag tag-private">Authorized use only</span>
-          </div>
-          <h3><a href="/phishing/phishing.html">Phishing Simulator</a></h3>
-          <p>Realistic phishing simulation for security-awareness training. For authorized professionals only.</p>
-          <div class="card-footer">
-            <a href="/phishing/phishing.html" class="btn btn-primary btn-sm">Access Tool</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Phishing Link Generator -->
-      <div class="project-card fade-in" data-category="security">
-        <a class="project-cover" href="/phishing/phishing-link-generater.html" aria-label="Open Phishing Link Generator">
-          <div class="cover-icon cover-gradient-deep"><i class="fas fa-link"></i></div>
-          <span class="cover-badge badge-restricted">Restricted</span>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-security">Security</span>
-            <span class="project-tag tag-private">Authorized use only</span>
-          </div>
-          <h3><a href="/phishing/phishing-link-generater.html">Phishing Link Generator</a></h3>
-          <p>Generate controlled phishing links for authorized security testing and awareness training.</p>
-          <div class="card-footer">
-            <a href="/phishing/phishing-link-generater.html" class="btn btn-primary btn-sm">Access Tool</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 1v1 Bingo -->
-      <div class="project-card fade-in" data-category="game">
-        <a class="project-cover" href="/games/1v1bingo.html" aria-label="Open 1v1 Bingo">
-          <img src="/games/bingo-preview.png" alt="1v1 Bingo game preview" loading="lazy">
-          <span class="cover-badge badge-new">New</span>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-game">Game</span>
-          </div>
-          <h3><a href="/games/1v1bingo.html">1v1 Bingo</a></h3>
-          <p>Human vs AI bingo — custom numbers, smart AI and hard mode. Mobile friendly.</p>
-          <div class="card-footer">
-            <a href="/games/1v1bingo.html" class="btn btn-primary btn-sm">Play Now</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Bouncy Bird -->
-      <div class="project-card fade-in" data-category="game">
-        <a class="project-cover" href="/games/bouncy-bird.html" aria-label="Open Bouncy Bird">
-          <img src="/games/bb-preview.png" alt="Bouncy Bird game preview" loading="lazy">
-          <span class="cover-badge badge-new">New</span>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-game">Game</span>
-          </div>
-          <h3><a href="/games/bouncy-bird.html">Bouncy Bird</a></h3>
-          <p>Fast-paced arcade action — tap to fly and beat your high score.</p>
-          <div class="card-footer">
-            <a href="/games/bouncy-bird.html" class="btn btn-primary btn-sm">Play Now</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- World Flag Challenge -->
-      <div class="project-card fade-in" data-category="game">
-        <a class="project-cover" href="/games/flag-challenge.html" aria-label="Open World Flag Challenge">
-          <img src="/games/wfc-preview.png" alt="World Flag Challenge preview" loading="lazy">
-          <span class="cover-badge badge-new">New</span>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-game">Game</span>
-          </div>
-          <h3><a href="/games/flag-challenge.html">World Flag Challenge</a></h3>
-          <p>Test your geography — 197 flags, region filters, hints and streaks.</p>
-          <div class="card-footer">
-            <a href="/games/flag-challenge.html" class="btn btn-primary btn-sm">Play Now</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Valentine Gift -->
-      <div class="project-card fade-in" data-category="fun">
-        <a class="project-cover" href="/surprice/valentine-gift.html" aria-label="Open Valentine Gift">
-          <img src="/surprice/preview.png" alt="Valentine Gift preview" loading="lazy">
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-fun">Fun</span>
-          </div>
-          <h3><a href="/surprice/valentine-gift.html">Valentine Gift</a></h3>
-          <p>The viral "Will you be my Valentine?" proposal page — complete with music.</p>
-          <div class="card-footer">
-            <a href="/surprice/valentine-gift.html" class="btn btn-primary btn-sm">Open</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Valentine Link Builder -->
-      <div class="project-card fade-in" data-category="fun">
-        <a class="project-cover" href="/surprice/builder.html" aria-label="Open Valentine Link Builder">
-          <div class="cover-icon cover-gradient-warm"><i class="fas fa-wand-magic-sparkles"></i></div>
-        </a>
-        <div class="project-body">
-          <div class="project-tags">
-            <span class="project-tag tag-fun">Fun</span>
-          </div>
-          <h3><a href="/surprice/builder.html">Valentine Link Builder</a></h3>
-          <p>Personalize your own valentine gift link — names, photos and music.</p>
-          <div class="card-footer">
-            <a href="/surprice/builder.html" class="btn btn-primary btn-sm">Open</a>
-          </div>
-        </div>
+
+      <div class="cta-buttons">
+        <a href="/qrcode/qr-generator.html" class="btn btn-black"><i class="fas fa-qrcode"></i> QR Generator</a>
+        <a href="/phishing/phishing.html" class="btn btn-cream"><i class="fas fa-shield-alt"></i> Phishing Simulator</a>
       </div>
     </div>
   </section>
-  
-  <section class="testimonials" id="about">
-    <div class="section-header fade-in">
-      <h2>What people say</h2>
-      <p>Feedback from users of our tools</p>
-    </div>
-    
-    <div class="testimonial-grid">
-      <div class="testimonial-card fade-in">
-        <div class="testimonial-header">
-          <div class="testimonial-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div>
-            <h4>Alex Morgan</h4>
-            <p>Security Analyst</p>
-          </div>
-        </div>
-        <div class="testimonial-rating">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-        </div>
-        <p class="testimonial-text">The QR generator has become an essential part of our security toolkit. It helps us create secure access points without worrying about malicious redirects.</p>
+
+  <section class="solid-section" id="projects">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="section-label fade-in">The Collection — 01–11</span>
+        <h2 class="section-title fade-in">Our <span class="outline">Projects</span></h2>
+        <p class="section-sub fade-in">Security tools, AI assistants, utilities &amp; games — all free to use. Click a card to open it.</p>
       </div>
-      
-      <div class="testimonial-card fade-in delay-1">
-        <div class="testimonial-header">
-          <div class="testimonial-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div>
-            <h4>Sarah Johnson</h4>
-            <p>IT Director</p>
-          </div>
-        </div>
-        <div class="testimonial-rating">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star-half-alt"></i>
-        </div>
-        <p class="testimonial-text">The phishing simulator helped us identify vulnerabilities in our staff training. We've reduced click rates on phishing tests by 75% in just 3 months.</p>
+
+      <div class="filter-bar fade-in" role="group" aria-label="Filter projects by category">
+        <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter-btn" data-filter="security" aria-pressed="false">Security</button>
+        <button class="filter-btn" data-filter="ai" aria-pressed="false">AI</button>
+        <button class="filter-btn" data-filter="utility" aria-pressed="false">Utilities</button>
+        <button class="filter-btn" data-filter="game" aria-pressed="false">Games</button>
+        <button class="filter-btn" data-filter="fun" aria-pressed="false">Fun</button>
       </div>
-      
-      <div class="testimonial-card fade-in delay-2">
-        <div class="testimonial-header">
-          <div class="testimonial-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div>
-            <h4>Michael Chen</h4>
-            <p>Penetration Tester</p>
+
+      <div class="projects-grid" id="projectsGrid">
+
+        <!-- 01 Secure QR Generator -->
+        <div class="project-card fade-in" data-category="security">
+          <a class="project-cover" href="/qrcode/qr-generator.html" aria-label="Open Secure QR Generator">
+            <div class="cover-icon cover-black"><i class="fas fa-qrcode"></i><small>Secure QR</small></div>
+            <span class="cover-num">01</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-security">Security</span>
+              <span class="project-tag tag-utility">Utility</span>
+            </div>
+            <h3><a href="/qrcode/qr-generator.html">Secure QR Generator</a></h3>
+            <p>Fast, customizable QR codes with built-in HTTPS validation and malicious-link detection.</p>
+            <div class="card-footer">
+              <a href="/qrcode/qr-generator.html" class="btn btn-black btn-sm">Access Tool</a>
+              <span class="project-tag">Public</span>
+            </div>
           </div>
         </div>
-        <div class="testimonial-rating">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
+
+        <!-- 02 WhatsApp Chat Generator -->
+        <div class="project-card fade-in" data-category="utility">
+          <a class="project-cover" href="/wachat/whatsapp-chat.html" aria-label="Open WhatsApp Chat Generator">
+            <img src="/wachat/preview.png" alt="WhatsApp Chat Generator preview" loading="lazy">
+            <span class="cover-num on-image">02</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-utility">Utility</span>
+            </div>
+            <h3><a href="/wachat/whatsapp-chat.html">WhatsApp Chat Generator</a></h3>
+            <p>Create realistic WhatsApp conversations — custom messages, reactions, themes and PNG export.</p>
+            <div class="card-footer">
+              <a href="/wachat/whatsapp-chat.html" class="btn btn-black btn-sm">Access Tool</a>
+              <span class="project-tag">Public</span>
+            </div>
+          </div>
         </div>
-        <p class="testimonial-text">These tools provide the perfect balance between power and usability. The ethical approach and attention to compliance make them stand out.</p>
+
+        <!-- 03 AI Chatbot -->
+        <div class="project-card fade-in" data-category="ai">
+          <a class="project-cover" href="/ai/ai-chatbot.html" aria-label="Open Opas AI Chatbot">
+            <img src="/ai/preview.png" alt="Opas AI Chatbot preview" loading="lazy">
+            <span class="cover-num on-image">03</span>
+            <span class="cover-badge badge-new">New</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-ai">AI</span>
+            </div>
+            <h3><a href="/ai/ai-chatbot.html">Opas AI Chatbot</a></h3>
+            <p>Multimodal AI assistant with thinking mode, image generation and voice input.</p>
+            <div class="card-footer">
+              <a href="/ai/ai-chatbot.html" class="btn btn-black btn-sm">Access Tool</a>
+              <span class="project-tag">Public</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 04 Barcode Generator -->
+        <div class="project-card fade-in" data-category="utility">
+          <a class="project-cover" href="/barcode/barcode.html" aria-label="Open Barcode Generator">
+            <div class="cover-icon cover-acid"><i class="fas fa-barcode"></i><small>Barcodes</small></div>
+            <span class="cover-num">04</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-utility">Utility</span>
+            </div>
+            <h3><a href="/barcode/barcode.html">Barcode Generator</a></h3>
+            <p>Create CODE128, EAN-13 and UPC-A barcodes with PNG or SVG export.</p>
+            <div class="card-footer">
+              <a href="/barcode/barcode.html" class="btn btn-black btn-sm">Access Tool</a>
+              <span class="project-tag">Public</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 05 Phishing Simulator -->
+        <div class="project-card fade-in" data-category="security">
+          <a class="project-cover" href="/phishing/phishing.html" aria-label="Open Phishing Simulator">
+            <div class="cover-icon cover-cyan"><i class="fas fa-fish"></i><small>Simulator</small></div>
+            <span class="cover-num">05</span>
+            <span class="cover-badge badge-restricted">Restricted</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-security">Security</span>
+              <span class="project-tag tag-private">Authorized only</span>
+            </div>
+            <h3><a href="/phishing/phishing.html">Phishing Simulator</a></h3>
+            <p>Realistic phishing simulation for security-awareness training. For authorized professionals only.</p>
+            <div class="card-footer">
+              <a href="/phishing/phishing.html" class="btn btn-black btn-sm">Access Tool</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06 Phishing Link Generator -->
+        <div class="project-card fade-in" data-category="security">
+          <a class="project-cover" href="/phishing/phishing-link-generater.html" aria-label="Open Phishing Link Generator">
+            <div class="cover-icon cover-pink"><i class="fas fa-link"></i><small>Link Generator</small></div>
+            <span class="cover-num">06</span>
+            <span class="cover-badge badge-restricted">Restricted</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-security">Security</span>
+              <span class="project-tag tag-private">Authorized only</span>
+            </div>
+            <h3><a href="/phishing/phishing-link-generater.html">Phishing Link Generator</a></h3>
+            <p>Generate controlled phishing links for authorized security testing and awareness training.</p>
+            <div class="card-footer">
+              <a href="/phishing/phishing-link-generater.html" class="btn btn-black btn-sm">Access Tool</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 07 1v1 Bingo -->
+        <div class="project-card fade-in" data-category="game">
+          <a class="project-cover" href="/games/1v1bingo.html" aria-label="Open 1v1 Bingo">
+            <img src="/games/bingo-preview.png" alt="1v1 Bingo game preview" loading="lazy">
+            <span class="cover-num on-image">07</span>
+            <span class="cover-badge badge-new">New</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-game">Game</span>
+            </div>
+            <h3><a href="/games/1v1bingo.html">1v1 Bingo</a></h3>
+            <p>Human vs AI bingo — custom numbers, smart AI and hard mode. Mobile friendly.</p>
+            <div class="card-footer">
+              <a href="/games/1v1bingo.html" class="btn btn-black btn-sm">Play Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 08 Bouncy Bird -->
+        <div class="project-card fade-in" data-category="game">
+          <a class="project-cover" href="/games/bouncy-bird.html" aria-label="Open Bouncy Bird">
+            <img src="/games/bb-preview.png" alt="Bouncy Bird game preview" loading="lazy">
+            <span class="cover-num on-image">08</span>
+            <span class="cover-badge badge-new">New</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-game">Game</span>
+            </div>
+            <h3><a href="/games/bouncy-bird.html">Bouncy Bird</a></h3>
+            <p>Fast-paced arcade action — tap to fly and beat your high score.</p>
+            <div class="card-footer">
+              <a href="/games/bouncy-bird.html" class="btn btn-black btn-sm">Play Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 09 World Flag Challenge -->
+        <div class="project-card fade-in" data-category="game">
+          <a class="project-cover" href="/games/flag-challenge.html" aria-label="Open World Flag Challenge">
+            <img src="/games/wfc-preview.png" alt="World Flag Challenge preview" loading="lazy">
+            <span class="cover-num on-image">09</span>
+            <span class="cover-badge badge-new">New</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-game">Game</span>
+            </div>
+            <h3><a href="/games/flag-challenge.html">World Flag Challenge</a></h3>
+            <p>Test your geography — 197 flags, region filters, hints and streaks.</p>
+            <div class="card-footer">
+              <a href="/games/flag-challenge.html" class="btn btn-black btn-sm">Play Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 Valentine Gift -->
+        <div class="project-card fade-in" data-category="fun">
+          <a class="project-cover" href="/surprice/valentine-gift.html" aria-label="Open Valentine Gift">
+            <img src="/surprice/preview.png" alt="Valentine Gift preview" loading="lazy">
+            <span class="cover-num on-image">10</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-fun">Fun</span>
+            </div>
+            <h3><a href="/surprice/valentine-gift.html">Valentine Gift</a></h3>
+            <p>The viral "Will you be my Valentine?" proposal page — complete with music.</p>
+            <div class="card-footer">
+              <a href="/surprice/valentine-gift.html" class="btn btn-black btn-sm">Open</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11 Valentine Link Builder -->
+        <div class="project-card fade-in" data-category="fun">
+          <a class="project-cover" href="/surprice/builder.html" aria-label="Open Valentine Link Builder">
+            <div class="cover-icon cover-yellow"><i class="fas fa-wand-magic-sparkles"></i><small>Builder</small></div>
+            <span class="cover-num">11</span>
+          </a>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag tag-fun">Fun</span>
+            </div>
+            <h3><a href="/surprice/builder.html">Valentine Link Builder</a></h3>
+            <p>Personalize your own valentine gift link — names, photos and music.</p>
+            <div class="card-footer">
+              <a href="/surprice/builder.html" class="btn btn-black btn-sm">Open</a>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
-  
+
+  <section class="black-section" id="about">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="section-label fade-in">Feedback</span>
+        <h2 class="section-title fade-in">What people <span class="outline">say</span></h2>
+        <p class="section-sub fade-in" style="color: rgba(245,245,240,0.7);">Feedback from users of our tools.</p>
+      </div>
+
+      <div class="testimonial-grid">
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+            <div>
+              <h4>Alex Morgan</h4>
+              <p>Security Analyst</p>
+            </div>
+          </div>
+          <div class="testimonial-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testimonial-text">The QR generator has become an essential part of our security toolkit. It helps us create secure access points without worrying about malicious redirects.</p>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+            <div>
+              <h4>Sarah Johnson</h4>
+              <p>IT Director</p>
+            </div>
+          </div>
+          <div class="testimonial-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+          <p class="testimonial-text">The phishing simulator helped us identify vulnerabilities in our staff training. We've reduced click rates on phishing tests by 75% in just 3 months.</p>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+            <div>
+              <h4>Michael Chen</h4>
+              <p>Penetration Tester</p>
+            </div>
+          </div>
+          <div class="testimonial-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testimonial-text">These tools provide the perfect balance between power and usability. The ethical approach and attention to compliance make them stand out.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <div class="footer-grid">
       <div class="footer-column">
         <h3>Opas Labs</h3>
         <p>Developing security tools, AI assistants and fun projects for ethical research and learning.</p>
       </div>
-      
+
       <div class="footer-column">
         <h3>Projects</h3>
         <ul class="footer-links">
@@ -1066,7 +1244,7 @@
           <li><a href="/games/1v1bingo.html"><i class="fas fa-dice"></i> 1v1 Bingo</a></li>
         </ul>
       </div>
-      
+
       <div class="footer-column">
         <h3>Legal</h3>
         <ul class="footer-links">
@@ -1076,7 +1254,7 @@
           <li><a href="#about"><i class="fas fa-gavel"></i> Ethical Guidelines</a></li>
         </ul>
       </div>
-      
+
       <div class="footer-column">
         <h3>Connect</h3>
         <ul class="footer-links">
@@ -1087,137 +1265,34 @@
         </ul>
       </div>
     </div>
-    
+
     <div class="copyright">
-      <p>&copy; 2025 Opas Labs. All rights reserved.</p>
-      <p>Tools are for authorized security research only. Unauthorized use prohibited.</p>
+      <p class="big">Opas Labs ✦ Security Research Only</p>
+      <p>&copy; 2025 Opas Labs. All rights reserved. Tools are for authorized security research only. Unauthorized use prohibited.</p>
     </div>
   </footer>
-  
+
   <script>
-    // Particle animation
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    
-    let particles = [];
-    const numParticles = 150;
-    
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() - 0.5;
-        this.speedY = Math.random() - 0.5;
-      }
-      
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        
-        // Bounce off edges
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-      }
-      
-      draw() {
-        ctx.fillStyle = 'rgba(0,242,254,0.5)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-    
-    function initParticles() {
-      particles = [];
-      for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-      }
-    }
-    
-    function connectParticles() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 100) {
-            const opacity = 0.1 - (distance / 1000);
-            ctx.strokeStyle = `rgba(0,242,254,${opacity})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-    }
-    
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
-      });
-      
-      connectParticles();
-      requestAnimationFrame(animateParticles);
-    }
-    
-    initParticles();
-    animateParticles();
-    
-    // Mobile menu functionality
-    const menuToggle = document.getElementById('menuToggle');
-    const mainNav = document.getElementById('mainNav');
-    const navLinks = document.querySelectorAll('nav a');
-    
+    // Mobile menu
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileNav = document.getElementById('mobileNav');
+
     function toggleMenu() {
-      mainNav.classList.toggle('active');
-      document.body.style.overflow = menuToggle.checked ? 'hidden' : '';
+      const open = mobileNav.classList.toggle('open');
+      hamburgerBtn.textContent = open ? 'Close ✕' : 'Menu ☰';
+      document.body.style.overflow = open ? 'hidden' : '';
     }
-    
-    function closeMobileMenu() {
-      menuToggle.checked = false;
-      mainNav.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    menuToggle.addEventListener('change', toggleMenu);
-    
-    // Close menu when clicking on nav links
-    navLinks.forEach(link => {
-      link.addEventListener('click', closeMobileMenu);
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        hamburgerBtn.textContent = 'Menu ☰';
+        document.body.style.overflow = '';
+      });
     });
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      const isClickInsideNav = mainNav.contains(e.target);
-      const isClickOnMenu = e.target.closest('.hamburger');
-      
-      if (!isClickInsideNav && !isClickOnMenu && menuToggle.checked) {
-        closeMobileMenu();
-      }
-    });
-    
-    // Close menu when pressing Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && menuToggle.checked) {
-        closeMobileMenu();
-      }
-    });
-    
+
     // Animation observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1226,13 +1301,12 @@
         }
       });
     }, { threshold: 0.1 });
-    
+
     document.querySelectorAll('.fade-in').forEach(el => {
       observer.observe(el);
     });
-    
+
     // Fallback: reveal elements already inside the viewport
-    // (covers browsers/embeds where IntersectionObserver may not fire on load)
     function revealInViewport() {
       document.querySelectorAll('.fade-in:not(.animated)').forEach(el => {
         const rect = el.getBoundingClientRect();
@@ -1243,11 +1317,11 @@
     }
     revealInViewport();
     window.addEventListener('scroll', revealInViewport, { passive: true });
-    
+
     // Gallery category filter
     const filterBtns = document.querySelectorAll('.filter-btn');
     const projectCards = document.querySelectorAll('.project-card');
-    
+
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         filterBtns.forEach(b => {
@@ -1256,7 +1330,7 @@
         });
         btn.classList.add('active');
         btn.setAttribute('aria-pressed', 'true');
-        
+
         const filter = btn.dataset.filter;
         projectCards.forEach(card => {
           const show = filter === 'all' || card.dataset.category === filter;
